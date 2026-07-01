@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="pt" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tetrápodes | Esporão Sul de Espinho</title>
+<style>
+  :root{
+    --bg:#0f151c; --panel:#171f29; --panel2:#1d2733; --line:#2a3744;
+    --txt:#e8edf2; --muted:#8b9aa8; --faint:#5d6c7a; --stripe:#ffffff08;
+    --accent:#f4a259; --accent2:#4895ef; --field:#101820; --fieldtx:#e8edf2;
+    --radius:10px;
+  }
+  html[data-theme="light"]{
+    --bg:#eef1f5; --panel:#ffffff; --panel2:#eef2f6; --line:#d8dfe7;
+    --txt:#1a2530; --muted:#5d6c7a; --faint:#94a2b0; --stripe:#0000000a;
+    --accent:#e08a3c; --accent2:#2f74d0; --field:#ffffff; --fieldtx:#1a2530;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--txt);line-height:1.45;padding:22px;font-size:14px}
+  .wrap{max-width:1240px;margin:0 auto}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+
+  #gate{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:999}
+  .login{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:32px 30px;width:330px;box-shadow:0 18px 50px #0006}
+  .login .eyebrow{font-size:10.5px;letter-spacing:2.5px;text-transform:uppercase;color:var(--accent);font-weight:700}
+  .login h1{font-size:19px;margin:4px 0 20px}
+  .login label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;display:block;margin:12px 0 5px}
+  .login input{width:100%;background:var(--field);color:var(--fieldtx);border:1px solid var(--line);border-radius:7px;padding:10px 12px;font-size:14px;font-family:inherit}
+  .login button{width:100%;margin-top:20px;background:var(--accent);color:#1a1207;border:none;border-radius:7px;padding:11px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit}
+  .login .err{color:#e76f51;font-size:12px;margin-top:12px;min-height:15px;text-align:center}
+
+  header{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:2px solid var(--accent);padding-bottom:14px;margin-bottom:20px;flex-wrap:wrap;gap:12px}
+  .eyebrow{font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:var(--accent);font-weight:700}
+  h1{font-size:25px;font-weight:700;letter-spacing:-.3px;margin-top:3px}
+  .sub{color:var(--muted);font-size:13px;margin-top:2px}
+  .htools{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .theme{display:flex;gap:4px;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:3px}
+  .theme button{background:none;border:none;color:var(--muted);font-size:11px;font-weight:600;padding:5px 9px;border-radius:5px;cursor:pointer;font-family:inherit}
+  .theme button.active{background:var(--accent);color:#1a1207}
+  .badge{font-size:11px;color:var(--faint);border:1px solid var(--line);padding:4px 9px;border-radius:20px;white-space:nowrap}
+
+  .kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:18px}
+  .kpi{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:14px 15px;position:relative;overflow:hidden}
+  .kpi::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--accent)}
+  .kpi.alt::before{background:var(--accent2)}
+  .kpi .v{font-size:30px;font-weight:800;letter-spacing:-1px;font-variant-numeric:tabular-nums;line-height:1}
+  .kpi .l{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-top:7px}
+
+  .filters{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:13px 16px;margin-bottom:16px;display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end}
+  .fgroup{display:flex;flex-direction:column;gap:5px}
+  .flabel{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;font-weight:600}
+  select,input[type=date],input[type=number]{background:var(--field);color:var(--fieldtx);border:1px solid var(--line);border-radius:7px;padding:7px 10px;font-size:13px;font-family:inherit;min-width:120px}
+  .btn{background:var(--panel2);color:var(--txt);border:1px solid var(--line);padding:8px 13px;border-radius:7px;font-size:12.5px;cursor:pointer;font-family:inherit;font-weight:600;transition:.12s}
+  .btn:hover{border-color:var(--accent)}
+  .btn.active{background:var(--accent);border-color:var(--accent);color:#1a1207}
+  .btn.amber{background:var(--accent);border-color:var(--accent);color:#1a1207}
+  .spacer{margin-left:auto}
+
+  details.sec{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);margin-bottom:16px;overflow:hidden}
+  details.sec>summary{cursor:pointer;list-style:none;padding:14px 18px;display:flex;align-items:center;gap:10px;font-size:13px;text-transform:uppercase;letter-spacing:1.2px;font-weight:700;user-select:none}
+  details.sec>summary::-webkit-details-marker{display:none}
+  details.sec>summary::before{content:"";border-left:6px solid var(--accent);border-top:5px solid transparent;border-bottom:5px solid transparent;transition:transform .15s}
+  details.sec[open]>summary::before{transform:rotate(90deg)}
+  details.sec>summary .count{margin-left:auto;color:var(--muted);font-weight:600;letter-spacing:.5px}
+  .secbody{padding:0 18px 18px}
+
+  .recform{display:flex;flex-wrap:wrap;gap:13px;align-items:flex-end;padding:4px 0 14px;border-bottom:1px solid var(--line);margin-bottom:14px}
+  .recform .fgroup input,.recform .fgroup select{min-width:120px}
+
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+  .card h2{font-size:13px;text-transform:uppercase;letter-spacing:1.2px;text-align:center;font-weight:700;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+  .toggle{display:flex;gap:6px;justify-content:center;margin-bottom:10px}
+  .toggle .btn{padding:4px 11px;font-size:11.5px}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;align-items:stretch}
+  .grid .card{display:flex;flex-direction:column}
+  .chartbox{flex:1;display:flex;align-items:center}
+  svg{width:100%;display:block;overflow:visible}
+  .glabel{fill:var(--muted);font-size:10.5px;font-weight:600}
+  .gval{fill:var(--txt);font-size:11px;font-weight:700;font-variant-numeric:tabular-nums}
+
+  .perfis{display:grid;grid-template-columns:repeat(auto-fill,minmax(232px,1fr));gap:14px}
+  .pcard{background:var(--panel2);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;transition:.15s;cursor:pointer}
+  .pcard.dim{opacity:.28}
+  .phead{padding:11px 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line)}
+  .ptag{font-size:15px;font-weight:800;letter-spacing:.5px}
+  .ptot{font-size:22px;font-weight:800;font-variant-numeric:tabular-nums}
+  .pmeta{font-size:10.5px;color:var(--muted);padding:7px 14px;display:flex;gap:12px;border-bottom:1px solid var(--line)}
+  .pmeta b{color:var(--txt);font-variant-numeric:tabular-nums}
+
+  table{width:100%;border-collapse:collapse;font-size:12px}
+  th{font-size:9.5px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);text-align:center;padding:7px 8px;border-bottom:1px solid var(--line);font-weight:700}
+  td{padding:5px 8px;text-align:center;color:var(--txt);font-variant-numeric:tabular-nums}
+  tbody tr:nth-child(odd){background:var(--stripe)}
+  td.l{text-align:left;color:var(--muted)}
+  .empty{padding:22px;text-align:center;color:var(--faint);font-size:12px}
+  .chip{display:inline-block;padding:2px 9px;border-radius:11px;font-size:11px;font-weight:700;color:#0f151c}
+  .rectable{overflow:auto}
+  #recTable th[data-k]{cursor:pointer;user-select:none}
+  #recTable th[data-k]:hover{color:var(--accent)}
+  .ei{min-width:0!important;width:100%;padding:4px 6px;font-size:12px}
+  .ei.dia{min-width:120px}
+  .iact{display:inline-flex;gap:4px;justify-content:center}
+  .ibtn{background:none;border:1px solid var(--line);border-radius:5px;cursor:pointer;padding:2px 7px;font-size:12px;font-weight:700;line-height:1.3}
+  .ibtn.ed{color:var(--accent2)}
+  .ibtn.del{color:#e76f51}
+  .ibtn.ok{color:#4caf72;border-color:#4caf72}
+  .ibtn:hover{border-color:var(--accent)}
+
+  footer{margin-top:22px;padding-top:12px;border-top:1px solid var(--line);color:var(--faint);font-size:11px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+
+  @media(max-width:960px){.kpis{grid-template-columns:repeat(3,1fr)}.grid{grid-template-columns:1fr}}
+  @media(max-width:560px){.kpis{grid-template-columns:repeat(2,1fr)}}
+  @media print{body{background:#fff;color:#000}.btn,.filters,.theme{display:none}#gate{display:none!important}details.sec[open]>summary::before{display:none}}
+</style>
+</head>
+<body>
+
+<div id="gate">
+  <div class="login">
+    <div class="eyebrow">Esporão Sul de Espinho</div>
+    <h1>Acesso restrito</h1>
+    <label>Utilizador</label>
+    <input id="gu" type="text" autocomplete="username" autofocus>
+    <label>Palavra-passe</label>
+    <input id="gp" type="password" autocomplete="current-password">
+    <button id="gbtn">Entrar</button>
+    <div class="err" id="gerr"></div>
+  </div>
+</div>
+
+<div class="wrap" id="app" style="display:none">
+
+  <header>
+    <div>
+      <div class="eyebrow">Empreitada de Reabilitação do Esporão Sul de Espinho</div>
+      <h1>Remoção e Colocação de Tetrápodes</h1>
+      <div class="sub">Listagem por perfil &middot; Dashboard de acompanhamento</div>
+    </div>
+    <div class="htools">
+      <div class="theme">
+        <button data-th="light">Claro</button>
+        <button data-th="dark">Escuro</button>
+        <button data-th="system">Sistema</button>
+      </div>
+      <div class="badge">v26.06.23.1700</div>
+    </div>
+  </header>
+
+  <div class="kpis" id="kpis"></div>
+
+  <div class="filters">
+    <div class="fgroup"><span class="flabel">Semana</span><select id="fSemana"></select></div>
+    <div class="fgroup"><span class="flabel">Dia</span><input type="date" id="fDia"></div>
+    <div class="fgroup"><span class="flabel">Tipo</span><select id="fTipo"></select></div>
+    <div class="fgroup"><span class="flabel">Sub Tipo</span><select id="fSub"></select></div>
+    <button class="btn" id="reset">Limpar</button>
+    <button class="btn spacer" id="csv">Exportar CSV</button>
+  </div>
+
+  <details class="sec" id="secRec">
+    <summary>Registos <span class="count" id="regCount"></span></summary>
+    <div class="secbody">
+      <div class="recform">
+        <div class="fgroup"><span class="flabel">Dia</span><input type="date" id="rDia"></div>
+        <div class="fgroup"><span class="flabel">Semana</span><input type="number" id="rSemana" min="1" max="53" style="min-width:90px"></div>
+        <div class="fgroup"><span class="flabel">Tipo</span><select id="rTipo"><option>Remoção</option><option>Colocação</option></select></div>
+        <div class="fgroup"><span class="flabel">Sub Tipo</span><select id="rSub"><option>Inteiros</option><option>Partidos</option></select></div>
+        <div class="fgroup"><span class="flabel">Perfil</span><select id="rPerfil"><option>P1</option><option>P2</option><option>P3</option><option>P4</option><option>P5</option></select></div>
+        <div class="fgroup"><span class="flabel">Quant</span><input type="number" id="rQuant" min="1" value="1" style="min-width:80px"></div>
+        <button class="btn amber" id="rAdd">Adicionar</button>
+      </div>
+      <div class="rectable">
+        <table id="recTable">
+          <thead><tr>
+            <th data-k="Data">Dia</th><th data-k="Semana">Semana</th>
+            <th data-k="Tipo">Tipo</th><th data-k="SubTipo">Sub Tipo</th>
+            <th data-k="Perfil">Perfil</th><th data-k="Quant">Quant</th>
+            <th>Ações</th>
+          </tr></thead>
+          <tbody id="recBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </details>
+
+  <details class="sec" id="secPerf">
+    <summary>Listagem por Perfil</summary>
+    <div class="secbody"><div class="perfis" id="perfis"></div></div>
+  </details>
+
+  <div class="grid">
+    <div class="card">
+      <h2>Evolução Temporal</h2>
+      <div class="toggle">
+        <button class="btn active" data-mode="cum">Acumulado</button>
+        <button class="btn" data-mode="day">Por dia</button>
+      </div>
+      <div class="chartbox" id="chartTime"></div>
+    </div>
+    <div class="card">
+      <h2>Distribuição por Perfil</h2>
+      <div class="chartbox" id="chartPerfil"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Quantidade por Semana e Perfil</h2>
+    <div id="chartSemana"></div>
+  </div>
+
+  <footer>
+    <span>Fiscalização &middot; Aceitar Sucessos, Lda.</span>
+    <span id="fnote"></span>
+  </footer>
+</div>
+
+<script>
+const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+
+const CRED={user:"esporao",pass:"APA"};
+const norm=s=>s.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().trim();
+function tryLogin(){
+  const u=norm(document.getElementById("gu").value),p=document.getElementById("gp").value.trim();
+  if(u===CRED.user&&p===CRED.pass){store.set("esporao_auth","1");openApp();}
+  else document.getElementById("gerr").textContent="Credenciais inválidas.";
+}
+function openApp(){document.getElementById("gate").style.display="none";document.getElementById("app").style.display="block";init();}
+document.getElementById("gbtn").onclick=tryLogin;
+document.getElementById("gp").addEventListener("keydown",e=>{if(e.key==="Enter")tryLogin();});
+if(store.get("esporao_auth")==="1")openApp();
+
+const mq=window.matchMedia("(prefers-color-scheme: dark)");
+function applyTheme(pref){
+  const r=pref==="system"?(mq.matches?"dark":"light"):pref;
+  document.documentElement.dataset.theme=r;
+  document.querySelectorAll(".theme button").forEach(b=>b.classList.toggle("active",b.dataset.th===pref));
+  store.set("esporao_theme",pref);
+}
+let themePref=store.get("esporao_theme")||"system";
+mq.addEventListener("change",()=>{if(themePref==="system")applyTheme("system");});
+
+const SEED_DATA=[
+ {Semana:26,Data:"2026-06-22",Tipo:"Remoção",SubTipo:"Inteiros",Quant:1,Perfil:"P4"},
+ {Semana:26,Data:"2026-06-22",Tipo:"Remoção",SubTipo:"Inteiros",Quant:1,Perfil:"P3"},
+ {Semana:25,Data:"2026-06-17",Tipo:"Remoção",SubTipo:"Inteiros",Quant:5,Perfil:"P4"},
+ {Semana:25,Data:"2026-06-17",Tipo:"Remoção",SubTipo:"Inteiros",Quant:4,Perfil:"P3"},
+ {Semana:25,Data:"2026-06-17",Tipo:"Remoção",SubTipo:"Inteiros",Quant:4,Perfil:"P2"},
+ {Semana:25,Data:"2026-06-17",Tipo:"Remoção",SubTipo:"Inteiros",Quant:1,Perfil:"P1"},
+ {Semana:25,Data:"2026-06-16",Tipo:"Remoção",SubTipo:"Inteiros",Quant:1,Perfil:"P1"},
+ {Semana:25,Data:"2026-06-16",Tipo:"Remoção",SubTipo:"Inteiros",Quant:5,Perfil:"P3"},
+ {Semana:25,Data:"2026-06-16",Tipo:"Remoção",SubTipo:"Inteiros",Quant:4,Perfil:"P2"},
+ {Semana:25,Data:"2026-06-15",Tipo:"Remoção",SubTipo:"Inteiros",Quant:5,Perfil:"P3"},
+ {Semana:25,Data:"2026-06-15",Tipo:"Remoção",SubTipo:"Inteiros",Quant:2,Perfil:"P2"},
+ {Semana:25,Data:"2026-06-12",Tipo:"Remoção",SubTipo:"Inteiros",Quant:7,Perfil:"P2"},
+ {Semana:24,Data:"2026-06-12",Tipo:"Remoção",SubTipo:"Inteiros",Quant:1,Perfil:"P1"},
+ {Semana:24,Data:"2026-06-09",Tipo:"Remoção",SubTipo:"Inteiros",Quant:2,Perfil:"P4"},
+ {Semana:24,Data:"2026-06-09",Tipo:"Remoção",SubTipo:"Inteiros",Quant:3,Perfil:"P4"},
+ {Semana:24,Data:"2026-06-09",Tipo:"Remoção",SubTipo:"Inteiros",Quant:1,Perfil:"P2"},
+ {Semana:26,Data:"2026-06-22",Tipo:"Remoção",SubTipo:"Partidos",Quant:1,Perfil:"P4"},
+ {Semana:26,Data:"2026-06-22",Tipo:"Remoção",SubTipo:"Partidos",Quant:12,Perfil:"P3"},
+ {Semana:26,Data:"2026-06-22",Tipo:"Remoção",SubTipo:"Partidos",Quant:6,Perfil:"P5"},
+ {Semana:25,Data:"2026-06-18",Tipo:"Remoção",SubTipo:"Partidos",Quant:6,Perfil:"P4"},
+ {Semana:25,Data:"2026-06-18",Tipo:"Remoção",SubTipo:"Partidos",Quant:4,Perfil:"P3"},
+ {Semana:25,Data:"2026-06-18",Tipo:"Remoção",SubTipo:"Partidos",Quant:5,Perfil:"P2"},
+ {Semana:25,Data:"2026-06-16",Tipo:"Remoção",SubTipo:"Partidos",Quant:15,Perfil:"P3"},
+ {Semana:25,Data:"2026-06-16",Tipo:"Remoção",SubTipo:"Partidos",Quant:2,Perfil:"P1"},
+ {Semana:25,Data:"2026-06-15",Tipo:"Remoção",SubTipo:"Partidos",Quant:6,Perfil:"P3"},
+ {Semana:25,Data:"2026-06-15",Tipo:"Remoção",SubTipo:"Partidos",Quant:2,Perfil:"P2"},
+ {Semana:24,Data:"2026-06-12",Tipo:"Remoção",SubTipo:"Partidos",Quant:10,Perfil:"P2"},
+ {Semana:24,Data:"2026-06-12",Tipo:"Colocação",SubTipo:"-",Quant:1,Perfil:"P1"}
+];
+
+let records=[],seq=0;
+function loadRecords(){
+  let saved=null;try{saved=JSON.parse(store.get("esporao_records")||"null")}catch(e){}
+  if(saved&&Array.isArray(saved)&&saved.length){records=saved;return;}
+  let mig=[];try{mig=JSON.parse(store.get("esporao_user_records")||"[]")}catch(e){}
+  records=SEED_DATA.concat(mig).map((r,i)=>Object.assign({id:"r"+(i+1)},r));
+  saveRecords();
+}
+function saveRecords(){store.set("esporao_records",JSON.stringify(records))}
+function newId(){return "r"+Date.now()+"_"+(seq++)}
+
+const BASEC={P1:"#4cc9f0",P2:"#4895ef",P3:"#f4a259",P4:"#f07b3f",P5:"#d62828"};
+const EXTRA=["#9b5de5","#00b4a6","#8ac926","#ff70a6","#ffca3a","#118ab2"];
+let PC={};
+const perfisList=()=>[...new Set(records.map(r=>r.Perfil))].sort();
+function buildPC(){let e=0;PC={};perfisList().forEach(p=>PC[p]=BASEC[p]||EXTRA[e++%EXTRA.length])}
+function perfilOptions(sel){return [...new Set(["P1","P2","P3","P4","P5"].concat(perfisList()))].map(p=>`<option ${p===sel?"selected":""}>${p}</option>`).join("")}
+
+const sum=a=>a.reduce((s,x)=>s+x,0);
+const fmtD=s=>{const p=s.split("-");return p[2]+"/"+p[1]};
+function isoWeek(s){const d=new Date(s+"T00:00:00");const t=new Date(d);t.setHours(0,0,0,0);t.setDate(t.getDate()+3-((t.getDay()+6)%7));const w1=new Date(t.getFullYear(),0,4);return 1+Math.round(((t-w1)/86400000-3+((w1.getDay()+6)%7))/7);}
+
+let state={semana:"Todas",dia:"",tipo:"Todos",sub:"Todos",timeMode:"cum",sortK:null,sortDir:1,highlight:null,editId:null};
+
+function filtered(){
+  return records.filter(r=>
+    (state.semana==="Todas"||r.Semana==+state.semana)&&
+    (state.dia===""||r.Data===state.dia)&&
+    (state.tipo==="Todos"||r.Tipo===state.tipo)&&
+    (state.sub==="Todos"||r.SubTipo===state.sub));
+}
+
+function buildFilters(){
+  const sem=["Todas"].concat([...new Set(records.map(r=>r.Semana))].sort((a,b)=>a-b));
+  const tip=["Todos"].concat([...new Set(records.map(r=>r.Tipo))]);
+  const sub=["Todos","Inteiros","Partidos"];
+  const fill=(id,arr,cur)=>document.getElementById(id).innerHTML=arr.map(v=>`<option ${v==cur?"selected":""}>${v}</option>`).join("");
+  fill("fSemana",sem,state.semana);fill("fTipo",tip,state.tipo);fill("fSub",sub,state.sub);
+  document.getElementById("fDia").value=state.dia;
+}
+
+function renderKPIs(){
+  const d=filtered(),v=f=>sum(d.filter(f).map(r=>r.Quant));
+  const cards=[["Total",sum(d.map(r=>r.Quant)),""],["Remoção",v(r=>r.Tipo==="Remoção"),""],
+    ["Colocação",v(r=>r.Tipo==="Colocação"),""],["Partidos",v(r=>r.SubTipo==="Partidos"),"alt"],
+    ["Inteiros",v(r=>r.SubTipo==="Inteiros"),"alt"],["Dias ativos",new Set(d.map(r=>r.Data)).size,"alt"]];
+  document.getElementById("kpis").innerHTML=cards.map(c=>`<div class="kpi ${c[2]}"><div class="v">${c[1]}</div><div class="l">${c[0]}</div></div>`).join("");
+}
+
+function rowView(r){
+  return `<tr>
+    <td class="l">${fmtD(r.Data)}</td><td>${r.Semana}</td><td>${r.Tipo}</td><td>${r.SubTipo}</td>
+    <td><span class="chip" style="background:${PC[r.Perfil]||"#888"}">${r.Perfil}</span></td>
+    <td><b>${r.Quant}</b></td>
+    <td><span class="iact">
+      <button class="ibtn ed" title="Editar" onclick="startEdit('${r.id}')">&#9998;</button>
+      <button class="ibtn del" title="Eliminar" onclick="removeRec('${r.id}')">&times;</button>
+    </span></td></tr>`;
+}
+function rowEdit(r){
+  const col=r.Tipo==="Colocação";
+  return `<tr>
+    <td><input type="date" class="ei dia" id="e_dia" value="${r.Data}" onchange="document.getElementById('e_sem').value=isoWeek(this.value)"></td>
+    <td><input type="number" class="ei" id="e_sem" value="${r.Semana}" style="max-width:64px"></td>
+    <td><select class="ei" id="e_tipo" onchange="onEditTipo()"><option ${r.Tipo==="Remoção"?"selected":""}>Remoção</option><option ${col?"selected":""}>Colocação</option></select></td>
+    <td><select class="ei" id="e_sub" ${col?"disabled":""}><option ${r.SubTipo==="Inteiros"?"selected":""}>Inteiros</option><option ${r.SubTipo==="Partidos"?"selected":""}>Partidos</option></select></td>
+    <td><select class="ei" id="e_perfil">${perfilOptions(r.Perfil)}</select></td>
+    <td><input type="number" class="ei" id="e_quant" min="1" value="${r.Quant}" style="max-width:64px"></td>
+    <td><span class="iact">
+      <button class="ibtn ok" title="Guardar" onclick="saveEdit('${r.id}')">&#10003;</button>
+      <button class="ibtn del" title="Cancelar" onclick="cancelEdit()">&times;</button>
+    </span></td></tr>`;
+}
+function renderRecTable(){
+  let d=filtered().slice();
+  if(state.sortK)d.sort((a,b)=>{const x=a[state.sortK],y=b[state.sortK];return(x>y?1:x<y?-1:0)*state.sortDir;});
+  else d.sort((a,b)=>a.Data<b.Data?1:-1);
+  document.getElementById("regCount").textContent="("+d.length+")";
+  document.getElementById("recBody").innerHTML=d.length
+    ?d.map(r=>r.id===state.editId?rowEdit(r):rowView(r)).join("")
+    :`<tr><td colspan="7" class="empty">Sem registos para os filtros aplicados.</td></tr>`;
+}
+function onEditTipo(){const col=document.getElementById("e_tipo").value==="Colocação";const s=document.getElementById("e_sub");s.disabled=col;s.style.opacity=col?.4:1;}
+function startEdit(id){state.editId=id;renderRecTable();}
+function cancelEdit(){state.editId=null;renderRecTable();}
+function saveEdit(id){
+  const dia=document.getElementById("e_dia").value,q=parseInt(document.getElementById("e_quant").value,10);
+  if(!dia){alert("Indique o dia.");return;}
+  if(!q||q<1){alert("Quantidade inválida.");return;}
+  const tipo=document.getElementById("e_tipo").value,r=records.find(x=>x.id===id);
+  Object.assign(r,{Data:dia,Semana:parseInt(document.getElementById("e_sem").value,10)||isoWeek(dia),
+    Tipo:tipo,SubTipo:tipo==="Colocação"?"-":document.getElementById("e_sub").value,
+    Perfil:document.getElementById("e_perfil").value,Quant:q});
+  state.editId=null;saveRecords();render();
+}
+function removeRec(id){if(!confirm("Eliminar este registo?"))return;records=records.filter(r=>r.id!==id);saveRecords();render();}
+
+function renderTime(){
+  const d=filtered(),dias=[...new Set(d.map(r=>r.Data))].sort();
+  let vals=dias.map(dt=>sum(d.filter(r=>r.Data===dt).map(r=>r.Quant)));
+  if(state.timeMode==="cum"){let c=0;vals=vals.map(v=>c+=v);}
+  const W=700,H=320,pl=42,pr=18,pt=22,pb=42,iw=W-pl-pr,ih=H-pt-pb,max=Math.max(...vals,1);
+  const x=i=>dias.length<2?pl+iw/2:pl+(i/(dias.length-1))*iw,y=v=>pt+ih-(v/max)*ih;
+  let g=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet">`;
+  for(let i=0;i<=4;i++){const gv=Math.round(max*i/4),gy=y(gv);
+    g+=`<line x1="${pl}" y1="${gy}" x2="${W-pr}" y2="${gy}" stroke="var(--line)"/><text x="${pl-6}" y="${gy+3}" text-anchor="end" class="glabel">${gv}</text>`;}
+  if(dias.length){
+    g+=`<path d="M ${x(0)} ${y(0)} ${vals.map((v,i)=>`L ${x(i)} ${y(v)}`).join(" ")} L ${x(dias.length-1)} ${y(0)} Z" fill="var(--accent)" opacity="0.12"/>`;
+    g+=`<path d="${vals.map((v,i)=>`${i?"L":"M"} ${x(i)} ${y(v)}`).join(" ")}" fill="none" stroke="var(--accent)" stroke-width="2.5"/>`;
+    vals.forEach((v,i)=>g+=`<circle cx="${x(i)}" cy="${y(v)}" r="3.5" fill="var(--accent)"/><text x="${x(i)}" y="${y(v)-9}" text-anchor="middle" class="gval">${v}</text>`);
+    dias.forEach((dt,i)=>g+=`<text x="${x(i)}" y="${H-14}" text-anchor="middle" class="glabel">${fmtD(dt)}</text>`);
+  }
+  g+=`</svg>`;
+  document.getElementById("chartTime").innerHTML=dias.length?g:`<div class="empty">Sem dados.</div>`;
+}
+function renderPerfil(){
+  const d=filtered(),ps=perfisList();
+  const data=ps.map(p=>({p,q:sum(d.filter(r=>r.Perfil===p).map(r=>r.Quant))}));
+  const max=Math.max(...data.map(o=>o.q),1),W=700,H=320,pl=44,pr=60,pt=16,pb=16,ih=H-pt-pb,rowH=ih/Math.max(data.length,1);
+  let g=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet">`;
+  data.forEach((o,i)=>{const yc=pt+i*rowH+rowH/2,bw=(o.q/max)*(W-pl-pr),bh=Math.min(26,rowH*0.55),op=(state.highlight&&state.highlight!==o.p)?0.3:1;
+    g+=`<text x="6" y="${yc+5}" class="glabel" style="fill:${PC[o.p]};font-size:13px">${o.p}</text>`;
+    g+=`<rect x="${pl}" y="${yc-bh/2}" width="${W-pl-pr}" height="${bh}" rx="3" fill="var(--panel2)"/>`;
+    g+=`<rect x="${pl}" y="${yc-bh/2}" width="${bw}" height="${bh}" rx="3" fill="${PC[o.p]}" opacity="${op}"/>`;
+    g+=`<text x="${pl+bw+8}" y="${yc+5}" class="gval">${o.q}</text>`;});
+  g+=`</svg>`;document.getElementById("chartPerfil").innerHTML=g;
+}
+function renderSemana(){
+  const d=filtered(),ps=perfisList(),sems=[...new Set(d.map(r=>r.Semana))].sort((a,b)=>a-b);
+  const W=700,H=250,pl=38,pr=14,pt=16,pb=48,iw=W-pl-pr,ih=H-pt-pb;
+  const tot=sems.map(s=>sum(d.filter(r=>r.Semana===s).map(r=>r.Quant)));
+  const max=Math.max(...tot,1),gap=sems.length?iw/sems.length:0,bw=sems.length?Math.min(90,gap*0.55):0;
+  let g=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet">`;
+  for(let i=0;i<=4;i++){const gv=Math.round(max*i/4),gy=pt+ih-(gv/max)*ih;
+    g+=`<line x1="${pl}" y1="${gy}" x2="${W-pr}" y2="${gy}" stroke="var(--line)"/><text x="${pl-6}" y="${gy+3}" text-anchor="end" class="glabel">${gv}</text>`;}
+  sems.forEach((s,i)=>{const cx=pl+gap*i+gap/2;let acc=0;
+    ps.forEach(p=>{const q=sum(d.filter(r=>r.Semana===s&&r.Perfil===p).map(r=>r.Quant));if(!q)return;
+      const h=(q/max)*ih,yy=pt+ih-(acc/max)*ih-h,op=(state.highlight&&state.highlight!==p)?0.3:1;
+      g+=`<rect x="${cx-bw/2}" y="${yy}" width="${bw}" height="${h}" fill="${PC[p]}" opacity="${op}"/>`;
+      if(h>15)g+=`<text x="${cx}" y="${yy+h/2+4}" text-anchor="middle" style="fill:#0f151c;font-size:10px;font-weight:700">${q}</text>`;acc+=q;});
+    g+=`<text x="${cx}" y="${pt+ih+18}" text-anchor="middle" class="glabel">Sem ${s}</text>`;
+    g+=`<text x="${cx}" y="${pt+ih-(acc/max)*ih-7}" text-anchor="middle" class="gval">${tot[i]}</text>`;});
+  ps.forEach((p,i)=>{const lx=pl+i*60;g+=`<rect x="${lx}" y="${H-14}" width="11" height="11" rx="2" fill="${PC[p]}"/><text x="${lx+15}" y="${H-5}" class="glabel">${p}</text>`;});
+  g+=`</svg>`;document.getElementById("chartSemana").innerHTML=sems.length?g:`<div class="empty">Sem dados.</div>`;
+}
+function renderPerfis(){
+  const d=filtered(),ps=perfisList();
+  document.getElementById("perfis").innerHTML=ps.map(p=>{
+    const rows=d.filter(r=>r.Perfil===p),tot=sum(rows.map(r=>r.Quant));
+    const part=sum(rows.filter(r=>r.SubTipo==="Partidos").map(r=>r.Quant));
+    const int=sum(rows.filter(r=>r.SubTipo==="Inteiros").map(r=>r.Quant));
+    const col=sum(rows.filter(r=>r.Tipo==="Colocação").map(r=>r.Quant));
+    const body=rows.length?rows.slice().sort((a,b)=>a.Data<b.Data?1:-1).map(r=>
+      `<tr><td class="l">${fmtD(r.Data)}</td><td>${r.SubTipo==="-"?"Coloc.":r.SubTipo}</td><td>${r.Quant}</td></tr>`).join("")
+      :`<tr><td colspan="3" class="empty" style="padding:14px">Sem registos</td></tr>`;
+    const dim=(state.highlight&&state.highlight!==p)?"dim":"";
+    return `<div class="pcard ${dim}" onclick="toggleHL('${p}')">
+      <div class="phead" style="background:${PC[p]}1a"><span class="ptag" style="color:${PC[p]}">${p}</span><span class="ptot">${tot}</span></div>
+      <div class="pmeta"><span>Inteiros <b>${int}</b></span><span>Partidos <b>${part}</b></span><span>Coloc. <b>${col}</b></span></div>
+      <table><thead><tr><th>Data</th><th>Sub Tipo</th><th>Qt</th></tr></thead><tbody>${body}</tbody></table></div>`;
+  }).join("");
+}
+function toggleHL(p){state.highlight=state.highlight===p?null:p;render();}
+
+function render(){
+  buildPC();buildFilters();renderKPIs();renderRecTable();renderPerfis();renderTime();renderPerfil();renderSemana();
+  document.getElementById("fnote").textContent=
+    `Total geral: ${sum(records.map(r=>r.Quant))} un. (Remoção ${sum(records.filter(r=>r.Tipo==="Remoção").map(r=>r.Quant))} / Colocação ${sum(records.filter(r=>r.Tipo==="Colocação").map(r=>r.Quant))})`;
+}
+
+function init(){
+  loadRecords();applyTheme(themePref);
+  document.querySelectorAll(".theme button").forEach(b=>b.onclick=()=>{themePref=b.dataset.th;applyTheme(themePref);});
+  document.getElementById("fSemana").onchange=e=>{state.semana=e.target.value;render();};
+  document.getElementById("fTipo").onchange=e=>{state.tipo=e.target.value;render();};
+  document.getElementById("fSub").onchange=e=>{state.sub=e.target.value;render();};
+  document.getElementById("fDia").onchange=e=>{state.dia=e.target.value;render();};
+  document.querySelectorAll("[data-mode]").forEach(b=>b.onclick=()=>{state.timeMode=b.dataset.mode;document.querySelectorAll("[data-mode]").forEach(x=>x.classList.toggle("active",x===b));renderTime();});
+  document.querySelectorAll("#recTable th[data-k]").forEach(th=>th.onclick=()=>{const k=th.dataset.k;if(state.sortK===k)state.sortDir*=-1;else{state.sortK=k;state.sortDir=1;}renderRecTable();});
+  document.getElementById("reset").onclick=()=>{state=Object.assign({},state,{semana:"Todas",dia:"",tipo:"Todos",sub:"Todos",highlight:null,sortK:null,editId:null});render();};
+  document.getElementById("csv").onclick=()=>{
+    const d=filtered(),head="Semana,Data,Tipo,Sub Tipo,Perfil,Quant";
+    const body=d.map(r=>`${r.Semana},${r.Data},${r.Tipo},${r.SubTipo},${r.Perfil},${r.Quant}`).join("\n");
+    const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([head+"\n"+body],{type:"text/csv;charset=utf-8"}));a.download="tetrapodes_listagem.csv";a.click();};
+
+  const rTipo=document.getElementById("rTipo"),rSub=document.getElementById("rSub"),rDia=document.getElementById("rDia"),rSem=document.getElementById("rSemana");
+  rDia.onchange=()=>{if(rDia.value)rSem.value=isoWeek(rDia.value);};
+  rTipo.onchange=()=>{const col=rTipo.value==="Colocação";rSub.disabled=col;rSub.style.opacity=col?.4:1;};
+  document.getElementById("rAdd").onclick=()=>{
+    const dia=rDia.value,q=parseInt(document.getElementById("rQuant").value,10);
+    if(!dia){alert("Indique o dia.");return;}
+    if(!q||q<1){alert("Quantidade inválida.");return;}
+    const tipo=rTipo.value;
+    records.push({id:newId(),Semana:parseInt(rSem.value,10)||isoWeek(dia),Data:dia,Tipo:tipo,
+      SubTipo:tipo==="Colocação"?"-":rSub.value,Quant:q,Perfil:document.getElementById("rPerfil").value});
+    saveRecords();document.getElementById("secRec").open=true;render();
+  };
+  render();
+}
+</script>
+</body>
+</html>
