@@ -144,7 +144,7 @@
         <button data-th="dark">Escuro</button>
         <button data-th="system">Sistema</button>
       </div>
-      <div class="badge">v26.06.23.1700</div>
+      <div class="badge">v26.06.23.1830</div>
     </div>
   </header>
 
@@ -229,7 +229,6 @@ function tryLogin(){
 function openApp(){document.getElementById("gate").style.display="none";document.getElementById("app").style.display="block";init();}
 document.getElementById("gbtn").onclick=tryLogin;
 document.getElementById("gp").addEventListener("keydown",e=>{if(e.key==="Enter")tryLogin();});
-if(store.get("esporao_auth")==="1")openApp();
 
 const mq=window.matchMedia("(prefers-color-scheme: dark)");
 function applyTheme(pref){
@@ -471,6 +470,9 @@ function init(){
   };
   render();
 }
+
+/* Auto-login só aqui, depois de tudo estar definido */
+if(store.get("esporao_auth")==="1")openApp();
 </script>
 </body>
 </html>
