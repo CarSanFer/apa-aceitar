@@ -10,6 +10,7 @@
     --txt:#e8edf2; --muted:#8b9aa8; --faint:#5d6c7a; --stripe:#ffffff08;
     --accent:#f4a259; --accent2:#4895ef; --field:#101820; --fieldtx:#e8edf2;
     --radius:10px;
+    --font:'Segoe UI',system-ui,-apple-system,sans-serif;
   }
   html[data-theme="light"]{
     --bg:#eef1f5; --panel:#ffffff; --panel2:#eef2f6; --line:#d8dfe7;
@@ -17,7 +18,7 @@
     --accent:#e08a3c; --accent2:#2f74d0; --field:#ffffff; --fieldtx:#1a2530;
   }
   *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--txt);line-height:1.45;padding:22px;font-size:14px}
+  body{font-family:var(--font);background:var(--bg);color:var(--txt);line-height:1.45;padding:22px;font-size:14px}
   .wrap{max-width:1240px;margin:0 auto}
   :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
   @media(prefers-reduced-motion:reduce){*{transition:none!important}}
@@ -77,6 +78,7 @@
   .grid .card{display:flex;flex-direction:column}
   .chartbox{flex:1;display:flex;align-items:center}
   svg{width:100%;display:block;overflow:visible}
+  svg text{font-family:var(--font)}
   .glabel{fill:var(--muted);font-size:10.5px;font-weight:600}
   .gval{fill:var(--txt);font-size:11px;font-weight:700;font-variant-numeric:tabular-nums}
 
@@ -112,7 +114,16 @@
 
   @media(max-width:960px){.kpis{grid-template-columns:repeat(3,1fr)}.grid{grid-template-columns:1fr}}
   @media(max-width:560px){.kpis{grid-template-columns:repeat(2,1fr)}}
-  @media print{body{background:#fff;color:#000}.btn,.filters,.theme{display:none}#gate{display:none!important}details.sec[open]>summary::before{display:none}}
+  @media print{body{background:#fff;color:#000}.btn,.filters,.theme,.temabar{display:none}#gate{display:none!important}details.sec[open]>summary::before{display:none}}
+
+  /* Navegação de temas (2 blocos) */
+  .temabar{display:flex;gap:6px;margin:0 0 18px;border-bottom:1px solid var(--line)}
+  .temabar button{background:none;border:none;border-bottom:3px solid transparent;color:var(--muted);font-size:14px;font-weight:700;padding:11px 18px;cursor:pointer;font-family:inherit;letter-spacing:.3px;margin-bottom:-1px}
+  .temabar button.active{color:var(--txt);border-bottom-color:var(--accent)}
+  .temabar button:hover{color:var(--txt)}
+  .prodplaceholder{background:var(--panel);border:1px dashed var(--line);border-radius:var(--radius);padding:44px 30px;text-align:center;color:var(--muted)}
+  .prodplaceholder h3{color:var(--txt);font-size:17px;margin-bottom:10px}
+  .prodplaceholder p{max-width:560px;margin:0 auto;font-size:13.5px;line-height:1.6}
 </style>
 </head>
 <body>
@@ -134,9 +145,9 @@
 
   <header>
     <div>
-      <div class="eyebrow">Empreitada de Reabilitação do Esporão Sul de Espinho</div>
-      <h1>Remoção e Colocação de Tetrápodes</h1>
-      <div class="sub">Listagem por perfil &middot; Dashboard de acompanhamento</div>
+      <div class="eyebrow" id="hdEyebrow">Empreitada de Reabilitação do Esporão Sul de Espinho</div>
+      <h1 id="hdTitle">Remoção e Colocação de Tetrápodes</h1>
+      <div class="sub" id="hdSub">Listagem por perfil &middot; Dashboard de acompanhamento</div>
     </div>
     <div class="htools">
       <div class="theme">
@@ -144,9 +155,17 @@
         <button data-th="dark">Escuro</button>
         <button data-th="system">Sistema</button>
       </div>
-      <div class="badge">v26.06.23.1830</div>
+      <div class="badge">v26.07.06.1900</div>
     </div>
   </header>
+
+  <div class="temabar">
+    <button data-tema="rc" class="active">Remoção e Colocação</button>
+    <button data-tema="prod">Produção de Tetrápodes</button>
+  </div>
+
+  <!-- ============ BLOCO 1: REMOÇÃO E COLOCAÇÃO ============ -->
+  <div id="temaRC" class="tema">
 
   <div class="kpis" id="kpis"></div>
 
@@ -208,6 +227,16 @@
   <div class="card">
     <h2>Quantidade por Semana e Perfil</h2>
     <div id="chartSemana"></div>
+  </div>
+
+  </div><!-- /temaRC -->
+
+  <!-- ============ BLOCO 2: PRODUÇÃO DE TETRÁPODES ============ -->
+  <div id="temaProd" class="tema" style="display:none">
+    <div class="prodplaceholder">
+      <h3>Produção de Tetrápodes</h3>
+      <p>Bloco pronto a receber dados. Envia a fonte (Excel/PDF) da produção e confirma os campos de cada registo; a partir daí preencho os KPIs, a tabela de registos e os gráficos, no mesmo padrão do bloco de Remoção e Colocação.</p>
+    </div>
   </div>
 
   <footer>
@@ -444,6 +473,21 @@ function render(){
 function init(){
   loadRecords();applyTheme(themePref);
   document.querySelectorAll(".theme button").forEach(b=>b.onclick=()=>{themePref=b.dataset.th;applyTheme(themePref);});
+
+  // Navegação entre os 2 blocos (temas)
+  const TEMAS={
+    rc:{eyebrow:"Empreitada de Reabilitação do Esporão Sul de Espinho",title:"Remoção e Colocação de Tetrápodes",sub:"Listagem por perfil · Dashboard de acompanhamento"},
+    prod:{eyebrow:"Empreitada de Reabilitação do Esporão Sul de Espinho",title:"Produção de Tetrápodes",sub:"Fabrico · Dashboard de acompanhamento"}
+  };
+  document.querySelectorAll(".temabar button").forEach(b=>b.onclick=()=>{
+    const t=b.dataset.tema,cfg=TEMAS[t];
+    document.querySelectorAll(".temabar button").forEach(x=>x.classList.toggle("active",x===b));
+    document.getElementById("temaRC").style.display=t==="rc"?"block":"none";
+    document.getElementById("temaProd").style.display=t==="prod"?"block":"none";
+    document.getElementById("hdEyebrow").textContent=cfg.eyebrow;
+    document.getElementById("hdTitle").textContent=cfg.title;
+    document.getElementById("hdSub").textContent=cfg.sub;
+  });
   document.getElementById("fSemana").onchange=e=>{state.semana=e.target.value;render();};
   document.getElementById("fTipo").onchange=e=>{state.tipo=e.target.value;render();};
   document.getElementById("fSub").onchange=e=>{state.sub=e.target.value;render();};
