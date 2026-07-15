@@ -155,7 +155,7 @@
         <button data-th="dark">Escuro</button>
         <button data-th="system">Sistema</button>
       </div>
-      <div class="badge">v26.07.15.1130</div>
+      <div class="badge">v26.07.15.1215</div>
     </div>
   </header>
 
@@ -177,6 +177,27 @@
     <div class="fgroup"><span class="flabel">Sub Tipo</span><select id="fSub"></select></div>
     <button class="btn" id="reset">Limpar</button>
     <button class="btn spacer" id="csv">Exportar CSV</button>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h2>Evolução Temporal</h2>
+      <div class="toggle">
+        <button class="btn active" data-mode="cum">Acumulado</button>
+        <button class="btn" data-mode="day">Por dia</button>
+        <button class="btn" data-mode="week">Por semana</button>
+      </div>
+      <div class="chartbox" id="chartTime"></div>
+    </div>
+    <div class="card">
+      <h2>Distribuição por Perfil</h2>
+      <div class="chartbox" id="chartPerfil"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Quantidade por Semana e Perfil</h2>
+    <div id="chartSemana"></div>
   </div>
 
   <details class="sec" id="secRec">
@@ -211,36 +232,72 @@
     <div class="secbody"><div class="perfis" id="perfis"></div></div>
   </details>
 
-  <div class="grid">
-    <div class="card">
-      <h2>Evolução Temporal</h2>
-      <div class="toggle">
-        <button class="btn active" data-mode="cum">Acumulado</button>
-        <button class="btn" data-mode="day">Por dia</button>
-        <button class="btn" data-mode="week">Por semana</button>
-      </div>
-      <div class="chartbox" id="chartTime"></div>
-    </div>
-    <div class="card">
-      <h2>Distribuição por Perfil</h2>
-      <div class="chartbox" id="chartPerfil"></div>
-    </div>
-  </div>
-
-  <div class="card">
-    <h2>Quantidade por Semana e Perfil</h2>
-    <div id="chartSemana"></div>
-  </div>
-
   </div><!-- /temaRC -->
 
   <!-- ============ BLOCO 2: PRODUÇÃO DE TETRÁPODES ============ -->
   <div id="temaProd" class="tema" style="display:none">
-    <div class="prodplaceholder">
-      <h3>Produção de Tetrápodes</h3>
-      <p>Bloco pronto a receber dados. Envia a fonte (Excel/PDF) da produção e confirma os campos de cada registo; a partir daí preencho os KPIs, a tabela de registos e os gráficos, no mesmo padrão do bloco de Remoção e Colocação.</p>
+
+    <div class="kpis" id="pKpis"></div>
+
+    <div class="filters">
+      <div class="fgroup"><span class="flabel">Mês</span><select id="pFMes"></select></div>
+      <div class="fgroup"><span class="flabel">Semana</span><select id="pFSemana"></select></div>
+      <div class="fgroup"><span class="flabel">Dia</span><input type="date" id="pFDia"></div>
+      <button class="btn" id="pReset">Limpar</button>
+      <button class="btn spacer" id="pCsv">Exportar CSV</button>
     </div>
-  </div>
+
+    <div class="grid">
+      <div class="card">
+        <h2>Evolução da Produção</h2>
+        <div class="toggle">
+          <button class="btn active" data-pmode="cum">Acumulado</button>
+          <button class="btn" data-pmode="day">Por dia</button>
+          <button class="btn" data-pmode="week">Por semana</button>
+        </div>
+        <div class="chartbox" id="pChartTime"></div>
+      </div>
+      <div class="card">
+        <h2>Produção vs Meta (Acumulado)</h2>
+        <div class="chartbox" id="pChartMeta"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Produção por Semana</h2>
+      <div id="pChartSemana"></div>
+    </div>
+
+    <details class="sec" id="pSecRec">
+      <summary>Registos <span class="count" id="pRegCount"></span></summary>
+      <div class="secbody">
+        <div class="recform">
+          <div class="fgroup"><span class="flabel">Dia</span><input type="date" id="pDia"></div>
+          <div class="fgroup"><span class="flabel">Semana</span><input type="number" id="pSemana" min="1" max="53" style="min-width:90px"></div>
+          <div class="fgroup"><span class="flabel">Mês</span><input type="text" id="pMes" readonly style="min-width:90px" placeholder="auto"></div>
+          <div class="fgroup"><span class="flabel">Produção</span><input type="number" id="pProd" min="0" value="0" style="min-width:90px"></div>
+          <div class="fgroup"><span class="flabel">Rendimento</span><input type="number" id="pRend" min="0" value="4" style="min-width:100px"></div>
+          <button class="btn amber" id="pAdd">Adicionar</button>
+        </div>
+        <div class="rectable">
+          <table id="pRecTable">
+            <thead><tr>
+              <th data-k="Data">Dia</th><th data-k="Semana">Semana</th><th data-k="Mes">Mês</th>
+              <th data-k="Prod">Produção</th><th data-k="Rend">Rendimento</th><th data-k="Desvio">Desvio</th>
+              <th>Ações</th>
+            </tr></thead>
+            <tbody id="pRecBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </details>
+
+    <details class="sec" id="pSecResumo">
+      <summary>Resumo por Semana</summary>
+      <div class="secbody"><div class="perfis" id="pResumo"></div></div>
+    </details>
+
+  </div><!-- /temaProd -->
 
   <footer>
     <span>Fiscalização &middot; Aceitar Sucessos, Lda.</span>
@@ -536,6 +593,263 @@ function renderPerfis(){
 }
 function toggleHL(p){state.highlight=state.highlight===p?null:p;render();}
 
+/* ================= BLOCO 2: PRODUÇÃO ================= */
+const SEED_PROD=[
+ {Data:"2026-03-09",Semana:11,Mes:"2026-03",Prod:5,Rend:4},
+ {Data:"2026-03-10",Semana:11,Mes:"2026-03",Prod:4,Rend:4},
+ {Data:"2026-03-11",Semana:11,Mes:"2026-03",Prod:2,Rend:4},
+ {Data:"2026-03-12",Semana:11,Mes:"2026-03",Prod:4,Rend:4},
+ {Data:"2026-03-13",Semana:11,Mes:"2026-03",Prod:2,Rend:4},
+ {Data:"2026-03-16",Semana:12,Mes:"2026-03",Prod:4,Rend:4},
+ {Data:"2026-03-17",Semana:12,Mes:"2026-03",Prod:5,Rend:4},
+ {Data:"2026-03-18",Semana:12,Mes:"2026-03",Prod:4,Rend:4},
+ {Data:"2026-03-19",Semana:12,Mes:"2026-03",Prod:4,Rend:4},
+ {Data:"2026-03-20",Semana:12,Mes:"2026-03",Prod:4,Rend:4},
+ {Data:"2026-03-23",Semana:13,Mes:"2026-03",Prod:4,Rend:4},
+ {Data:"2026-03-24",Semana:13,Mes:"2026-03",Prod:4,Rend:4},
+ {Data:"2026-03-25",Semana:13,Mes:"2026-03",Prod:6,Rend:4},
+ {Data:"2026-03-26",Semana:13,Mes:"2026-03",Prod:4,Rend:4},
+ {Data:"2026-03-27",Semana:13,Mes:"2026-03",Prod:4,Rend:4},
+ {Data:"2026-03-30",Semana:14,Mes:"2026-03",Prod:4,Rend:4},
+ {Data:"2026-03-31",Semana:14,Mes:"2026-03",Prod:3,Rend:4},
+ {Data:"2026-04-01",Semana:14,Mes:"2026-04",Prod:5,Rend:4},
+ {Data:"2026-04-02",Semana:14,Mes:"2026-04",Prod:4,Rend:4},
+ {Data:"2026-04-07",Semana:15,Mes:"2026-04",Prod:6,Rend:4},
+ {Data:"2026-04-08",Semana:15,Mes:"2026-04",Prod:2,Rend:4},
+ {Data:"2026-04-09",Semana:15,Mes:"2026-04",Prod:4,Rend:4},
+ {Data:"2026-04-10",Semana:15,Mes:"2026-04",Prod:4,Rend:4},
+ {Data:"2026-04-13",Semana:16,Mes:"2026-04",Prod:4,Rend:4},
+ {Data:"2026-04-14",Semana:16,Mes:"2026-04",Prod:4,Rend:4},
+ {Data:"2026-04-15",Semana:16,Mes:"2026-04",Prod:4,Rend:4},
+ {Data:"2026-04-16",Semana:16,Mes:"2026-04",Prod:4,Rend:4},
+ {Data:"2026-04-17",Semana:16,Mes:"2026-04",Prod:4,Rend:4},
+ {Data:"2026-04-20",Semana:17,Mes:"2026-04",Prod:5,Rend:4},
+ {Data:"2026-04-21",Semana:17,Mes:"2026-04",Prod:4,Rend:4},
+ {Data:"2026-04-22",Semana:17,Mes:"2026-04",Prod:4,Rend:4},
+ {Data:"2026-04-23",Semana:17,Mes:"2026-04",Prod:2,Rend:4},
+ {Data:"2026-04-24",Semana:17,Mes:"2026-04",Prod:4,Rend:4},
+ {Data:"2026-04-27",Semana:18,Mes:"2026-04",Prod:5,Rend:4},
+ {Data:"2026-04-28",Semana:18,Mes:"2026-04",Prod:4,Rend:4},
+ {Data:"2026-04-29",Semana:18,Mes:"2026-04",Prod:4,Rend:4},
+ {Data:"2026-04-30",Semana:18,Mes:"2026-04",Prod:2,Rend:4},
+ {Data:"2026-05-04",Semana:19,Mes:"2026-05",Prod:4,Rend:4},
+ {Data:"2026-05-05",Semana:19,Mes:"2026-05",Prod:5,Rend:4},
+ {Data:"2026-05-06",Semana:19,Mes:"2026-05",Prod:5,Rend:4},
+ {Data:"2026-05-07",Semana:19,Mes:"2026-05",Prod:3,Rend:4},
+ {Data:"2026-05-08",Semana:19,Mes:"2026-05",Prod:4,Rend:4},
+ {Data:"2026-05-11",Semana:20,Mes:"2026-05",Prod:4,Rend:4},
+ {Data:"2026-05-12",Semana:20,Mes:"2026-05",Prod:4,Rend:4},
+ {Data:"2026-05-13",Semana:20,Mes:"2026-05",Prod:4,Rend:4},
+ {Data:"2026-05-14",Semana:20,Mes:"2026-05",Prod:4,Rend:4},
+ {Data:"2026-05-15",Semana:20,Mes:"2026-05",Prod:4,Rend:4},
+ {Data:"2026-05-18",Semana:21,Mes:"2026-05",Prod:4,Rend:4},
+ {Data:"2026-05-19",Semana:21,Mes:"2026-05",Prod:4,Rend:4},
+ {Data:"2026-05-20",Semana:21,Mes:"2026-05",Prod:1,Rend:4},
+ {Data:"2026-05-21",Semana:21,Mes:"2026-05",Prod:4,Rend:4},
+ {Data:"2026-05-22",Semana:21,Mes:"2026-05",Prod:4,Rend:4},
+ {Data:"2026-05-25",Semana:22,Mes:"2026-05",Prod:4,Rend:4},
+ {Data:"2026-05-26",Semana:22,Mes:"2026-05",Prod:4,Rend:4},
+ {Data:"2026-05-27",Semana:22,Mes:"2026-05",Prod:4,Rend:4},
+ {Data:"2026-05-28",Semana:22,Mes:"2026-05",Prod:2,Rend:4},
+ {Data:"2026-05-29",Semana:22,Mes:"2026-05",Prod:5,Rend:4},
+ {Data:"2026-06-01",Semana:23,Mes:"2026-06",Prod:2,Rend:4},
+ {Data:"2026-06-02",Semana:23,Mes:"2026-06",Prod:6,Rend:4},
+ {Data:"2026-06-03",Semana:23,Mes:"2026-06",Prod:4,Rend:4},
+ {Data:"2026-06-05",Semana:23,Mes:"2026-06",Prod:3,Rend:4},
+ {Data:"2026-06-08",Semana:24,Mes:"2026-06",Prod:5,Rend:4},
+ {Data:"2026-06-09",Semana:24,Mes:"2026-06",Prod:4,Rend:4},
+ {Data:"2026-06-11",Semana:24,Mes:"2026-06",Prod:4,Rend:4},
+ {Data:"2026-06-12",Semana:24,Mes:"2026-06",Prod:2,Rend:4},
+ {Data:"2026-06-15",Semana:25,Mes:"2026-06",Prod:4,Rend:4},
+ {Data:"2026-06-16",Semana:25,Mes:"2026-06",Prod:2,Rend:4},
+ {Data:"2026-06-17",Semana:25,Mes:"2026-06",Prod:2,Rend:4},
+ {Data:"2026-06-18",Semana:25,Mes:"2026-06",Prod:4,Rend:4},
+ {Data:"2026-06-19",Semana:25,Mes:"2026-06",Prod:6,Rend:4},
+ {Data:"2026-06-22",Semana:26,Mes:"2026-06",Prod:6,Rend:4},
+ {Data:"2026-06-23",Semana:26,Mes:"2026-06",Prod:4,Rend:4},
+ {Data:"2026-06-24",Semana:26,Mes:"2026-06",Prod:3,Rend:4},
+ {Data:"2026-06-25",Semana:26,Mes:"2026-06",Prod:2,Rend:4},
+ {Data:"2026-06-26",Semana:26,Mes:"2026-06",Prod:3,Rend:4},
+ {Data:"2026-06-29",Semana:27,Mes:"2026-06",Prod:0,Rend:4},
+ {Data:"2026-06-30",Semana:27,Mes:"2026-06",Prod:4,Rend:4},
+ {Data:"2026-07-01",Semana:27,Mes:"2026-07",Prod:4,Rend:4},
+ {Data:"2026-07-02",Semana:27,Mes:"2026-07",Prod:3,Rend:4}
+];
+let prodRecords=[],pseq=0;
+const PROD_VERSION="2026-07-06-prodA";
+function prodLoad(){
+  const ver=store.get("esporao_prod_version");
+  let saved=null;try{saved=JSON.parse(store.get("esporao_prod_records")||"null")}catch(e){}
+  if(ver===PROD_VERSION&&saved&&Array.isArray(saved)&&saved.length){prodRecords=saved;return;}
+  prodRecords=SEED_PROD.map((r,i)=>Object.assign({id:"p"+(i+1)},r));
+  store.set("esporao_prod_version",PROD_VERSION);prodSave();
+}
+function prodSave(){store.set("esporao_prod_records",JSON.stringify(prodRecords))}
+function pNewId(){return "p"+Date.now()+"_"+(pseq++)}
+
+let pstate={mes:"Todos",semana:"Todas",dia:"",timeMode:"cum",sortK:null,sortDir:1,editId:null};
+function prodFiltered(){
+  return prodRecords.filter(r=>
+    (pstate.mes==="Todos"||r.Mes===pstate.mes)&&
+    (pstate.semana==="Todas"||r.Semana==+pstate.semana)&&
+    (pstate.dia===""||r.Data===pstate.dia)
+  ).slice().sort((a,b)=>a.Data<b.Data?-1:a.Data>b.Data?1:0);
+}
+
+function prodBuildFilters(){
+  const meses=["Todos"].concat([...new Set(prodRecords.map(r=>r.Mes))].sort());
+  const sem=["Todas"].concat([...new Set(prodRecords.map(r=>r.Semana))].sort((a,b)=>a-b));
+  document.getElementById("pFMes").innerHTML=meses.map(v=>`<option value="${v}" ${v===pstate.mes?"selected":""}>${v==="Todos"?"Todos":mesLabel(v)}</option>`).join("");
+  document.getElementById("pFSemana").innerHTML=sem.map(v=>`<option ${v==pstate.semana?"selected":""}>${v}</option>`).join("");
+  document.getElementById("pFDia").value=pstate.dia;
+}
+
+function prodRenderKPIs(){
+  const d=prodFiltered();
+  const prod=sum(d.map(r=>r.Prod)),rend=sum(d.map(r=>r.Rend)),desvio=prod-rend;
+  const dias=d.length,media=dias?(prod/dias):0;
+  const exec=rend?Math.round(prod/rend*100):0;
+  const cards=[
+    ["Produção",prod,""],["Meta",rend,""],["Desvio",(desvio>0?"+":"")+desvio,desvio<0?"alt":""],
+    ["Execução",exec+"%","alt"],["Média/dia",media.toFixed(1).replace(".",","),"alt"],["Dias",dias,"alt"]
+  ];
+  document.getElementById("pKpis").innerHTML=cards.map(c=>`<div class="kpi ${c[2]}"><div class="v">${c[1]}</div><div class="l">${c[0]}</div></div>`).join("");
+}
+
+/* Evolução (dia/acumulado/semana) */
+function prodRenderTime(){
+  const d=prodFiltered();
+  let labels,vals;
+  if(pstate.timeMode==="week"){
+    const sems=[...new Set(d.map(r=>r.Semana))].sort((a,b)=>a-b);
+    labels=sems.map(s=>"S"+s);vals=sems.map(s=>sum(d.filter(r=>r.Semana===s).map(r=>r.Prod)));
+  }else{
+    labels=d.map(r=>fmtD(r.Data));vals=d.map(r=>r.Prod);
+    if(pstate.timeMode==="cum"){let c=0;vals=vals.map(v=>c+=v);}
+  }
+  const n=labels.length,W=700,H=320,pl=42,pr=18,pt=22,pb=42,iw=W-pl-pr,ih=H-pt-pb,max=Math.max(...vals,1);
+  const x=i=>n<2?pl+iw/2:pl+(i/(n-1))*iw,y=v=>pt+ih-(v/max)*ih;
+  let g=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet">`;
+  for(let i=0;i<=4;i++){const gv=Math.round(max*i/4),gy=y(gv);
+    g+=`<line x1="${pl}" y1="${gy}" x2="${W-pr}" y2="${gy}" stroke="var(--line)"/><text x="${pl-6}" y="${gy+3}" text-anchor="end" class="glabel">${gv}</text>`;}
+  if(n){
+    g+=`<path d="M ${x(0)} ${y(0)} ${vals.map((v,i)=>`L ${x(i)} ${y(v)}`).join(" ")} L ${x(n-1)} ${y(0)} Z" fill="var(--accent)" opacity="0.12"/>`;
+    g+=`<path d="${vals.map((v,i)=>`${i?"L":"M"} ${x(i)} ${y(v)}`).join(" ")}" fill="none" stroke="var(--accent)" stroke-width="2.5"/>`;
+    vals.forEach((v,i)=>g+=`<circle cx="${x(i)}" cy="${y(v)}" r="3" fill="var(--accent)"/>`);
+    if(n<=20)vals.forEach((v,i)=>g+=`<text x="${x(i)}" y="${y(v)-9}" text-anchor="middle" class="gval">${v}</text>`);
+    const step=Math.ceil(n/16);
+    labels.forEach((lb,i)=>{if(i%step===0||i===n-1)g+=`<text x="${x(i)}" y="${H-14}" text-anchor="middle" class="glabel">${lb}</text>`});
+  }
+  g+=`</svg>`;
+  document.getElementById("pChartTime").innerHTML=n?g:`<div class="empty">Sem dados.</div>`;
+}
+
+/* Produção vs Meta acumulado (2 linhas) */
+function prodRenderMeta(){
+  const d=prodFiltered();
+  let cp=0,cr=0;const prod=d.map(r=>cp+=r.Prod),meta=d.map(r=>cr+=r.Rend);
+  const labels=d.map(r=>fmtD(r.Data)),n=labels.length;
+  const W=700,H=320,pl=42,pr=18,pt=22,pb=42,iw=W-pl-pr,ih=H-pt-pb,max=Math.max(...prod,...meta,1);
+  const x=i=>n<2?pl+iw/2:pl+(i/(n-1))*iw,y=v=>pt+ih-(v/max)*ih;
+  let g=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet">`;
+  for(let i=0;i<=4;i++){const gv=Math.round(max*i/4),gy=y(gv);
+    g+=`<line x1="${pl}" y1="${gy}" x2="${W-pr}" y2="${gy}" stroke="var(--line)"/><text x="${pl-6}" y="${gy+3}" text-anchor="end" class="glabel">${gv}</text>`;}
+  if(n){
+    g+=`<path d="${meta.map((v,i)=>`${i?"L":"M"} ${x(i)} ${y(v)}`).join(" ")}" fill="none" stroke="var(--muted)" stroke-width="2" stroke-dasharray="5 4"/>`;
+    g+=`<path d="${prod.map((v,i)=>`${i?"L":"M"} ${x(i)} ${y(v)}`).join(" ")}" fill="none" stroke="var(--accent)" stroke-width="2.5"/>`;
+    g+=`<text x="${x(n-1)}" y="${y(prod[n-1])-8}" text-anchor="end" class="gval">${prod[n-1]}</text>`;
+    g+=`<text x="${x(n-1)}" y="${y(meta[n-1])-8}" text-anchor="end" class="glabel">meta ${meta[n-1]}</text>`;
+    const step=Math.ceil(n/16);
+    labels.forEach((lb,i)=>{if(i%step===0||i===n-1)g+=`<text x="${x(i)}" y="${H-26}" text-anchor="middle" class="glabel">${lb}</text>`});
+  }
+  // legenda
+  g+=`<rect x="${pl}" y="${H-14}" width="14" height="3" fill="var(--accent)"/><text x="${pl+20}" y="${H-11}" class="glabel">Produção</text>`;
+  g+=`<rect x="${pl+110}" y="${H-14}" width="14" height="3" fill="var(--muted)"/><text x="${pl+130}" y="${H-11}" class="glabel">Meta</text>`;
+  g+=`</svg>`;
+  document.getElementById("pChartMeta").innerHTML=n?g:`<div class="empty">Sem dados.</div>`;
+}
+
+/* Produção por semana (barras) */
+function prodRenderSemana(){
+  const d=prodFiltered(),sems=[...new Set(d.map(r=>r.Semana))].sort((a,b)=>a-b);
+  const tot=sems.map(s=>sum(d.filter(r=>r.Semana===s).map(r=>r.Prod)));
+  const W=1400,H=340,pl=76,pr=28,pt=22,pb=56,iw=W-pl-pr,ih=H-pt-pb;
+  const max=Math.max(...tot,1),gap=sems.length?iw/sems.length:0,bw=sems.length?Math.min(90,gap*0.6):0;
+  let g=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet">`;
+  for(let i=0;i<=4;i++){const gv=Math.round(max*i/4),gy=pt+ih-(gv/max)*ih;
+    g+=`<line x1="${pl}" y1="${gy}" x2="${W-pr}" y2="${gy}" stroke="var(--line)"/><text x="${pl-8}" y="${gy+3}" text-anchor="end" class="glabel">${gv}</text>`;}
+  sems.forEach((s,i)=>{const cx=pl+gap*i+gap/2,h=(tot[i]/max)*ih,yy=pt+ih-h;
+    g+=`<rect x="${cx-bw/2}" y="${yy}" width="${bw}" height="${h}" rx="2" fill="var(--accent)"/>`;
+    g+=`<text x="${cx}" y="${yy-8}" text-anchor="middle" class="gval">${tot[i]}</text>`;
+    g+=`<text x="${cx}" y="${pt+ih+20}" text-anchor="middle" class="glabel">S${s}</text>`;});
+  g+=`</svg>`;
+  document.getElementById("pChartSemana").innerHTML=sems.length?g:`<div class="empty">Sem dados.</div>`;
+}
+
+/* Tabela de registos (com Desvio calculado) */
+function pRowView(r){
+  const dv=r.Prod-r.Rend;
+  return `<tr>
+    <td class="l">${fmtD(r.Data)}</td><td>${r.Semana}</td><td>${mesLabel(r.Mes)}</td>
+    <td><b>${r.Prod}</b></td><td>${r.Rend}</td>
+    <td style="color:${dv<0?"#e76f51":dv>0?"#4caf72":"var(--muted)"}">${dv>0?"+":""}${dv}</td>
+    <td><span class="iact">
+      <button class="ibtn ed" title="Editar" onclick="pStartEdit('${r.id}')">&#9998;</button>
+      <button class="ibtn del" title="Eliminar" onclick="pRemove('${r.id}')">&times;</button>
+    </span></td></tr>`;
+}
+function pRowEdit(r){
+  return `<tr>
+    <td><input type="date" class="ei dia" id="pe_dia" value="${r.Data}" onchange="pe_recalc(this.value)"></td>
+    <td><input type="number" class="ei" id="pe_sem" value="${r.Semana}" style="max-width:64px"></td>
+    <td><span id="pe_mesLbl">${mesLabel(r.Mes)}</span><input type="hidden" id="pe_mes" value="${r.Mes}"></td>
+    <td><input type="number" class="ei" id="pe_prod" min="0" value="${r.Prod}" style="max-width:64px"></td>
+    <td><input type="number" class="ei" id="pe_rend" min="0" value="${r.Rend}" style="max-width:64px"></td>
+    <td>-</td>
+    <td><span class="iact">
+      <button class="ibtn ok" title="Guardar" onclick="pSaveEdit('${r.id}')">&#10003;</button>
+      <button class="ibtn del" title="Cancelar" onclick="pCancelEdit()">&times;</button>
+    </span></td></tr>`;
+}
+function pe_recalc(v){if(!v)return;document.getElementById("pe_sem").value=isoWeek(v);document.getElementById("pe_mes").value=mesOf(v);document.getElementById("pe_mesLbl").textContent=mesLabel(mesOf(v));}
+function prodRenderRecTable(){
+  let d=prodFiltered();
+  if(pstate.sortK)d.sort((a,b)=>{const x=pstate.sortK==="Desvio"?(a.Prod-a.Rend):a[pstate.sortK],y=pstate.sortK==="Desvio"?(b.Prod-b.Rend):b[pstate.sortK];return(x>y?1:x<y?-1:0)*pstate.sortDir;});
+  else d.sort((a,b)=>a.Data<b.Data?1:-1);
+  document.getElementById("pRegCount").textContent="("+d.length+")";
+  document.getElementById("pRecBody").innerHTML=d.length
+    ?d.map(r=>r.id===pstate.editId?pRowEdit(r):pRowView(r)).join("")
+    :`<tr><td colspan="7" class="empty">Sem registos para os filtros aplicados.</td></tr>`;
+}
+function pStartEdit(id){pstate.editId=id;prodRenderRecTable();}
+function pCancelEdit(){pstate.editId=null;prodRenderRecTable();}
+function pSaveEdit(id){
+  const dia=document.getElementById("pe_dia").value;
+  const prod=parseInt(document.getElementById("pe_prod").value,10),rend=parseInt(document.getElementById("pe_rend").value,10);
+  if(!dia){alert("Indique o dia.");return;}
+  if(isNaN(prod)||prod<0||isNaN(rend)||rend<0){alert("Valores inválidos.");return;}
+  const r=prodRecords.find(x=>x.id===id);
+  Object.assign(r,{Data:dia,Semana:parseInt(document.getElementById("pe_sem").value,10)||isoWeek(dia),Mes:mesOf(dia),Prod:prod,Rend:rend});
+  pstate.editId=null;prodSave();prodRender();
+}
+function pRemove(id){if(!confirm("Eliminar este registo?"))return;prodRecords=prodRecords.filter(r=>r.id!==id);prodSave();prodRender();}
+
+/* Resumo por semana */
+function prodResumo(){
+  const d=prodFiltered(),sems=[...new Set(d.map(r=>r.Semana))].sort((a,b)=>a-b);
+  document.getElementById("pResumo").innerHTML=sems.map(s=>{
+    const rows=d.filter(r=>r.Semana===s),prod=sum(rows.map(r=>r.Prod)),rend=sum(rows.map(r=>r.Rend)),dv=prod-rend;
+    return `<div class="pcard" style="cursor:default">
+      <div class="phead" style="background:var(--accent)1a"><span class="ptag" style="color:var(--accent)">S${s}</span><span class="ptot">${prod}</span></div>
+      <div class="pmeta"><span>Meta <b>${rend}</b></span><span>Desvio <b style="color:${dv<0?"#e76f51":dv>0?"#4caf72":"inherit"}">${dv>0?"+":""}${dv}</b></span><span>Dias <b>${rows.length}</b></span></div>
+    </div>`;
+  }).join("")||`<div class="empty">Sem dados.</div>`;
+}
+
+function prodRender(){
+  prodBuildFilters();prodRenderKPIs();prodRenderTime();prodRenderMeta();prodRenderSemana();prodRenderRecTable();prodResumo();
+}
+
 function render(){
   buildPC();buildFilters();renderKPIs();renderRecTable();renderPerfis();renderTime();renderPerfil();renderSemana();
   document.getElementById("fnote").textContent=
@@ -543,7 +857,7 @@ function render(){
 }
 
 function init(){
-  loadRecords();applyTheme(themePref);
+  loadRecords();prodLoad();applyTheme(themePref);
   document.querySelectorAll(".theme button").forEach(b=>b.onclick=()=>{themePref=b.dataset.th;applyTheme(themePref);});
 
   // Navegação entre os 2 blocos (temas)
@@ -585,7 +899,29 @@ function init(){
       SubTipo:tipo==="Colocação"?"-":rSub.value,Quant:q,Perfil:document.getElementById("rPerfil").value});
     saveRecords();document.getElementById("secRec").open=true;render();
   };
-  render();
+
+  /* ===== Handlers Bloco 2: Produção ===== */
+  document.getElementById("pFMes").onchange=e=>{pstate.mes=e.target.value;prodRender();};
+  document.getElementById("pFSemana").onchange=e=>{pstate.semana=e.target.value;prodRender();};
+  document.getElementById("pFDia").onchange=e=>{pstate.dia=e.target.value;prodRender();};
+  document.querySelectorAll("[data-pmode]").forEach(b=>b.onclick=()=>{pstate.timeMode=b.dataset.pmode;document.querySelectorAll("[data-pmode]").forEach(x=>x.classList.toggle("active",x===b));prodRenderTime();});
+  document.querySelectorAll("#pRecTable th[data-k]").forEach(th=>th.onclick=()=>{const k=th.dataset.k;if(pstate.sortK===k)pstate.sortDir*=-1;else{pstate.sortK=k;pstate.sortDir=1;}prodRenderRecTable();});
+  document.getElementById("pReset").onclick=()=>{pstate=Object.assign({},pstate,{mes:"Todos",semana:"Todas",dia:"",sortK:null,editId:null});prodRender();};
+  document.getElementById("pCsv").onclick=()=>{
+    const d=prodFiltered(),head="Data,Semana,Mes,Producao,Rendimento,Desvio";
+    const body=d.map(r=>`${r.Data},${r.Semana},${r.Mes},${r.Prod},${r.Rend},${r.Prod-r.Rend}`).join("\n");
+    const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([head+"\n"+body],{type:"text/csv;charset=utf-8"}));a.download="producao_tetrapodes.csv";a.click();};
+  const pDia=document.getElementById("pDia"),pSem=document.getElementById("pSemana"),pMes=document.getElementById("pMes");
+  pDia.onchange=()=>{if(pDia.value){pSem.value=isoWeek(pDia.value);pMes.value=mesLabel(mesOf(pDia.value));}};
+  document.getElementById("pAdd").onclick=()=>{
+    const dia=pDia.value,prod=parseInt(document.getElementById("pProd").value,10),rend=parseInt(document.getElementById("pRend").value,10);
+    if(!dia){alert("Indique o dia.");return;}
+    if(isNaN(prod)||prod<0||isNaN(rend)||rend<0){alert("Valores inválidos.");return;}
+    prodRecords.push({id:pNewId(),Data:dia,Semana:parseInt(pSem.value,10)||isoWeek(dia),Mes:mesOf(dia),Prod:prod,Rend:rend});
+    prodSave();document.getElementById("pSecRec").open=true;prodRender();
+  };
+
+  render();prodRender();
 }
 
 /* Auto-login só aqui, depois de tudo estar definido */
