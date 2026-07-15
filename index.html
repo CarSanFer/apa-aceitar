@@ -116,14 +116,20 @@
   @media(max-width:560px){.kpis{grid-template-columns:repeat(2,1fr)}}
   @media print{body{background:#fff;color:#000}.btn,.filters,.theme,.temabar{display:none}#gate{display:none!important}details.sec[open]>summary::before{display:none}}
 
-  /* Navegação de temas (2 blocos) */
-  .temabar{display:flex;gap:6px;margin:0 0 18px;border-bottom:1px solid var(--line)}
-  .temabar button{background:none;border:none;border-bottom:3px solid transparent;color:var(--muted);font-size:14px;font-weight:700;padding:11px 18px;cursor:pointer;font-family:inherit;letter-spacing:.3px;margin-bottom:-1px}
-  .temabar button.active{color:var(--txt);border-bottom-color:var(--accent)}
-  .temabar button:hover{color:var(--txt)}
-  .prodplaceholder{background:var(--panel);border:1px dashed var(--line);border-radius:var(--radius);padding:44px 30px;text-align:center;color:var(--muted)}
-  .prodplaceholder h3{color:var(--txt);font-size:17px;margin-bottom:10px}
-  .prodplaceholder p{max-width:560px;margin:0 auto;font-size:13.5px;line-height:1.6}
+  /* Navegação de secções (menus bem visíveis) */
+  .temabar{display:flex;gap:10px;align-items:center;margin:0 0 20px;flex-wrap:wrap}
+  .temalabel{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1.2px;font-weight:700;margin-right:2px}
+  .temabar button{background:var(--panel);border:1px solid var(--line);border-radius:9px;color:var(--muted);font-size:14.5px;font-weight:700;padding:12px 22px;cursor:pointer;font-family:inherit;letter-spacing:.3px;transition:.12s}
+  .temabar button:hover{border-color:var(--accent);color:var(--txt)}
+  .temabar button.active{background:var(--accent);border-color:var(--accent);color:#1a1207;box-shadow:0 2px 10px #0003}
+
+  /* Gate Superadmin: sem sessão de admin, esconde formulários e ações de escrita */
+  #adminBtn.active{background:var(--accent);border-color:var(--accent);color:#1a1207}
+  body:not(.admin) .recform{display:none!important}
+  body:not(.admin) #recTable th:last-child,
+  body:not(.admin) #recTable td:last-child,
+  body:not(.admin) #pRecTable th:last-child,
+  body:not(.admin) #pRecTable td:last-child{display:none}
 </style>
 </head>
 <body>
@@ -146,26 +152,28 @@
   <header>
     <div>
       <div class="eyebrow" id="hdEyebrow">Empreitada de Reabilitação do Esporão Sul de Espinho</div>
-      <h1 id="hdTitle">Remoção e Colocação de Tetrápodes</h1>
-      <div class="sub" id="hdSub">Listagem por perfil &middot; Dashboard de acompanhamento</div>
+      <h1 id="hdTitle">Produção de Tetrápodes</h1>
+      <div class="sub" id="hdSub">Fabrico &middot; Dashboard de acompanhamento</div>
     </div>
     <div class="htools">
+      <button class="btn" id="adminBtn">&#128274; Superadmin</button>
       <div class="theme">
         <button data-th="light">Claro</button>
         <button data-th="dark">Escuro</button>
         <button data-th="system">Sistema</button>
       </div>
-      <div class="badge">v26.07.15.1215</div>
+      <div class="badge">v26.07.15.1300</div>
     </div>
   </header>
 
   <div class="temabar">
-    <button data-tema="rc" class="active">Remoção e Colocação</button>
-    <button data-tema="prod">Produção de Tetrápodes</button>
+    <span class="temalabel">Secção:</span>
+    <button data-tema="prod" class="active">Produção</button>
+    <button data-tema="rc">Remoção e Colocação</button>
   </div>
 
   <!-- ============ BLOCO 1: REMOÇÃO E COLOCAÇÃO ============ -->
-  <div id="temaRC" class="tema">
+  <div id="temaRC" class="tema" style="display:none">
 
   <div class="kpis" id="kpis"></div>
 
@@ -235,7 +243,7 @@
   </div><!-- /temaRC -->
 
   <!-- ============ BLOCO 2: PRODUÇÃO DE TETRÁPODES ============ -->
-  <div id="temaProd" class="tema" style="display:none">
+  <div id="temaProd" class="tema">
 
     <div class="kpis" id="pKpis"></div>
 
@@ -327,6 +335,22 @@ function applyTheme(pref){
   store.set("esporao_theme",pref);
 }
 let themePref=store.get("esporao_theme")||"system";
+
+/* ===== Superadmin (só ele cria/edita/apaga) ===== */
+const ADMIN_PWD="apa123";
+let isAdmin=false;
+function setAdmin(v){
+  isAdmin=v;document.body.classList.toggle("admin",v);
+  const b=document.getElementById("adminBtn");
+  if(b){b.classList.toggle("active",v);b.innerHTML=(v?"&#128275;":"&#128274;")+" Superadmin";}
+  render();prodRender();
+}
+function toggleAdmin(){
+  if(isAdmin){setAdmin(false);return;}
+  const p=prompt("Password de Superadmin:");
+  if(p==null||p==="")return;
+  if(p===ADMIN_PWD)setAdmin(true);else alert("Password incorreta.");
+}
 mq.addEventListener("change",()=>{if(themePref==="system")applyTheme("system");});
 
 const SEED_DATA=[
@@ -922,6 +946,7 @@ function init(){
   };
 
   render();prodRender();
+  document.getElementById("adminBtn").onclick=toggleAdmin;
 }
 
 /* Auto-login só aqui, depois de tudo estar definido */
