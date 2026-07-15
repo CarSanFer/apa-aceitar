@@ -42,12 +42,12 @@
   .theme button.active{background:var(--accent);color:#1a1207}
   .badge{font-size:11px;color:var(--faint);border:1px solid var(--line);padding:4px 9px;border-radius:20px;white-space:nowrap}
 
-  .kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:18px}
-  .kpi{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:14px 15px;position:relative;overflow:hidden}
+  .kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:18px}
+  .kpi{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:12px 12px;position:relative;overflow:hidden}
   .kpi::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--accent)}
   .kpi.alt::before{background:var(--accent2)}
-  .kpi .v{font-size:30px;font-weight:800;letter-spacing:-1px;font-variant-numeric:tabular-nums;line-height:1}
-  .kpi .l{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-top:7px}
+  .kpi .v{font-size:25px;font-weight:800;letter-spacing:-1px;font-variant-numeric:tabular-nums;line-height:1}
+  .kpi .l{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-top:6px}
 
   .filters{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:13px 16px;margin-bottom:16px;display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end}
   .fgroup{display:flex;flex-direction:column;gap:5px}
@@ -112,16 +112,18 @@
 
   footer{margin-top:22px;padding-top:12px;border-top:1px solid var(--line);color:var(--faint);font-size:11px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
 
-  @media(max-width:960px){.kpis{grid-template-columns:repeat(3,1fr)}.grid{grid-template-columns:1fr}}
-  @media(max-width:560px){.kpis{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:960px){.grid{grid-template-columns:1fr}}
+  @media(max-width:720px){.kpis{grid-template-columns:repeat(3,1fr)}}
+  @media(max-width:460px){.kpis{grid-template-columns:repeat(2,1fr)}}
   @media print{body{background:#fff;color:#000}.btn,.filters,.theme,.temabar{display:none}#gate{display:none!important}details.sec[open]>summary::before{display:none}}
 
   /* Navegação de secções (menus bem visíveis) */
-  .temabar{display:flex;gap:10px;align-items:center;margin:0 0 20px;flex-wrap:wrap}
+  .temabar{display:flex;gap:8px;align-items:center;margin:0 0 18px;flex-wrap:wrap}
   .temalabel{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1.2px;font-weight:700;margin-right:2px}
-  .temabar button{background:var(--panel);border:1px solid var(--line);border-radius:9px;color:var(--muted);font-size:14.5px;font-weight:700;padding:12px 22px;cursor:pointer;font-family:inherit;letter-spacing:.3px;transition:.12s}
-  .temabar button:hover{border-color:var(--accent);color:var(--txt)}
-  .temabar button.active{background:var(--accent);border-color:var(--accent);color:#1a1207;box-shadow:0 2px 10px #0003}
+  .segwrap{display:flex;gap:4px;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:3px}
+  .temabar button{background:none;border:none;color:var(--muted);font-size:11px;font-weight:600;padding:5px 10px;border-radius:5px;cursor:pointer;font-family:inherit;letter-spacing:.3px}
+  .temabar button:hover{color:var(--txt)}
+  .temabar button.active{background:var(--accent);color:#1a1207}
 
   /* Gate Superadmin: sem sessão de admin, esconde formulários e ações de escrita */
   #adminBtn.active{background:var(--accent);border-color:var(--accent);color:#1a1207}
@@ -162,14 +164,16 @@
         <button data-th="dark">Escuro</button>
         <button data-th="system">Sistema</button>
       </div>
-      <div class="badge">v26.07.15.1300</div>
+      <div class="badge">v26.07.15.1345</div>
     </div>
   </header>
 
   <div class="temabar">
     <span class="temalabel">Secção:</span>
-    <button data-tema="prod" class="active">Produção</button>
-    <button data-tema="rc">Remoção e Colocação</button>
+    <div class="segwrap">
+      <button data-tema="prod" class="active">Produção</button>
+      <button data-tema="rc">Remoção e Colocação</button>
+    </div>
   </div>
 
   <!-- ============ BLOCO 1: REMOÇÃO E COLOCAÇÃO ============ -->
@@ -731,11 +735,12 @@ function prodBuildFilters(){
 function prodRenderKPIs(){
   const d=prodFiltered();
   const prod=sum(d.map(r=>r.Prod)),rend=sum(d.map(r=>r.Rend)),desvio=prod-rend;
-  const dias=d.length,media=dias?(prod/dias):0;
+  const dias=d.length,media=dias?(prod/dias):0,rendMedio=dias?(rend/dias):0;
   const exec=rend?Math.round(prod/rend*100):0;
+  const dec=x=>x.toFixed(1).replace(".",",");
   const cards=[
-    ["Produção",prod,""],["Meta",rend,""],["Desvio",(desvio>0?"+":"")+desvio,desvio<0?"alt":""],
-    ["Execução",exec+"%","alt"],["Média/dia",media.toFixed(1).replace(".",","),"alt"],["Dias",dias,"alt"]
+    ["Produção",prod,""],["Meta",dec(rendMedio),""],["Desvio",(desvio>0?"+":"")+desvio,desvio<0?"alt":""],
+    ["Execução",exec+"%","alt"],["Média/dia",dec(media),"alt"],["Dias",dias,"alt"]
   ];
   document.getElementById("pKpis").innerHTML=cards.map(c=>`<div class="kpi ${c[2]}"><div class="v">${c[1]}</div><div class="l">${c[0]}</div></div>`).join("");
 }
