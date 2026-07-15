@@ -155,7 +155,7 @@
         <button data-th="dark">Escuro</button>
         <button data-th="system">Sistema</button>
       </div>
-      <div class="badge">v26.07.06.1900</div>
+      <div class="badge">v26.07.15.1015</div>
     </div>
   </header>
 
@@ -170,6 +170,7 @@
   <div class="kpis" id="kpis"></div>
 
   <div class="filters">
+    <div class="fgroup"><span class="flabel">Mês</span><select id="fMes"></select></div>
     <div class="fgroup"><span class="flabel">Semana</span><select id="fSemana"></select></div>
     <div class="fgroup"><span class="flabel">Dia</span><input type="date" id="fDia"></div>
     <div class="fgroup"><span class="flabel">Tipo</span><select id="fTipo"></select></div>
@@ -184,16 +185,17 @@
       <div class="recform">
         <div class="fgroup"><span class="flabel">Dia</span><input type="date" id="rDia"></div>
         <div class="fgroup"><span class="flabel">Semana</span><input type="number" id="rSemana" min="1" max="53" style="min-width:90px"></div>
+        <div class="fgroup"><span class="flabel">Mês</span><input type="text" id="rMes" readonly style="min-width:90px" placeholder="auto"></div>
         <div class="fgroup"><span class="flabel">Tipo</span><select id="rTipo"><option>Remoção</option><option>Colocação</option></select></div>
         <div class="fgroup"><span class="flabel">Sub Tipo</span><select id="rSub"><option>Inteiros</option><option>Partidos</option></select></div>
-        <div class="fgroup"><span class="flabel">Perfil</span><select id="rPerfil"><option>P1</option><option>P2</option><option>P3</option><option>P4</option><option>P5</option></select></div>
+        <div class="fgroup"><span class="flabel">Perfil</span><select id="rPerfil"><option>P1</option><option>P2</option><option>P3</option><option>P4</option><option>P5</option><option>P6</option><option>P7</option><option>P8</option></select></div>
         <div class="fgroup"><span class="flabel">Quant</span><input type="number" id="rQuant" min="1" value="1" style="min-width:80px"></div>
         <button class="btn amber" id="rAdd">Adicionar</button>
       </div>
       <div class="rectable">
         <table id="recTable">
           <thead><tr>
-            <th data-k="Data">Dia</th><th data-k="Semana">Semana</th>
+            <th data-k="Data">Dia</th><th data-k="Semana">Semana</th><th data-k="Mes">Mês</th>
             <th data-k="Tipo">Tipo</th><th data-k="SubTipo">Sub Tipo</th>
             <th data-k="Perfil">Perfil</th><th data-k="Quant">Quant</th>
             <th>Ações</th>
@@ -270,42 +272,93 @@ let themePref=store.get("esporao_theme")||"system";
 mq.addEventListener("change",()=>{if(themePref==="system")applyTheme("system");});
 
 const SEED_DATA=[
- {Semana:26,Data:"2026-06-22",Tipo:"Remoção",SubTipo:"Inteiros",Quant:1,Perfil:"P4"},
- {Semana:26,Data:"2026-06-22",Tipo:"Remoção",SubTipo:"Inteiros",Quant:1,Perfil:"P3"},
- {Semana:25,Data:"2026-06-17",Tipo:"Remoção",SubTipo:"Inteiros",Quant:5,Perfil:"P4"},
- {Semana:25,Data:"2026-06-17",Tipo:"Remoção",SubTipo:"Inteiros",Quant:4,Perfil:"P3"},
- {Semana:25,Data:"2026-06-17",Tipo:"Remoção",SubTipo:"Inteiros",Quant:4,Perfil:"P2"},
- {Semana:25,Data:"2026-06-17",Tipo:"Remoção",SubTipo:"Inteiros",Quant:1,Perfil:"P1"},
- {Semana:25,Data:"2026-06-16",Tipo:"Remoção",SubTipo:"Inteiros",Quant:1,Perfil:"P1"},
- {Semana:25,Data:"2026-06-16",Tipo:"Remoção",SubTipo:"Inteiros",Quant:5,Perfil:"P3"},
- {Semana:25,Data:"2026-06-16",Tipo:"Remoção",SubTipo:"Inteiros",Quant:4,Perfil:"P2"},
- {Semana:25,Data:"2026-06-15",Tipo:"Remoção",SubTipo:"Inteiros",Quant:5,Perfil:"P3"},
- {Semana:25,Data:"2026-06-15",Tipo:"Remoção",SubTipo:"Inteiros",Quant:2,Perfil:"P2"},
- {Semana:25,Data:"2026-06-12",Tipo:"Remoção",SubTipo:"Inteiros",Quant:7,Perfil:"P2"},
- {Semana:24,Data:"2026-06-12",Tipo:"Remoção",SubTipo:"Inteiros",Quant:1,Perfil:"P1"},
- {Semana:24,Data:"2026-06-09",Tipo:"Remoção",SubTipo:"Inteiros",Quant:2,Perfil:"P4"},
- {Semana:24,Data:"2026-06-09",Tipo:"Remoção",SubTipo:"Inteiros",Quant:3,Perfil:"P4"},
- {Semana:24,Data:"2026-06-09",Tipo:"Remoção",SubTipo:"Inteiros",Quant:1,Perfil:"P2"},
- {Semana:26,Data:"2026-06-22",Tipo:"Remoção",SubTipo:"Partidos",Quant:1,Perfil:"P4"},
- {Semana:26,Data:"2026-06-22",Tipo:"Remoção",SubTipo:"Partidos",Quant:12,Perfil:"P3"},
- {Semana:26,Data:"2026-06-22",Tipo:"Remoção",SubTipo:"Partidos",Quant:6,Perfil:"P5"},
- {Semana:25,Data:"2026-06-18",Tipo:"Remoção",SubTipo:"Partidos",Quant:6,Perfil:"P4"},
- {Semana:25,Data:"2026-06-18",Tipo:"Remoção",SubTipo:"Partidos",Quant:4,Perfil:"P3"},
- {Semana:25,Data:"2026-06-18",Tipo:"Remoção",SubTipo:"Partidos",Quant:5,Perfil:"P2"},
- {Semana:25,Data:"2026-06-16",Tipo:"Remoção",SubTipo:"Partidos",Quant:15,Perfil:"P3"},
- {Semana:25,Data:"2026-06-16",Tipo:"Remoção",SubTipo:"Partidos",Quant:2,Perfil:"P1"},
- {Semana:25,Data:"2026-06-15",Tipo:"Remoção",SubTipo:"Partidos",Quant:6,Perfil:"P3"},
- {Semana:25,Data:"2026-06-15",Tipo:"Remoção",SubTipo:"Partidos",Quant:2,Perfil:"P2"},
- {Semana:24,Data:"2026-06-12",Tipo:"Remoção",SubTipo:"Partidos",Quant:10,Perfil:"P2"},
- {Semana:24,Data:"2026-06-12",Tipo:"Colocação",SubTipo:"-",Quant:1,Perfil:"P1"}
+ {Semana:20,Mes:"2026-05",Data:"2026-05-14",Tipo:"Remoção",SubTipo:"Partidos",Quant:1,Perfil:"P4"},
+ {Semana:20,Mes:"2026-05",Data:"2026-05-14",Tipo:"Remoção",SubTipo:"Partidos",Quant:1,Perfil:"P5"},
+ {Semana:20,Mes:"2026-05",Data:"2026-05-15",Tipo:"Remoção",SubTipo:"Partidos",Quant:1,Perfil:"P6"},
+ {Semana:20,Mes:"2026-05",Data:"2026-05-15",Tipo:"Remoção",SubTipo:"Partidos",Quant:1,Perfil:"P7"},
+ {Semana:22,Mes:"2026-05",Data:"2026-05-26",Tipo:"Remoção",SubTipo:"Partidos",Quant:2,Perfil:"P1"},
+ {Semana:22,Mes:"2026-05",Data:"2026-05-26",Tipo:"Remoção",SubTipo:"Partidos",Quant:2,Perfil:"P2"},
+ {Semana:22,Mes:"2026-05",Data:"2026-05-26",Tipo:"Remoção",SubTipo:"Inteiros",Quant:1,Perfil:"P1"},
+ {Semana:24,Mes:"2026-06",Data:"2026-06-09",Tipo:"Remoção",SubTipo:"Partidos",Quant:2,Perfil:"P4"},
+ {Semana:24,Mes:"2026-06",Data:"2026-06-09",Tipo:"Remoção",SubTipo:"Partidos",Quant:3,Perfil:"P4"},
+ {Semana:24,Mes:"2026-06",Data:"2026-06-09",Tipo:"Remoção",SubTipo:"Partidos",Quant:1,Perfil:"P2"},
+ {Semana:24,Mes:"2026-06",Data:"2026-06-12",Tipo:"Remoção",SubTipo:"Partidos",Quant:7,Perfil:"P2"},
+ {Semana:24,Mes:"2026-06",Data:"2026-06-12",Tipo:"Remoção",SubTipo:"Partidos",Quant:1,Perfil:"P1"},
+ {Semana:24,Mes:"2026-06",Data:"2026-06-12",Tipo:"Remoção",SubTipo:"Inteiros",Quant:10,Perfil:"P2"},
+ {Semana:24,Mes:"2026-06",Data:"2026-06-12",Tipo:"Colocação",SubTipo:"-",Quant:1,Perfil:"P1"},
+ {Semana:25,Mes:"2026-06",Data:"2026-06-15",Tipo:"Remoção",SubTipo:"Partidos",Quant:5,Perfil:"P3"},
+ {Semana:25,Mes:"2026-06",Data:"2026-06-15",Tipo:"Remoção",SubTipo:"Partidos",Quant:2,Perfil:"P2"},
+ {Semana:25,Mes:"2026-06",Data:"2026-06-15",Tipo:"Remoção",SubTipo:"Inteiros",Quant:6,Perfil:"P3"},
+ {Semana:25,Mes:"2026-06",Data:"2026-06-15",Tipo:"Remoção",SubTipo:"Inteiros",Quant:2,Perfil:"P2"},
+ {Semana:25,Mes:"2026-06",Data:"2026-06-16",Tipo:"Remoção",SubTipo:"Partidos",Quant:1,Perfil:"P1"},
+ {Semana:25,Mes:"2026-06",Data:"2026-06-16",Tipo:"Remoção",SubTipo:"Partidos",Quant:5,Perfil:"P3"},
+ {Semana:25,Mes:"2026-06",Data:"2026-06-16",Tipo:"Remoção",SubTipo:"Partidos",Quant:4,Perfil:"P2"},
+ {Semana:25,Mes:"2026-06",Data:"2026-06-16",Tipo:"Remoção",SubTipo:"Inteiros",Quant:15,Perfil:"P3"},
+ {Semana:25,Mes:"2026-06",Data:"2026-06-16",Tipo:"Remoção",SubTipo:"Inteiros",Quant:2,Perfil:"P1"},
+ {Semana:25,Mes:"2026-06",Data:"2026-06-17",Tipo:"Remoção",SubTipo:"Partidos",Quant:5,Perfil:"P4"},
+ {Semana:25,Mes:"2026-06",Data:"2026-06-17",Tipo:"Remoção",SubTipo:"Partidos",Quant:4,Perfil:"P3"},
+ {Semana:25,Mes:"2026-06",Data:"2026-06-17",Tipo:"Remoção",SubTipo:"Partidos",Quant:4,Perfil:"P2"},
+ {Semana:25,Mes:"2026-06",Data:"2026-06-17",Tipo:"Remoção",SubTipo:"Partidos",Quant:1,Perfil:"P1"},
+ {Semana:25,Mes:"2026-06",Data:"2026-06-18",Tipo:"Remoção",SubTipo:"Inteiros",Quant:6,Perfil:"P4"},
+ {Semana:25,Mes:"2026-06",Data:"2026-06-18",Tipo:"Remoção",SubTipo:"Inteiros",Quant:4,Perfil:"P3"},
+ {Semana:25,Mes:"2026-06",Data:"2026-06-18",Tipo:"Remoção",SubTipo:"Inteiros",Quant:5,Perfil:"P2"},
+ {Semana:26,Mes:"2026-06",Data:"2026-06-22",Tipo:"Remoção",SubTipo:"Partidos",Quant:1,Perfil:"P4"},
+ {Semana:26,Mes:"2026-06",Data:"2026-06-22",Tipo:"Remoção",SubTipo:"Partidos",Quant:1,Perfil:"P3"},
+ {Semana:26,Mes:"2026-06",Data:"2026-06-22",Tipo:"Remoção",SubTipo:"Inteiros",Quant:1,Perfil:"P4"},
+ {Semana:26,Mes:"2026-06",Data:"2026-06-22",Tipo:"Remoção",SubTipo:"Inteiros",Quant:12,Perfil:"P3"},
+ {Semana:26,Mes:"2026-06",Data:"2026-06-22",Tipo:"Remoção",SubTipo:"Inteiros",Quant:6,Perfil:"P5"},
+ {Semana:26,Mes:"2026-06",Data:"2026-06-24",Tipo:"Remoção",SubTipo:"Partidos",Quant:15,Perfil:"P5"},
+ {Semana:26,Mes:"2026-06",Data:"2026-06-24",Tipo:"Remoção",SubTipo:"Inteiros",Quant:3,Perfil:"P5"},
+ {Semana:26,Mes:"2026-06",Data:"2026-06-25",Tipo:"Remoção",SubTipo:"Partidos",Quant:3,Perfil:"P5"},
+ {Semana:26,Mes:"2026-06",Data:"2026-06-25",Tipo:"Remoção",SubTipo:"Inteiros",Quant:1,Perfil:"P5"},
+ {Semana:27,Mes:"2026-06",Data:"2026-06-29",Tipo:"Colocação",SubTipo:"-",Quant:4,Perfil:"P2"},
+ {Semana:27,Mes:"2026-06",Data:"2026-06-30",Tipo:"Remoção",SubTipo:"Partidos",Quant:1,Perfil:"P5"},
+ {Semana:27,Mes:"2026-06",Data:"2026-06-30",Tipo:"Remoção",SubTipo:"Inteiros",Quant:2,Perfil:"P5"},
+ {Semana:27,Mes:"2026-06",Data:"2026-06-30",Tipo:"Colocação",SubTipo:"-",Quant:4,Perfil:"P1"},
+ {Semana:27,Mes:"2026-06",Data:"2026-06-30",Tipo:"Colocação",SubTipo:"-",Quant:4,Perfil:"P2"},
+ {Semana:27,Mes:"2026-07",Data:"2026-07-01",Tipo:"Colocação",SubTipo:"-",Quant:2,Perfil:"P2"},
+ {Semana:27,Mes:"2026-07",Data:"2026-07-02",Tipo:"Remoção",SubTipo:"Partidos",Quant:4,Perfil:"P6"},
+ {Semana:27,Mes:"2026-07",Data:"2026-07-02",Tipo:"Remoção",SubTipo:"Partidos",Quant:6,Perfil:"P5"},
+ {Semana:27,Mes:"2026-07",Data:"2026-07-02",Tipo:"Remoção",SubTipo:"Inteiros",Quant:5,Perfil:"P6"},
+ {Semana:27,Mes:"2026-07",Data:"2026-07-02",Tipo:"Remoção",SubTipo:"Inteiros",Quant:5,Perfil:"P5"},
+ {Semana:27,Mes:"2026-07",Data:"2026-07-02",Tipo:"Colocação",SubTipo:"-",Quant:6,Perfil:"P2"},
+ {Semana:27,Mes:"2026-07",Data:"2026-07-02",Tipo:"Colocação",SubTipo:"-",Quant:6,Perfil:"P2"},
+ {Semana:27,Mes:"2026-07",Data:"2026-07-03",Tipo:"Remoção",SubTipo:"Inteiros",Quant:1,Perfil:"P6"},
+ {Semana:27,Mes:"2026-07",Data:"2026-07-03",Tipo:"Colocação",SubTipo:"-",Quant:3,Perfil:"P2"},
+ {Semana:28,Mes:"2026-07",Data:"2026-07-06",Tipo:"Remoção",SubTipo:"Partidos",Quant:4,Perfil:"P6"},
+ {Semana:28,Mes:"2026-07",Data:"2026-07-06",Tipo:"Remoção",SubTipo:"Partidos",Quant:1,Perfil:"P7"},
+ {Semana:28,Mes:"2026-07",Data:"2026-07-06",Tipo:"Remoção",SubTipo:"Inteiros",Quant:8,Perfil:"P6"},
+ {Semana:28,Mes:"2026-07",Data:"2026-07-06",Tipo:"Remoção",SubTipo:"Inteiros",Quant:5,Perfil:"P7"},
+ {Semana:28,Mes:"2026-07",Data:"2026-07-06",Tipo:"Colocação",SubTipo:"-",Quant:4,Perfil:"P1"},
+ {Semana:28,Mes:"2026-07",Data:"2026-07-06",Tipo:"Colocação",SubTipo:"-",Quant:4,Perfil:"P2"},
+ {Semana:28,Mes:"2026-07",Data:"2026-07-06",Tipo:"Colocação",SubTipo:"-",Quant:3,Perfil:"P3"},
+ {Semana:28,Mes:"2026-07",Data:"2026-07-07",Tipo:"Remoção",SubTipo:"Partidos",Quant:1,Perfil:"P7"},
+ {Semana:28,Mes:"2026-07",Data:"2026-07-07",Tipo:"Remoção",SubTipo:"Inteiros",Quant:2,Perfil:"P7"},
+ {Semana:28,Mes:"2026-07",Data:"2026-07-07",Tipo:"Colocação",SubTipo:"-",Quant:4,Perfil:"P3"},
+ {Semana:28,Mes:"2026-07",Data:"2026-07-07",Tipo:"Colocação",SubTipo:"-",Quant:6,Perfil:"P2"},
+ {Semana:28,Mes:"2026-07",Data:"2026-07-08",Tipo:"Colocação",SubTipo:"-",Quant:10,Perfil:"P3"},
+ {Semana:28,Mes:"2026-07",Data:"2026-07-08",Tipo:"Colocação",SubTipo:"-",Quant:2,Perfil:"P4"},
+ {Semana:28,Mes:"2026-07",Data:"2026-07-08",Tipo:"Remoção",SubTipo:"Partidos",Quant:4,Perfil:"P7"},
+ {Semana:28,Mes:"2026-07",Data:"2026-07-08",Tipo:"Remoção",SubTipo:"Partidos",Quant:5,Perfil:"P8"},
+ {Semana:28,Mes:"2026-07",Data:"2026-07-08",Tipo:"Remoção",SubTipo:"Inteiros",Quant:5,Perfil:"P7"},
+ {Semana:28,Mes:"2026-07",Data:"2026-07-08",Tipo:"Remoção",SubTipo:"Inteiros",Quant:1,Perfil:"P8"},
+ {Semana:28,Mes:"2026-07",Data:"2026-07-09",Tipo:"Colocação",SubTipo:"-",Quant:3,Perfil:"P3"},
+ {Semana:28,Mes:"2026-07",Data:"2026-07-09",Tipo:"Remoção",SubTipo:"Partidos",Quant:4,Perfil:"P7"},
+ {Semana:28,Mes:"2026-07",Data:"2026-07-09",Tipo:"Remoção",SubTipo:"Inteiros",Quant:9,Perfil:"P8"},
+ {Semana:28,Mes:"2026-07",Data:"2026-07-10",Tipo:"Colocação",SubTipo:"-",Quant:7,Perfil:"P4"},
+ {Semana:28,Mes:"2026-07",Data:"2026-07-10",Tipo:"Colocação",SubTipo:"-",Quant:3,Perfil:"P2"},
+ {Semana:29,Mes:"2026-07",Data:"2026-07-13",Tipo:"Colocação",SubTipo:"-",Quant:2,Perfil:"P2"}
 ];
 
 let records=[],seq=0;
+const SEED_VERSION="2026-07-06-importA"; // muda a cada nova importação -> substitui os registos guardados
 function loadRecords(){
+  const ver=store.get("esporao_seed_version");
   let saved=null;try{saved=JSON.parse(store.get("esporao_records")||"null")}catch(e){}
-  if(saved&&Array.isArray(saved)&&saved.length){records=saved;return;}
-  let mig=[];try{mig=JSON.parse(store.get("esporao_user_records")||"[]")}catch(e){}
-  records=SEED_DATA.concat(mig).map((r,i)=>Object.assign({id:"r"+(i+1)},r));
+  if(ver===SEED_VERSION&&saved&&Array.isArray(saved)&&saved.length){records=saved;return;}
+  // nova importação: elimina tudo o que estava e importa o SEED atual
+  records=SEED_DATA.map((r,i)=>Object.assign({id:"r"+(i+1)},r));
+  store.set("esporao_seed_version",SEED_VERSION);
   saveRecords();
 }
 function saveRecords(){store.set("esporao_records",JSON.stringify(records))}
@@ -316,16 +369,20 @@ const EXTRA=["#9b5de5","#00b4a6","#8ac926","#ff70a6","#ffca3a","#118ab2"];
 let PC={};
 const perfisList=()=>[...new Set(records.map(r=>r.Perfil))].sort();
 function buildPC(){let e=0;PC={};perfisList().forEach(p=>PC[p]=BASEC[p]||EXTRA[e++%EXTRA.length])}
-function perfilOptions(sel){return [...new Set(["P1","P2","P3","P4","P5"].concat(perfisList()))].map(p=>`<option ${p===sel?"selected":""}>${p}</option>`).join("")}
+function perfilOptions(sel){return [...new Set(["P1","P2","P3","P4","P5","P6","P7","P8"].concat(perfisList()))].map(p=>`<option ${p===sel?"selected":""}>${p}</option>`).join("")}
 
 const sum=a=>a.reduce((s,x)=>s+x,0);
 const fmtD=s=>{const p=s.split("-");return p[2]+"/"+p[1]};
+const MESNOMES=["","Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out","Nov","Dez"];
+const mesOf=s=>s.slice(0,7);                                   // "2026-06"
+const mesLabel=m=>{const p=m.split("-");return MESNOMES[+p[1]]+"/"+p[0].slice(2)}; // "Jun/26"
 function isoWeek(s){const d=new Date(s+"T00:00:00");const t=new Date(d);t.setHours(0,0,0,0);t.setDate(t.getDate()+3-((t.getDay()+6)%7));const w1=new Date(t.getFullYear(),0,4);return 1+Math.round(((t-w1)/86400000-3+((w1.getDay()+6)%7))/7);}
 
-let state={semana:"Todas",dia:"",tipo:"Todos",sub:"Todos",timeMode:"cum",sortK:null,sortDir:1,highlight:null,editId:null};
+let state={mes:"Todos",semana:"Todas",dia:"",tipo:"Todos",sub:"Todos",timeMode:"cum",sortK:null,sortDir:1,highlight:null,editId:null};
 
 function filtered(){
   return records.filter(r=>
+    (state.mes==="Todos"||r.Mes===state.mes)&&
     (state.semana==="Todas"||r.Semana==+state.semana)&&
     (state.dia===""||r.Data===state.dia)&&
     (state.tipo==="Todos"||r.Tipo===state.tipo)&&
@@ -333,9 +390,11 @@ function filtered(){
 }
 
 function buildFilters(){
+  const meses=["Todos"].concat([...new Set(records.map(r=>r.Mes))].sort());
   const sem=["Todas"].concat([...new Set(records.map(r=>r.Semana))].sort((a,b)=>a-b));
   const tip=["Todos"].concat([...new Set(records.map(r=>r.Tipo))]);
   const sub=["Todos","Inteiros","Partidos"];
+  document.getElementById("fMes").innerHTML=meses.map(v=>`<option value="${v}" ${v===state.mes?"selected":""}>${v==="Todos"?"Todos":mesLabel(v)}</option>`).join("");
   const fill=(id,arr,cur)=>document.getElementById(id).innerHTML=arr.map(v=>`<option ${v==cur?"selected":""}>${v}</option>`).join("");
   fill("fSemana",sem,state.semana);fill("fTipo",tip,state.tipo);fill("fSub",sub,state.sub);
   document.getElementById("fDia").value=state.dia;
@@ -351,7 +410,7 @@ function renderKPIs(){
 
 function rowView(r){
   return `<tr>
-    <td class="l">${fmtD(r.Data)}</td><td>${r.Semana}</td><td>${r.Tipo}</td><td>${r.SubTipo}</td>
+    <td class="l">${fmtD(r.Data)}</td><td>${r.Semana}</td><td>${mesLabel(r.Mes)}</td><td>${r.Tipo}</td><td>${r.SubTipo}</td>
     <td><span class="chip" style="background:${PC[r.Perfil]||"#888"}">${r.Perfil}</span></td>
     <td><b>${r.Quant}</b></td>
     <td><span class="iact">
@@ -362,8 +421,9 @@ function rowView(r){
 function rowEdit(r){
   const col=r.Tipo==="Colocação";
   return `<tr>
-    <td><input type="date" class="ei dia" id="e_dia" value="${r.Data}" onchange="document.getElementById('e_sem').value=isoWeek(this.value)"></td>
+    <td><input type="date" class="ei dia" id="e_dia" value="${r.Data}" onchange="e_recalc(this.value)"></td>
     <td><input type="number" class="ei" id="e_sem" value="${r.Semana}" style="max-width:64px"></td>
+    <td><span id="e_mesLbl">${mesLabel(r.Mes)}</span><input type="hidden" id="e_mes" value="${r.Mes}"></td>
     <td><select class="ei" id="e_tipo" onchange="onEditTipo()"><option ${r.Tipo==="Remoção"?"selected":""}>Remoção</option><option ${col?"selected":""}>Colocação</option></select></td>
     <td><select class="ei" id="e_sub" ${col?"disabled":""}><option ${r.SubTipo==="Inteiros"?"selected":""}>Inteiros</option><option ${r.SubTipo==="Partidos"?"selected":""}>Partidos</option></select></td>
     <td><select class="ei" id="e_perfil">${perfilOptions(r.Perfil)}</select></td>
@@ -373,6 +433,7 @@ function rowEdit(r){
       <button class="ibtn del" title="Cancelar" onclick="cancelEdit()">&times;</button>
     </span></td></tr>`;
 }
+function e_recalc(v){if(!v)return;document.getElementById("e_sem").value=isoWeek(v);document.getElementById("e_mes").value=mesOf(v);document.getElementById("e_mesLbl").textContent=mesLabel(mesOf(v));}
 function renderRecTable(){
   let d=filtered().slice();
   if(state.sortK)d.sort((a,b)=>{const x=a[state.sortK],y=b[state.sortK];return(x>y?1:x<y?-1:0)*state.sortDir;});
@@ -380,7 +441,7 @@ function renderRecTable(){
   document.getElementById("regCount").textContent="("+d.length+")";
   document.getElementById("recBody").innerHTML=d.length
     ?d.map(r=>r.id===state.editId?rowEdit(r):rowView(r)).join("")
-    :`<tr><td colspan="7" class="empty">Sem registos para os filtros aplicados.</td></tr>`;
+    :`<tr><td colspan="8" class="empty">Sem registos para os filtros aplicados.</td></tr>`;
 }
 function onEditTipo(){const col=document.getElementById("e_tipo").value==="Colocação";const s=document.getElementById("e_sub");s.disabled=col;s.style.opacity=col?.4:1;}
 function startEdit(id){state.editId=id;renderRecTable();}
@@ -390,7 +451,7 @@ function saveEdit(id){
   if(!dia){alert("Indique o dia.");return;}
   if(!q||q<1){alert("Quantidade inválida.");return;}
   const tipo=document.getElementById("e_tipo").value,r=records.find(x=>x.id===id);
-  Object.assign(r,{Data:dia,Semana:parseInt(document.getElementById("e_sem").value,10)||isoWeek(dia),
+  Object.assign(r,{Data:dia,Semana:parseInt(document.getElementById("e_sem").value,10)||isoWeek(dia),Mes:mesOf(dia),
     Tipo:tipo,SubTipo:tipo==="Colocação"?"-":document.getElementById("e_sub").value,
     Perfil:document.getElementById("e_perfil").value,Quant:q});
   state.editId=null;saveRecords();render();
@@ -488,27 +549,28 @@ function init(){
     document.getElementById("hdTitle").textContent=cfg.title;
     document.getElementById("hdSub").textContent=cfg.sub;
   });
+  document.getElementById("fMes").onchange=e=>{state.mes=e.target.value;render();};
   document.getElementById("fSemana").onchange=e=>{state.semana=e.target.value;render();};
   document.getElementById("fTipo").onchange=e=>{state.tipo=e.target.value;render();};
   document.getElementById("fSub").onchange=e=>{state.sub=e.target.value;render();};
   document.getElementById("fDia").onchange=e=>{state.dia=e.target.value;render();};
   document.querySelectorAll("[data-mode]").forEach(b=>b.onclick=()=>{state.timeMode=b.dataset.mode;document.querySelectorAll("[data-mode]").forEach(x=>x.classList.toggle("active",x===b));renderTime();});
   document.querySelectorAll("#recTable th[data-k]").forEach(th=>th.onclick=()=>{const k=th.dataset.k;if(state.sortK===k)state.sortDir*=-1;else{state.sortK=k;state.sortDir=1;}renderRecTable();});
-  document.getElementById("reset").onclick=()=>{state=Object.assign({},state,{semana:"Todas",dia:"",tipo:"Todos",sub:"Todos",highlight:null,sortK:null,editId:null});render();};
+  document.getElementById("reset").onclick=()=>{state=Object.assign({},state,{mes:"Todos",semana:"Todas",dia:"",tipo:"Todos",sub:"Todos",highlight:null,sortK:null,editId:null});render();};
   document.getElementById("csv").onclick=()=>{
-    const d=filtered(),head="Semana,Data,Tipo,Sub Tipo,Perfil,Quant";
-    const body=d.map(r=>`${r.Semana},${r.Data},${r.Tipo},${r.SubTipo},${r.Perfil},${r.Quant}`).join("\n");
+    const d=filtered(),head="Data,Semana,Mes,Tipo,Sub Tipo,Perfil,Quant";
+    const body=d.map(r=>`${r.Data},${r.Semana},${r.Mes},${r.Tipo},${r.SubTipo},${r.Perfil},${r.Quant}`).join("\n");
     const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([head+"\n"+body],{type:"text/csv;charset=utf-8"}));a.download="tetrapodes_listagem.csv";a.click();};
 
-  const rTipo=document.getElementById("rTipo"),rSub=document.getElementById("rSub"),rDia=document.getElementById("rDia"),rSem=document.getElementById("rSemana");
-  rDia.onchange=()=>{if(rDia.value)rSem.value=isoWeek(rDia.value);};
+  const rTipo=document.getElementById("rTipo"),rSub=document.getElementById("rSub"),rDia=document.getElementById("rDia"),rSem=document.getElementById("rSemana"),rMes=document.getElementById("rMes");
+  rDia.onchange=()=>{if(rDia.value){rSem.value=isoWeek(rDia.value);rMes.value=mesLabel(mesOf(rDia.value));rMes.dataset.val=mesOf(rDia.value);}};
   rTipo.onchange=()=>{const col=rTipo.value==="Colocação";rSub.disabled=col;rSub.style.opacity=col?.4:1;};
   document.getElementById("rAdd").onclick=()=>{
     const dia=rDia.value,q=parseInt(document.getElementById("rQuant").value,10);
     if(!dia){alert("Indique o dia.");return;}
     if(!q||q<1){alert("Quantidade inválida.");return;}
     const tipo=rTipo.value;
-    records.push({id:newId(),Semana:parseInt(rSem.value,10)||isoWeek(dia),Data:dia,Tipo:tipo,
+    records.push({id:newId(),Semana:parseInt(rSem.value,10)||isoWeek(dia),Mes:mesOf(dia),Data:dia,Tipo:tipo,
       SubTipo:tipo==="Colocação"?"-":rSub.value,Quant:q,Perfil:document.getElementById("rPerfil").value});
     saveRecords();document.getElementById("secRec").open=true;render();
   };
