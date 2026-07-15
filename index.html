@@ -155,7 +155,7 @@
         <button data-th="dark">Escuro</button>
         <button data-th="system">Sistema</button>
       </div>
-      <div class="badge">v26.07.15.1015</div>
+      <div class="badge">v26.07.15.1130</div>
     </div>
   </header>
 
@@ -217,6 +217,7 @@
       <div class="toggle">
         <button class="btn active" data-mode="cum">Acumulado</button>
         <button class="btn" data-mode="day">Por dia</button>
+        <button class="btn" data-mode="week">Por semana</button>
       </div>
       <div class="chartbox" id="chartTime"></div>
     </div>
@@ -459,22 +460,32 @@ function saveEdit(id){
 function removeRec(id){if(!confirm("Eliminar este registo?"))return;records=records.filter(r=>r.id!==id);saveRecords();render();}
 
 function renderTime(){
-  const d=filtered(),dias=[...new Set(d.map(r=>r.Data))].sort();
-  let vals=dias.map(dt=>sum(d.filter(r=>r.Data===dt).map(r=>r.Quant)));
-  if(state.timeMode==="cum"){let c=0;vals=vals.map(v=>c+=v);}
+  const d=filtered();
+  let labels,vals;
+  if(state.timeMode==="week"){
+    const sems=[...new Set(d.map(r=>r.Semana))].sort((a,b)=>a-b);
+    labels=sems.map(s=>"S"+s);
+    vals=sems.map(s=>sum(d.filter(r=>r.Semana===s).map(r=>r.Quant)));
+  }else{
+    const dias=[...new Set(d.map(r=>r.Data))].sort();
+    labels=dias.map(fmtD);
+    vals=dias.map(dt=>sum(d.filter(r=>r.Data===dt).map(r=>r.Quant)));
+    if(state.timeMode==="cum"){let c=0;vals=vals.map(v=>c+=v);}
+  }
+  const n=labels.length;
   const W=700,H=320,pl=42,pr=18,pt=22,pb=42,iw=W-pl-pr,ih=H-pt-pb,max=Math.max(...vals,1);
-  const x=i=>dias.length<2?pl+iw/2:pl+(i/(dias.length-1))*iw,y=v=>pt+ih-(v/max)*ih;
+  const x=i=>n<2?pl+iw/2:pl+(i/(n-1))*iw,y=v=>pt+ih-(v/max)*ih;
   let g=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet">`;
   for(let i=0;i<=4;i++){const gv=Math.round(max*i/4),gy=y(gv);
     g+=`<line x1="${pl}" y1="${gy}" x2="${W-pr}" y2="${gy}" stroke="var(--line)"/><text x="${pl-6}" y="${gy+3}" text-anchor="end" class="glabel">${gv}</text>`;}
-  if(dias.length){
-    g+=`<path d="M ${x(0)} ${y(0)} ${vals.map((v,i)=>`L ${x(i)} ${y(v)}`).join(" ")} L ${x(dias.length-1)} ${y(0)} Z" fill="var(--accent)" opacity="0.12"/>`;
+  if(n){
+    g+=`<path d="M ${x(0)} ${y(0)} ${vals.map((v,i)=>`L ${x(i)} ${y(v)}`).join(" ")} L ${x(n-1)} ${y(0)} Z" fill="var(--accent)" opacity="0.12"/>`;
     g+=`<path d="${vals.map((v,i)=>`${i?"L":"M"} ${x(i)} ${y(v)}`).join(" ")}" fill="none" stroke="var(--accent)" stroke-width="2.5"/>`;
     vals.forEach((v,i)=>g+=`<circle cx="${x(i)}" cy="${y(v)}" r="3.5" fill="var(--accent)"/><text x="${x(i)}" y="${y(v)-9}" text-anchor="middle" class="gval">${v}</text>`);
-    dias.forEach((dt,i)=>g+=`<text x="${x(i)}" y="${H-14}" text-anchor="middle" class="glabel">${fmtD(dt)}</text>`);
+    labels.forEach((lb,i)=>g+=`<text x="${x(i)}" y="${H-14}" text-anchor="middle" class="glabel">${lb}</text>`);
   }
   g+=`</svg>`;
-  document.getElementById("chartTime").innerHTML=dias.length?g:`<div class="empty">Sem dados.</div>`;
+  document.getElementById("chartTime").innerHTML=n?g:`<div class="empty">Sem dados.</div>`;
 }
 function renderPerfil(){
   const d=filtered(),ps=perfisList();
@@ -490,20 +501,20 @@ function renderPerfil(){
 }
 function renderSemana(){
   const d=filtered(),ps=perfisList(),sems=[...new Set(d.map(r=>r.Semana))].sort((a,b)=>a-b);
-  const W=700,H=250,pl=38,pr=14,pt=16,pb=48,iw=W-pl-pr,ih=H-pt-pb;
+  const W=1400,H=340,pl=76,pr=28,pt=22,pb=64,iw=W-pl-pr,ih=H-pt-pb;
   const tot=sems.map(s=>sum(d.filter(r=>r.Semana===s).map(r=>r.Quant)));
-  const max=Math.max(...tot,1),gap=sems.length?iw/sems.length:0,bw=sems.length?Math.min(90,gap*0.55):0;
+  const max=Math.max(...tot,1),gap=sems.length?iw/sems.length:0,bw=sems.length?Math.min(180,gap*0.55):0;
   let g=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet">`;
   for(let i=0;i<=4;i++){const gv=Math.round(max*i/4),gy=pt+ih-(gv/max)*ih;
-    g+=`<line x1="${pl}" y1="${gy}" x2="${W-pr}" y2="${gy}" stroke="var(--line)"/><text x="${pl-6}" y="${gy+3}" text-anchor="end" class="glabel">${gv}</text>`;}
+    g+=`<line x1="${pl}" y1="${gy}" x2="${W-pr}" y2="${gy}" stroke="var(--line)"/><text x="${pl-8}" y="${gy+3}" text-anchor="end" class="glabel">${gv}</text>`;}
   sems.forEach((s,i)=>{const cx=pl+gap*i+gap/2;let acc=0;
     ps.forEach(p=>{const q=sum(d.filter(r=>r.Semana===s&&r.Perfil===p).map(r=>r.Quant));if(!q)return;
       const h=(q/max)*ih,yy=pt+ih-(acc/max)*ih-h,op=(state.highlight&&state.highlight!==p)?0.3:1;
       g+=`<rect x="${cx-bw/2}" y="${yy}" width="${bw}" height="${h}" fill="${PC[p]}" opacity="${op}"/>`;
-      if(h>15)g+=`<text x="${cx}" y="${yy+h/2+4}" text-anchor="middle" style="fill:#0f151c;font-size:10px;font-weight:700">${q}</text>`;acc+=q;});
-    g+=`<text x="${cx}" y="${pt+ih+18}" text-anchor="middle" class="glabel">Sem ${s}</text>`;
-    g+=`<text x="${cx}" y="${pt+ih-(acc/max)*ih-7}" text-anchor="middle" class="gval">${tot[i]}</text>`;});
-  ps.forEach((p,i)=>{const lx=pl+i*60;g+=`<rect x="${lx}" y="${H-14}" width="11" height="11" rx="2" fill="${PC[p]}"/><text x="${lx+15}" y="${H-5}" class="glabel">${p}</text>`;});
+      if(h>16)g+=`<text x="${cx}" y="${yy+h/2+4}" text-anchor="middle" style="fill:#0f151c;font-size:11px;font-weight:700">${q}</text>`;acc+=q;});
+    g+=`<text x="${cx}" y="${pt+ih+20}" text-anchor="middle" class="glabel">Sem ${s}</text>`;
+    g+=`<text x="${cx}" y="${pt+ih-(acc/max)*ih-8}" text-anchor="middle" class="gval">${tot[i]}</text>`;});
+  ps.forEach((p,i)=>{const lx=pl+i*120;g+=`<rect x="${lx}" y="${H-18}" width="12" height="12" rx="2" fill="${PC[p]}"/><text x="${lx+17}" y="${H-8}" class="glabel">${p}</text>`;});
   g+=`</svg>`;document.getElementById("chartSemana").innerHTML=sems.length?g:`<div class="empty">Sem dados.</div>`;
 }
 function renderPerfis(){
