@@ -164,7 +164,7 @@
         <button data-th="dark">Escuro</button>
         <button data-th="system">Sistema</button>
       </div>
-      <div class="badge">v26.07.15.1345</div>
+      <div class="badge">v26.07.17.1500</div>
     </div>
   </header>
 
@@ -221,7 +221,7 @@
         <div class="fgroup"><span class="flabel">Mês</span><input type="text" id="rMes" readonly style="min-width:90px" placeholder="auto"></div>
         <div class="fgroup"><span class="flabel">Tipo</span><select id="rTipo"><option>Remoção</option><option>Colocação</option></select></div>
         <div class="fgroup"><span class="flabel">Sub Tipo</span><select id="rSub"><option>Inteiros</option><option>Partidos</option></select></div>
-        <div class="fgroup"><span class="flabel">Perfil</span><select id="rPerfil"><option>P1</option><option>P2</option><option>P3</option><option>P4</option><option>P5</option><option>P6</option><option>P7</option><option>P8</option></select></div>
+        <div class="fgroup"><span class="flabel">Perfil</span><select id="rPerfil"><option>P1</option><option>P2</option><option>P3</option><option>P4</option><option>P5</option><option>P6</option><option>P7</option><option>P8</option><option>P9</option><option>P10</option></select></div>
         <div class="fgroup"><span class="flabel">Quant</span><input type="number" id="rQuant" min="1" value="1" style="min-width:80px"></div>
         <button class="btn amber" id="rAdd">Adicionar</button>
       </div>
@@ -433,11 +433,32 @@ const SEED_DATA=[
  {Semana:28,Mes:"2026-07",Data:"2026-07-09",Tipo:"Remoção",SubTipo:"Inteiros",Quant:9,Perfil:"P8"},
  {Semana:28,Mes:"2026-07",Data:"2026-07-10",Tipo:"Colocação",SubTipo:"-",Quant:7,Perfil:"P4"},
  {Semana:28,Mes:"2026-07",Data:"2026-07-10",Tipo:"Colocação",SubTipo:"-",Quant:3,Perfil:"P2"},
- {Semana:29,Mes:"2026-07",Data:"2026-07-13",Tipo:"Colocação",SubTipo:"-",Quant:2,Perfil:"P2"}
+ {Semana:29,Mes:"2026-07",Data:"2026-07-13",Tipo:"Colocação",SubTipo:"-",Quant:2,Perfil:"P2"},
+ {Semana:29,Mes:"2026-07",Data:"2026-07-17",Tipo:"Remoção",SubTipo:"Partidos",Quant:13,Perfil:"P10"},
+ {Semana:29,Mes:"2026-07",Data:"2026-07-17",Tipo:"Remoção",SubTipo:"Partidos",Quant:6,Perfil:"P9"},
+ {Semana:29,Mes:"2026-07",Data:"2026-07-16",Tipo:"Remoção",SubTipo:"Partidos",Quant:3,Perfil:"P9"},
+ {Semana:29,Mes:"2026-07",Data:"2026-07-15",Tipo:"Remoção",SubTipo:"Partidos",Quant:2,Perfil:"P9"},
+ {Semana:29,Mes:"2026-07",Data:"2026-07-15",Tipo:"Remoção",SubTipo:"Partidos",Quant:6,Perfil:"P8"},
+ {Semana:29,Mes:"2026-07",Data:"2026-07-17",Tipo:"Remoção",SubTipo:"Inteiros",Quant:6,Perfil:"P10"},
+ {Semana:29,Mes:"2026-07",Data:"2026-07-17",Tipo:"Remoção",SubTipo:"Inteiros",Quant:4,Perfil:"P9"},
+ {Semana:29,Mes:"2026-07",Data:"2026-07-16",Tipo:"Remoção",SubTipo:"Inteiros",Quant:3,Perfil:"P9"},
+ {Semana:29,Mes:"2026-07",Data:"2026-07-16",Tipo:"Remoção",SubTipo:"Inteiros",Quant:4,Perfil:"P8"},
+ {Semana:29,Mes:"2026-07",Data:"2026-07-15",Tipo:"Remoção",SubTipo:"Inteiros",Quant:4,Perfil:"P9"},
+ {Semana:29,Mes:"2026-07",Data:"2026-07-15",Tipo:"Remoção",SubTipo:"Inteiros",Quant:5,Perfil:"P8"},
+ {Semana:29,Mes:"2026-07",Data:"2026-07-17",Tipo:"Colocação",SubTipo:"-",Quant:5,Perfil:"P5"},
+ {Semana:29,Mes:"2026-07",Data:"2026-07-17",Tipo:"Colocação",SubTipo:"-",Quant:2,Perfil:"P4"},
+ {Semana:29,Mes:"2026-07",Data:"2026-07-17",Tipo:"Colocação",SubTipo:"-",Quant:5,Perfil:"P6"},
+ {Semana:29,Mes:"2026-07",Data:"2026-07-16",Tipo:"Colocação",SubTipo:"-",Quant:6,Perfil:"P4"},
+ {Semana:29,Mes:"2026-07",Data:"2026-07-15",Tipo:"Colocação",SubTipo:"-",Quant:6,Perfil:"P5"},
+ {Semana:29,Mes:"2026-07",Data:"2026-07-15",Tipo:"Colocação",SubTipo:"-",Quant:2,Perfil:"P4"},
+ {Semana:29,Mes:"2026-07",Data:"2026-07-15",Tipo:"Colocação",SubTipo:"-",Quant:6,Perfil:"P3"},
+ {Semana:29,Mes:"2026-07",Data:"2026-07-14",Tipo:"Colocação",SubTipo:"-",Quant:1,Perfil:"P4"},
+ {Semana:29,Mes:"2026-07",Data:"2026-07-14",Tipo:"Colocação",SubTipo:"-",Quant:2,Perfil:"P3"},
+ {Semana:29,Mes:"2026-07",Data:"2026-07-14",Tipo:"Colocação",SubTipo:"-",Quant:1,Perfil:"P2"}
 ];
 
 let records=[],seq=0;
-const SEED_VERSION="2026-07-06-importA"; // muda a cada nova importação -> substitui os registos guardados
+const SEED_VERSION="2026-07-17-importB"; // muda a cada nova importação -> substitui os registos guardados
 function loadRecords(){
   const ver=store.get("esporao_seed_version");
   let saved=null;try{saved=JSON.parse(store.get("esporao_records")||"null")}catch(e){}
@@ -453,9 +474,11 @@ function newId(){return "r"+Date.now()+"_"+(seq++)}
 const BASEC={P1:"#4cc9f0",P2:"#4895ef",P3:"#f4a259",P4:"#f07b3f",P5:"#d62828"};
 const EXTRA=["#9b5de5","#00b4a6","#8ac926","#ff70a6","#ffca3a","#118ab2"];
 let PC={};
-const perfisList=()=>[...new Set(records.map(r=>r.Perfil))].sort();
+const pcmp=(a,b)=>{const na=parseInt(String(a).replace(/\D/g,""),10),nb=parseInt(String(b).replace(/\D/g,""),10);
+  if(isNaN(na)||isNaN(nb))return String(a).localeCompare(String(b));return na-nb;};
+const perfisList=()=>[...new Set(records.map(r=>r.Perfil))].sort(pcmp);
 function buildPC(){let e=0;PC={};perfisList().forEach(p=>PC[p]=BASEC[p]||EXTRA[e++%EXTRA.length])}
-function perfilOptions(sel){return [...new Set(["P1","P2","P3","P4","P5","P6","P7","P8"].concat(perfisList()))].map(p=>`<option ${p===sel?"selected":""}>${p}</option>`).join("")}
+function perfilOptions(sel){return [...new Set(["P1","P2","P3","P4","P5","P6","P7","P8","P9","P10"].concat(perfisList()))].sort(pcmp).map(p=>`<option ${p===sel?"selected":""}>${p}</option>`).join("")}
 
 const sum=a=>a.reduce((s,x)=>s+x,0);
 const fmtD=s=>{const p=s.split("-");return p[2]+"/"+p[1]};
