@@ -34,7 +34,8 @@
 
   header{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:2px solid var(--accent);padding-bottom:14px;margin-bottom:20px;flex-wrap:wrap;gap:12px}
   .eyebrow{font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:var(--accent);font-weight:700}
-  h1{font-size:25px;font-weight:700;letter-spacing:-.3px;margin-top:3px}
+  h1{font-size:25px;font-weight:500;letter-spacing:-.3px;margin-top:3px}
+  h1 .secid{font-weight:800;color:var(--accent)}
   .sub{color:var(--muted);font-size:13px;margin-top:2px}
   .htools{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
   .theme{display:flex;gap:4px;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:3px}
@@ -113,6 +114,9 @@
   .ptot{font-size:22px;font-weight:800;font-variant-numeric:tabular-nums}
   .pmeta{font-size:10.5px;color:var(--muted);padding:7px 14px;display:flex;gap:12px;border-bottom:1px solid var(--line)}
   .pmeta b{color:var(--txt);font-variant-numeric:tabular-nums}
+  .pcard table{table-layout:fixed}
+  .pcard th,.pcard td,.pcard td.l{text-align:center}
+  .pcard td.l{color:var(--muted)}
 
   table{width:100%;border-collapse:collapse;font-size:12px}
   th{font-size:9.5px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);text-align:center;padding:7px 8px;border-bottom:1px solid var(--line);font-weight:700}
@@ -122,6 +126,7 @@
   .empty{padding:22px;text-align:center;color:var(--faint);font-size:12px}
   .chip{display:inline-block;padding:2px 9px;border-radius:11px;font-size:11px;font-weight:700;color:#0f151c}
   .rectable{overflow:auto}
+  .mqtwrap{overflow:visible}
   #recTable th[data-k]{cursor:pointer;user-select:none}
   #recTable th[data-k]:hover{color:var(--accent)}
   .ei{min-width:0!important;width:100%;padding:4px 6px;font-size:12px}
@@ -177,7 +182,7 @@
   <header>
     <div>
       <div class="eyebrow" id="hdEyebrow">Empreitada de Reabilitação do Esporão Sul de Espinho</div>
-      <h1 id="hdTitle">2. MQT / PROJ</h1>
+      <h1 id="hdTitle"><span class="secid">2.</span> MQT / PROJ</h1>
       <div class="sub" id="hdSub">Mapa de Quantidades e Trabalhos</div>
     </div>
     <div class="htools">
@@ -187,7 +192,7 @@
         <button data-th="dark">Escuro</button>
         <button data-th="system">Sistema</button>
       </div>
-      <div class="badge">v26.08.10.1400</div>
+      <div class="badge">v26.08.10.1500</div>
     </div>
   </header>
 
@@ -205,7 +210,7 @@
   <div id="temaMQT" class="tema">
     <div class="card">
       <h2>Mapa de Quantidades e Trabalhos</h2>
-      <div class="rectable">
+      <div class="mqtwrap">
         <table id="mqtTable">
           <thead><tr>
             <th>Id</th><th style="text-align:left">Descrição</th><th>Un</th>
@@ -277,11 +282,11 @@
 
   <div class="grid" id="distGrid">
     <div class="card">
-      <h2>Distribuição por Perfil</h2>
+      <h2>Distribuição por Perfil - Total</h2>
       <div class="chartbox" id="chartPerfil"></div>
     </div>
     <div class="card" id="cardPerfilSub">
-      <h2>Por Perfil &middot; Inteiros e Partidos</h2>
+      <h2>Distribuição por Perfil - Inteiros e Partidos</h2>
       <div class="chartbox" id="chartPerfilSub"></div>
     </div>
   </div>
@@ -757,16 +762,18 @@ function renderTime(){
     if(state.timeMode==="cum"){let c=0;vals=vals.map(v=>c+=v);}
   }
   const n=labels.length;
-  const W=700,H=320,pl=42,pr=18,pt=22,pb=42,iw=W-pl-pr,ih=H-pt-pb,max=Math.max(...vals,1);
+  const W=1400,H=460,pl=54,pr=28,pt=30,pb=54,iw=W-pl-pr,ih=H-pt-pb,max=Math.max(...vals,1);
   const x=i=>n<2?pl+iw/2:pl+(i/(n-1))*iw,y=v=>pt+ih-(v/max)*ih;
   let g=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet">`;
   for(let i=0;i<=4;i++){const gv=Math.round(max*i/4),gy=y(gv);
-    g+=`<line x1="${pl}" y1="${gy}" x2="${W-pr}" y2="${gy}" stroke="var(--line)"/><text x="${pl-6}" y="${gy+3}" text-anchor="end" class="glabel">${gv}</text>`;}
+    g+=`<line x1="${pl}" y1="${gy}" x2="${W-pr}" y2="${gy}" stroke="var(--line)"/><text x="${pl-8}" y="${gy+3}" text-anchor="end" class="glabel">${gv}</text>`;}
   if(n){
     g+=`<path d="M ${x(0)} ${y(0)} ${vals.map((v,i)=>`L ${x(i)} ${y(v)}`).join(" ")} L ${x(n-1)} ${y(0)} Z" fill="var(--accent)" opacity="0.12"/>`;
-    g+=`<path d="${vals.map((v,i)=>`${i?"L":"M"} ${x(i)} ${y(v)}`).join(" ")}" fill="none" stroke="var(--accent)" stroke-width="2.5"/>`;
-    vals.forEach((v,i)=>g+=`<circle cx="${x(i)}" cy="${y(v)}" r="3.5" fill="var(--accent)"/><text x="${x(i)}" y="${y(v)-9}" text-anchor="middle" class="gval">${v}</text>`);
-    labels.forEach((lb,i)=>g+=`<text x="${x(i)}" y="${H-14}" text-anchor="middle" class="glabel">${lb}</text>`);
+    g+=`<path d="${vals.map((v,i)=>`${i?"L":"M"} ${x(i)} ${y(v)}`).join(" ")}" fill="none" stroke="var(--accent)" stroke-width="3"/>`;
+    const step=Math.ceil(n/28);
+    vals.forEach((v,i)=>{g+=`<circle cx="${x(i)}" cy="${y(v)}" r="4" fill="var(--accent)"/>`;if(i%step===0||i===n-1)g+=`<text x="${x(i)}" y="${y(v)-11}" text-anchor="middle" class="gval">${v}</text>`;});
+    const lstep=Math.ceil(n/22);
+    labels.forEach((lb,i)=>{if(i%lstep===0||i===n-1)g+=`<text x="${x(i)}" y="${H-18}" text-anchor="middle" class="glabel">${lb}</text>`;});
   }
   g+=`</svg>`;
   document.getElementById("chartTime").innerHTML=n?g:`<div class="empty">Sem dados.</div>`;
@@ -774,9 +781,9 @@ function renderTime(){
 function renderPerfil(){
   const d=filtered(),ps=perfisList();
   const data=ps.map(p=>({p,q:sum(d.filter(r=>r.Perfil===p).map(r=>r.Quant))}));
-  const max=Math.max(...data.map(o=>o.q),1),W=700,H=320,pl=44,pr=60,pt=16,pb=16,ih=H-pt-pb,rowH=ih/Math.max(data.length,1);
+  const max=Math.max(...data.map(o=>o.q),1),W=700,H=480,pl=44,pr=60,pt=14,pb=14,ih=H-pt-pb,rowH=ih/Math.max(data.length,1);
   let g=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet">`;
-  data.forEach((o,i)=>{const yc=pt+i*rowH+rowH/2,bw=(o.q/max)*(W-pl-pr),bh=Math.min(26,rowH*0.55),op=(state.highlight&&state.highlight!==o.p)?0.3:1;
+  data.forEach((o,i)=>{const yc=pt+i*rowH+rowH/2,bw=(o.q/max)*(W-pl-pr),bh=Math.min(30,rowH*0.66),op=(state.highlight&&state.highlight!==o.p)?0.3:1;
     g+=`<text x="6" y="${yc+5}" class="glabel" style="fill:${PC[o.p]};font-size:13px">${o.p}</text>`;
     g+=`<rect x="${pl}" y="${yc-bh/2}" width="${W-pl-pr}" height="${bh}" rx="3" fill="var(--panel2)"/>`;
     g+=`<rect x="${pl}" y="${yc-bh/2}" width="${bw}" height="${bh}" rx="3" fill="${PC[o.p]}" opacity="${op}"/>`;
@@ -808,20 +815,17 @@ function renderPerfilSub(){
   const data=ps.map(p=>({p,
     int:sum(d.filter(r=>r.Perfil===p&&r.SubTipo==="Inteiros").map(r=>r.Quant)),
     part:sum(d.filter(r=>r.Perfil===p&&r.SubTipo==="Partidos").map(r=>r.Quant))}));
-  const max=Math.max(...data.map(o=>o.int+o.part),1),W=700,H=320,pl=44,pr=60,pt=16,pb=30,ih=H-pt-pb,rowH=ih/Math.max(data.length,1);
+  const max=Math.max(...data.map(o=>o.int+o.part),1),W=700,H=480,pl=44,pr=60,pt=14,pb=14,ih=H-pt-pb,rowH=ih/Math.max(data.length,1);
   let g=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet">`;
-  data.forEach((o,i)=>{const yc=pt+i*rowH+rowH/2,bh=Math.min(26,rowH*0.55),tot=o.int+o.part;
+  data.forEach((o,i)=>{const yc=pt+i*rowH+rowH/2,bh=Math.min(30,rowH*0.66),tot=o.int+o.part;
     const wI=(o.int/max)*(W-pl-pr),wP=(o.part/max)*(W-pl-pr);
     g+=`<text x="6" y="${yc+5}" class="glabel" style="fill:${PC[o.p]};font-size:13px">${o.p}</text>`;
     g+=`<rect x="${pl}" y="${yc-bh/2}" width="${W-pl-pr}" height="${bh}" rx="3" fill="var(--panel2)"/>`;
     g+=`<rect x="${pl}" y="${yc-bh/2}" width="${wI}" height="${bh}" rx="3" fill="${CI}"/>`;
     g+=`<rect x="${pl+wI}" y="${yc-bh/2}" width="${wP}" height="${bh}" fill="${CP}"/>`;
-    if(o.int&&wI>18)g+=`<text x="${pl+wI/2}" y="${yc+4}" text-anchor="middle" style="fill:#fff;font-size:10px;font-weight:700">${o.int}</text>`;
-    if(o.part&&wP>18)g+=`<text x="${pl+wI+wP/2}" y="${yc+4}" text-anchor="middle" style="fill:#fff;font-size:10px;font-weight:700">${o.part}</text>`;
+    if(o.int&&wI>20)g+=`<text x="${pl+wI/2}" y="${yc+4}" text-anchor="middle" style="fill:#fff;font-size:11px;font-weight:700">${o.int}</text>`;
+    if(o.part&&wP>20)g+=`<text x="${pl+wI+wP/2}" y="${yc+4}" text-anchor="middle" style="fill:#fff;font-size:11px;font-weight:700">${o.part}</text>`;
     g+=`<text x="${pl+wI+wP+8}" y="${yc+5}" class="gval">${tot}</text>`;});
-  // legenda
-  g+=`<rect x="${pl}" y="${H-14}" width="12" height="12" rx="2" fill="${CI}"/><text x="${pl+18}" y="${H-4}" class="glabel">Inteiros</text>`;
-  g+=`<rect x="${pl+100}" y="${H-14}" width="12" height="12" rx="2" fill="${CP}"/><text x="${pl+118}" y="${H-4}" class="glabel">Partidos</text>`;
   g+=`</svg>`;el.innerHTML=g;
 }
 function renderPerfis(){
@@ -1145,7 +1149,8 @@ function init(){
     if(t==="mqt")renderMQT();
     if(t==="prod")prodRender();
     document.getElementById("hdEyebrow").textContent=EB;
-    document.getElementById("hdTitle").textContent=cfg.title;
+    const _t=cfg.title,_i=_t.indexOf(" ");
+    document.getElementById("hdTitle").innerHTML=_i<0?`<span class="secid">${_t}</span>`:`<span class="secid">${_t.slice(0,_i)}</span>${_t.slice(_i)}`;
     document.getElementById("hdSub").textContent=cfg.sub;
   });
   const openRec=()=>{const s=document.getElementById("secRec");if(s)s.open=true;};
