@@ -34,8 +34,7 @@
 
   header{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:2px solid var(--accent);padding-bottom:14px;margin-bottom:20px;flex-wrap:wrap;gap:12px}
   .eyebrow{font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:var(--accent);font-weight:700}
-  h1{font-size:25px;font-weight:500;letter-spacing:-.3px;margin-top:3px}
-  h1 .secid{font-weight:800;color:var(--accent)}
+  h1{font-size:25px;font-weight:700;letter-spacing:-.3px;margin-top:3px}
   .sub{color:var(--muted);font-size:13px;margin-top:2px}
   .htools{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
   .theme{display:flex;gap:4px;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:3px}
@@ -58,6 +57,7 @@
   input::placeholder{color:var(--faint)}
 
   /* Secção MQT */
+  #mqtTable{table-layout:fixed}
   #mqtTable td{padding:8px 10px}
   #mqtTable td.id{font-weight:700;color:var(--accent);white-space:nowrap}
   #mqtTable td.desc{text-align:left;cursor:help;position:relative}
@@ -152,6 +152,7 @@
   .temabar button{background:none;border:none;color:var(--muted);font-size:11px;font-weight:600;padding:5px 10px;border-radius:5px;cursor:pointer;font-family:inherit;letter-spacing:.3px}
   .temabar button:hover{color:var(--txt)}
   .temabar button.active{background:var(--accent);color:#1a1207}
+  .temabar button b{font-weight:800}
 
   /* Gate Superadmin: sem sessão de admin, esconde formulários e ações de escrita */
   #adminBtn.active{background:var(--accent);border-color:var(--accent);color:#1a1207}
@@ -182,7 +183,7 @@
   <header>
     <div>
       <div class="eyebrow" id="hdEyebrow">Empreitada de Reabilitação do Esporão Sul de Espinho</div>
-      <h1 id="hdTitle"><span class="secid">2.</span> MQT / PROJ</h1>
+      <h1 id="hdTitle">2. MQT / PROJ</h1>
       <div class="sub" id="hdSub">Mapa de Quantidades e Trabalhos</div>
     </div>
     <div class="htools">
@@ -192,17 +193,17 @@
         <button data-th="dark">Escuro</button>
         <button data-th="system">Sistema</button>
       </div>
-      <div class="badge">v26.08.10.1500</div>
+      <div class="badge">v26.08.10.1545</div>
     </div>
   </header>
 
   <div class="temabar">
     <span class="temalabel">Secção:</span>
     <div class="segwrap">
-      <button data-tema="mqt" class="active">2. MQT / PROJ</button>
-      <button data-tema="remocao">2.1 Remoção</button>
-      <button data-tema="colocacao">2.6 Colocação</button>
-      <button data-tema="prod">2.8.1 Produção</button>
+      <button data-tema="mqt" class="active"><b>2.</b> MQT / PROJ</button>
+      <button data-tema="remocao"><b>2.1</b> Remoção</button>
+      <button data-tema="colocacao"><b>2.6</b> Colocação</button>
+      <button data-tema="prod"><b>2.8.1</b> Produção</button>
     </div>
   </div>
 
@@ -213,8 +214,8 @@
       <div class="mqtwrap">
         <table id="mqtTable">
           <thead><tr>
-            <th>Id</th><th style="text-align:left">Descrição</th><th>Un</th>
-            <th style="text-align:right">Quant</th><th style="text-align:right">Pr. Unit. (€)</th><th style="text-align:right">Total (€)</th>
+            <th style="width:6%">Id</th><th style="text-align:left;width:43%">Descrição</th><th style="width:6%">Un</th>
+            <th style="text-align:right;width:15%">Quant</th><th style="text-align:right;width:15%">Pr. Unit. (€)</th><th style="text-align:right;width:15%">Total (€)</th>
           </tr></thead>
           <tbody id="mqtBody"></tbody>
         </table>
@@ -770,8 +771,7 @@ function renderTime(){
   if(n){
     g+=`<path d="M ${x(0)} ${y(0)} ${vals.map((v,i)=>`L ${x(i)} ${y(v)}`).join(" ")} L ${x(n-1)} ${y(0)} Z" fill="var(--accent)" opacity="0.12"/>`;
     g+=`<path d="${vals.map((v,i)=>`${i?"L":"M"} ${x(i)} ${y(v)}`).join(" ")}" fill="none" stroke="var(--accent)" stroke-width="3"/>`;
-    const step=Math.ceil(n/28);
-    vals.forEach((v,i)=>{g+=`<circle cx="${x(i)}" cy="${y(v)}" r="4" fill="var(--accent)"/>`;if(i%step===0||i===n-1)g+=`<text x="${x(i)}" y="${y(v)-11}" text-anchor="middle" class="gval">${v}</text>`;});
+    vals.forEach((v,i)=>{g+=`<circle cx="${x(i)}" cy="${y(v)}" r="4" fill="var(--accent)"/><text x="${x(i)}" y="${y(v)-11}" text-anchor="middle" class="gval">${v}</text>`;});
     const lstep=Math.ceil(n/22);
     labels.forEach((lb,i)=>{if(i%lstep===0||i===n-1)g+=`<text x="${x(i)}" y="${H-18}" text-anchor="middle" class="glabel">${lb}</text>`;});
   }
@@ -824,8 +824,7 @@ function renderPerfilSub(){
     g+=`<rect x="${pl}" y="${yc-bh/2}" width="${wI}" height="${bh}" rx="3" fill="${CI}"/>`;
     g+=`<rect x="${pl+wI}" y="${yc-bh/2}" width="${wP}" height="${bh}" fill="${CP}"/>`;
     if(o.int&&wI>20)g+=`<text x="${pl+wI/2}" y="${yc+4}" text-anchor="middle" style="fill:#fff;font-size:11px;font-weight:700">${o.int}</text>`;
-    if(o.part&&wP>20)g+=`<text x="${pl+wI+wP/2}" y="${yc+4}" text-anchor="middle" style="fill:#fff;font-size:11px;font-weight:700">${o.part}</text>`;
-    g+=`<text x="${pl+wI+wP+8}" y="${yc+5}" class="gval">${tot}</text>`;});
+    if(o.part&&wP>20)g+=`<text x="${pl+wI+wP/2}" y="${yc+4}" text-anchor="middle" style="fill:#fff;font-size:11px;font-weight:700">${o.part}</text>`;});
   g+=`</svg>`;el.innerHTML=g;
 }
 function renderPerfis(){
@@ -1149,8 +1148,7 @@ function init(){
     if(t==="mqt")renderMQT();
     if(t==="prod")prodRender();
     document.getElementById("hdEyebrow").textContent=EB;
-    const _t=cfg.title,_i=_t.indexOf(" ");
-    document.getElementById("hdTitle").innerHTML=_i<0?`<span class="secid">${_t}</span>`:`<span class="secid">${_t.slice(0,_i)}</span>${_t.slice(_i)}`;
+    document.getElementById("hdTitle").textContent=cfg.title;
     document.getElementById("hdSub").textContent=cfg.sub;
   });
   const openRec=()=>{const s=document.getElementById("secRec");if(s)s.open=true;};
