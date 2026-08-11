@@ -71,6 +71,8 @@
   td.desc:hover .tip{visibility:visible;opacity:1}
   /* Coluna Sub Tipo escondida na secção Colocação */
   #temaRC.mode-col .colSub{display:none}
+  #temaRC.mode-col #cardPerfilSub{display:none}
+  #temaRC.mode-col #distGrid{grid-template-columns:1fr}
   .fisc-ok{color:#4caf72;font-weight:800}
   .fisc-alt{color:#f4a259;font-weight:800}
   .fisc-none{color:var(--faint)}
@@ -185,7 +187,7 @@
         <button data-th="dark">Escuro</button>
         <button data-th="system">Sistema</button>
       </div>
-      <div class="badge">v26.08.10.1300</div>
+      <div class="badge">v26.08.10.1400</div>
     </div>
   </header>
 
@@ -262,20 +264,25 @@
     <div class="secbody"><div class="perfis" id="perfis"></div></div>
   </details>
 
-  <div class="grid">
-    <div class="card">
-      <h2>Evolução Temporal</h2>
-      <div class="toggle">
-        <button class="btn" data-mode="month">Mês</button>
-        <button class="btn" data-mode="week">Semana</button>
-        <button class="btn" data-mode="day">Dia</button>
-        <button class="btn active" data-mode="cum">Acumulado</button>
-      </div>
-      <div class="chartbox" id="chartTime"></div>
+  <div class="card">
+    <h2>Evolução Temporal</h2>
+    <div class="toggle">
+      <button class="btn" data-mode="month">Mês</button>
+      <button class="btn" data-mode="week">Semana</button>
+      <button class="btn" data-mode="day">Dia</button>
+      <button class="btn active" data-mode="cum">Acumulado</button>
     </div>
+    <div class="chartbox" id="chartTime"></div>
+  </div>
+
+  <div class="grid" id="distGrid">
     <div class="card">
       <h2>Distribuição por Perfil</h2>
       <div class="chartbox" id="chartPerfil"></div>
+    </div>
+    <div class="card" id="cardPerfilSub">
+      <h2>Por Perfil &middot; Inteiros e Partidos</h2>
+      <div class="chartbox" id="chartPerfilSub"></div>
     </div>
   </div>
 
@@ -608,8 +615,8 @@ let state={rcMode:"Remoção",mes:"Todos",semana:"Todas",dia:"",sub:"Todos",perf
 
 /* ===== MQT / PROJ ===== */
 const MQT_DATA=[{"Id": "2.1", "Descricao": "Remoção de Tetrápodes (Inteiros e Partidos | 30 tf)", "PopUP": "Remoção de tetrápodes e de tetrápodes partidos do manto do talude sul e cabeça", "Un": "un", "Quant": 384.0, "PrUnit": 218.51, "Total": 83907.84}, {"Id": "2.2", "Descricao": "Enrocamento (Coroamente do Manto | 12 a 15 tf)", "PopUP": "Remoção e posterior reposição de enrocamento de 12 a 15 tf do remate do coroamento do manto de tetrápodes", "Un": "m3", "Quant": 800.0, "PrUnit": 39.42, "Total": 31536.0}, {"Id": "2.3", "Descricao": "Enrocamento (Cabeça -> Talude Sul | 12 a 15 tf)", "PopUP": "Remoção de enrocamento de 12 a 15 tf  do manto para execução da transição da cabeça para o talude norte", "Un": "m3", "Quant": 700.0, "PrUnit": 40.82, "Total": 28574.0}, {"Id": "2.4", "Descricao": "Remoção de Materiais de Qualquer Natureza", "PopUP": "Remoção de materiais de qualquer natureza (areia, enrocamento, bocados de terápodes) para reconstrução da banqueta de pé de talude", "Un": "m3", "Quant": 3000.0, "PrUnit": 46.1, "Total": 138300.0}, {"Id": "2.5", "Descricao": "Enrocamento (Banqueta | 12 a 15 tf)", "PopUP": "Reconstrução da banqueta de pé de talude em enrocamento de 12 a 15 tf", "Un": "m3", "Quant": 1900.0, "PrUnit": 55.85, "Total": 106115.0}, {"Id": "2.6", "Descricao": "Colocação de Tetrápodes Recuperados (Cabeça e Talude Sul)", "PopUP": "Colocação de tetrápodes recuperados da cabeça e do talude sul na reconstituição do manto de protecção do talude sul", "Un": "un", "Quant": 161.0, "PrUnit": 411.04, "Total": 66177.44}, {"Id": "2.7", "Descricao": "Transporte e Depósito Tetrápodes Recuperados e não Utilizados (Cabeça e Sul)", "PopUP": "Transporte a depósito de tetrápodes recuperados da cabeça e do talude sul e não utilizados na reconstituição do manto de protecção do talude sul (depósito localizado num raio de 2,5Km de distância ao local da obra)", "Un": "un", "Quant": 108.0, "PrUnit": 313.84, "Total": 33894.719999999994}, {"Id": "2.8", "Descricao": "nan", "PopUP": "Fornecimento e colocação de tetrápodes de 34,4 tf, em betão NP EN 206-1: C35/45, XA1 (Pt), Cl 1.0, Dmax20, S3, simples", "Un": "", "Quant": null, "PrUnit": null, "Total": null}, {"Id": "2.8.1", "Descricao": "Produção de Tetrápodes Novos", "PopUP": "Fabrico e colocação em depósito dos tetrápodes", "Un": "un", "Quant": 360.0, "PrUnit": 2534.16, "Total": 912297.6}, {"Id": "2.8.2", "Descricao": "Transporte e Colocação de Tetrápodes Novos", "PopUP": "Transporte e colocação de tetrápodes", "Un": "un", "Quant": 360.0, "PrUnit": 539.93, "Total": 194374.8}, {"Id": "2.9", "Descricao": "Enrocamento (Submanto | 1 a 4 tf)", "PopUP": "Fornecimento e colocação de enrocamento de 1 a 4 tf no submanto na transição entre o talude sul e a cabeça", "Un": "m3", "Quant": 500.0, "PrUnit": 41.0, "Total": 20500.0}, {"Id": "2.10", "Descricao": "Enrocamento (Talude Norte -> Cabeça | 12 a 15 tf)", "PopUP": "Fornecimento e colocação de enrocamento de 12 a 15 tf no manto da transição entre o talude norte e a cabeça", "Un": "m3", "Quant": 1200.0, "PrUnit": 51.69, "Total": 62028.0}, {"Id": "2.11", "Descricao": "Fornecimento, Transporte e Colocação de Betão", "PopUP": "Fornecimento, transporte e colocação de betão simples C30/37, XA1, Dmax=25mm, para rematar o capeamento da superestrutura junto dos blocos no coroamento", "Un": "m3", "Quant": 50.0, "PrUnit": 196.26, "Total": 9813.0}];
-const fmtN=(x,d=0)=>x==null?"":Number(x).toLocaleString("pt-PT",{minimumFractionDigits:d,maximumFractionDigits:d});
-const fmtE=x=>x==null?"":Number(x).toLocaleString("pt-PT",{minimumFractionDigits:2,maximumFractionDigits:2});
+const fmtN=(x,d=0)=>x==null?"":Number(x).toLocaleString("pt-PT",{minimumFractionDigits:d,maximumFractionDigits:d,useGrouping:"always"});
+const fmtE=x=>x==null?"":Number(x).toLocaleString("pt-PT",{minimumFractionDigits:2,maximumFractionDigits:2,useGrouping:"always"});
 function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
 function renderMQT(){
   let total=0;
@@ -794,21 +801,49 @@ function renderSemana(){
   ps.forEach((p,i)=>{const lx=pl+i*120;g+=`<rect x="${lx}" y="${H-18}" width="12" height="12" rx="2" fill="${PC[p]}"/><text x="${lx+17}" y="${H-8}" class="glabel">${p}</text>`;});
   g+=`</svg>`;document.getElementById("chartSemana").innerHTML=sems.length?g:`<div class="empty">Sem dados.</div>`;
 }
-function renderPerfis(){
+function renderPerfilSub(){
+  const el=document.getElementById("chartPerfilSub");if(!el)return;
   const d=filtered(),ps=perfisList();
+  const CI="#4895ef",CP="#f07b3f"; // Inteiros / Partidos
+  const data=ps.map(p=>({p,
+    int:sum(d.filter(r=>r.Perfil===p&&r.SubTipo==="Inteiros").map(r=>r.Quant)),
+    part:sum(d.filter(r=>r.Perfil===p&&r.SubTipo==="Partidos").map(r=>r.Quant))}));
+  const max=Math.max(...data.map(o=>o.int+o.part),1),W=700,H=320,pl=44,pr=60,pt=16,pb=30,ih=H-pt-pb,rowH=ih/Math.max(data.length,1);
+  let g=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet">`;
+  data.forEach((o,i)=>{const yc=pt+i*rowH+rowH/2,bh=Math.min(26,rowH*0.55),tot=o.int+o.part;
+    const wI=(o.int/max)*(W-pl-pr),wP=(o.part/max)*(W-pl-pr);
+    g+=`<text x="6" y="${yc+5}" class="glabel" style="fill:${PC[o.p]};font-size:13px">${o.p}</text>`;
+    g+=`<rect x="${pl}" y="${yc-bh/2}" width="${W-pl-pr}" height="${bh}" rx="3" fill="var(--panel2)"/>`;
+    g+=`<rect x="${pl}" y="${yc-bh/2}" width="${wI}" height="${bh}" rx="3" fill="${CI}"/>`;
+    g+=`<rect x="${pl+wI}" y="${yc-bh/2}" width="${wP}" height="${bh}" fill="${CP}"/>`;
+    if(o.int&&wI>18)g+=`<text x="${pl+wI/2}" y="${yc+4}" text-anchor="middle" style="fill:#fff;font-size:10px;font-weight:700">${o.int}</text>`;
+    if(o.part&&wP>18)g+=`<text x="${pl+wI+wP/2}" y="${yc+4}" text-anchor="middle" style="fill:#fff;font-size:10px;font-weight:700">${o.part}</text>`;
+    g+=`<text x="${pl+wI+wP+8}" y="${yc+5}" class="gval">${tot}</text>`;});
+  // legenda
+  g+=`<rect x="${pl}" y="${H-14}" width="12" height="12" rx="2" fill="${CI}"/><text x="${pl+18}" y="${H-4}" class="glabel">Inteiros</text>`;
+  g+=`<rect x="${pl+100}" y="${H-14}" width="12" height="12" rx="2" fill="${CP}"/><text x="${pl+118}" y="${H-4}" class="glabel">Partidos</text>`;
+  g+=`</svg>`;el.innerHTML=g;
+}
+function renderPerfis(){
+  const d=filtered(),ps=perfisList(),rem=state.rcMode==="Remoção";
   document.getElementById("perfis").innerHTML=ps.map(p=>{
     const rows=d.filter(r=>r.Perfil===p),tot=sum(rows.map(r=>r.Quant));
     const part=sum(rows.filter(r=>r.SubTipo==="Partidos").map(r=>r.Quant));
     const int=sum(rows.filter(r=>r.SubTipo==="Inteiros").map(r=>r.Quant));
-    const col=sum(rows.filter(r=>r.Tipo==="Colocação").map(r=>r.Quant));
-    const body=rows.length?rows.slice().sort((a,b)=>a.Data<b.Data?1:-1).map(r=>
-      `<tr><td class="l">${fmtD(r.Data)}</td><td>${r.SubTipo==="-"?"Coloc.":r.SubTipo}</td><td>${r.Quant}</td></tr>`).join("")
-      :`<tr><td colspan="3" class="empty" style="padding:14px">Sem registos</td></tr>`;
     const dim=(state.highlight&&state.highlight!==p)?"dim":"";
+    const meta=rem
+      ?`<div class="pmeta"><span>Inteiros <b>${int}</b></span><span>Partidos <b>${part}</b></span></div>`
+      :`<div class="pmeta"><span>Registos <b>${rows.length}</b></span></div>`;
+    const cols=rem?3:2;
+    const head=rem?`<tr><th>Data</th><th>Sub Tipo</th><th>Qt</th></tr>`:`<tr><th>Data</th><th>Qt</th></tr>`;
+    const body=rows.length?rows.slice().sort((a,b)=>a.Data<b.Data?1:-1).map(r=>
+      rem?`<tr><td class="l">${fmtD(r.Data)}</td><td>${r.SubTipo}</td><td>${r.Quant}</td></tr>`
+         :`<tr><td class="l">${fmtD(r.Data)}</td><td>${r.Quant}</td></tr>`).join("")
+      :`<tr><td colspan="${cols}" class="empty" style="padding:14px">Sem registos</td></tr>`;
     return `<div class="pcard ${dim}" onclick="toggleHL('${p}')">
       <div class="phead" style="background:${PC[p]}1a"><span class="ptag" style="color:${PC[p]}">${p}</span><span class="ptot">${tot}</span></div>
-      <div class="pmeta"><span>Inteiros <b>${int}</b></span><span>Partidos <b>${part}</b></span><span>Coloc. <b>${col}</b></span></div>
-      <table><thead><tr><th>Data</th><th>Sub Tipo</th><th>Qt</th></tr></thead><tbody>${body}</tbody></table></div>`;
+      ${meta}
+      <table><thead>${head}</thead><tbody>${body}</tbody></table></div>`;
   }).join("");
 }
 function toggleHL(p){state.highlight=state.highlight===p?null:p;render();}
@@ -1084,7 +1119,7 @@ function prodRender(){
 }
 
 function render(){
-  buildPC();buildFilters();renderKPIs();renderRecTable();renderPerfis();renderTime();renderPerfil();
+  buildPC();buildFilters();renderKPIs();renderRecTable();renderPerfis();renderTime();renderPerfil();renderPerfilSub();
   const fg=document.getElementById("fgRSub");if(fg)fg.style.display=state.rcMode==="Remoção"?"":"none";
   const fn=document.getElementById("fnote");if(fn)fn.textContent="";
 }
@@ -1121,7 +1156,7 @@ function init(){
   document.getElementById("fDia").onchange=e=>{state.dia=e.target.value;openRec();render();};
   document.querySelectorAll("[data-mode]").forEach(b=>b.onclick=()=>{state.timeMode=b.dataset.mode;document.querySelectorAll("[data-mode]").forEach(x=>x.classList.toggle("active",x===b));renderTime();});
   document.querySelectorAll("#recTable th[data-k]").forEach(th=>th.onclick=()=>{const k=th.dataset.k;if(state.sortK===k)state.sortDir*=-1;else{state.sortK=k;state.sortDir=1;}renderRecTable();});
-  document.getElementById("reset").onclick=()=>{state=Object.assign({},state,{mes:"Todos",semana:"Todas",dia:"",sub:"Todos",perfil:"Todos",highlight:null,sortK:null,editId:null});render();};
+  document.getElementById("reset").onclick=()=>{state=Object.assign({},state,{mes:"Todos",semana:"Todas",dia:"",sub:"Todos",perfil:"Todos",highlight:null,sortK:null,editId:null});const s=document.getElementById("secRec");if(s)s.open=false;render();};
   document.getElementById("csv").onclick=()=>{
     const d=filtered(),head="Data,Semana,Mes,Sub Tipo,Perfil,Quant,Fisc";
     const body=d.map(r=>`${r.Data},${r.Semana},${r.Mes},${r.SubTipo},${r.Perfil},${r.Quant},${r.Fisc==null?"":r.Fisc}`).join("\n");
