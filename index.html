@@ -52,7 +52,9 @@
   .filters{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:13px 16px;margin-bottom:16px;display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end}
   .fgroup{display:flex;flex-direction:column;gap:5px}
   .flabel{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;font-weight:600}
-  select,input[type=date],input[type=number]{background:var(--field);color:var(--fieldtx);border:1px solid var(--line);border-radius:7px;padding:7px 10px;font-size:13px;font-family:inherit;min-width:120px}
+  select,input[type=date],input[type=number],input[type=text]{background:var(--field);color:var(--fieldtx);border:1px solid var(--line);border-radius:7px;padding:7px 10px;font-size:13px;font-family:inherit;min-width:120px}
+  input[readonly]{color:var(--muted);cursor:default}
+  input::placeholder{color:var(--faint)}
   .btn{background:var(--panel2);color:var(--txt);border:1px solid var(--line);padding:8px 13px;border-radius:7px;font-size:12.5px;cursor:pointer;font-family:inherit;font-weight:600;transition:.12s}
   .btn:hover{border-color:var(--accent)}
   .btn.active{background:var(--accent);border-color:var(--accent);color:#1a1207}
@@ -164,7 +166,7 @@
         <button data-th="dark">Escuro</button>
         <button data-th="system">Sistema</button>
       </div>
-      <div class="badge">v26.07.31.1100</div>
+      <div class="badge">v26.08.10.1000</div>
     </div>
   </header>
 
@@ -505,10 +507,34 @@ const LOTE_20260731=[
  {Semana:30,Mes:"2026-07",Data:"2026-07-20",Tipo:"Colocação",SubTipo:"-",Quant:2,Perfil:"P4"}
 ];
 
+const LOTE_20260810=[
+ {Semana:33,Mes:"2026-08",Data:"2026-08-10",Tipo:"Remoção",SubTipo:"Partidos",Quant:4,Perfil:"P13"},
+ {Semana:32,Mes:"2026-08",Data:"2026-08-07",Tipo:"Remoção",SubTipo:"Partidos",Quant:1,Perfil:"P14"},
+ {Semana:32,Mes:"2026-08",Data:"2026-08-06",Tipo:"Remoção",SubTipo:"Partidos",Quant:2,Perfil:"P14"},
+ {Semana:32,Mes:"2026-08",Data:"2026-08-04",Tipo:"Remoção",SubTipo:"Partidos",Quant:8,Perfil:"P14"},
+ {Semana:33,Mes:"2026-08",Data:"2026-08-10",Tipo:"Remoção",SubTipo:"Inteiros",Quant:4,Perfil:"P13"},
+ {Semana:33,Mes:"2026-08",Data:"2026-08-10",Tipo:"Remoção",SubTipo:"Inteiros",Quant:2,Perfil:"P14"},
+ {Semana:33,Mes:"2026-08",Data:"2026-08-10",Tipo:"Remoção",SubTipo:"Inteiros",Quant:3,Perfil:"P11N"},
+ {Semana:32,Mes:"2026-08",Data:"2026-08-07",Tipo:"Remoção",SubTipo:"Inteiros",Quant:6,Perfil:"P11N"},
+ {Semana:32,Mes:"2026-08",Data:"2026-08-06",Tipo:"Remoção",SubTipo:"Inteiros",Quant:4,Perfil:"P13"},
+ {Semana:32,Mes:"2026-08",Data:"2026-08-06",Tipo:"Remoção",SubTipo:"Inteiros",Quant:9,Perfil:"P11N"},
+ {Semana:32,Mes:"2026-08",Data:"2026-08-06",Tipo:"Remoção",SubTipo:"Inteiros",Quant:8,Perfil:"P14"},
+ {Semana:32,Mes:"2026-08",Data:"2026-08-05",Tipo:"Remoção",SubTipo:"Inteiros",Quant:7,Perfil:"P11N"},
+ {Semana:32,Mes:"2026-08",Data:"2026-08-04",Tipo:"Remoção",SubTipo:"Inteiros",Quant:4,Perfil:"P14"},
+ {Semana:32,Mes:"2026-08",Data:"2026-08-06",Tipo:"Colocação",SubTipo:"-",Quant:6,Perfil:"P6"},
+ {Semana:32,Mes:"2026-08",Data:"2026-08-06",Tipo:"Colocação",SubTipo:"-",Quant:2,Perfil:"P8"},
+ {Semana:32,Mes:"2026-08",Data:"2026-08-06",Tipo:"Colocação",SubTipo:"-",Quant:6,Perfil:"P7"},
+ {Semana:32,Mes:"2026-08",Data:"2026-08-06",Tipo:"Colocação",SubTipo:"-",Quant:1,Perfil:"P5"},
+ {Semana:32,Mes:"2026-08",Data:"2026-08-05",Tipo:"Colocação",SubTipo:"-",Quant:1,Perfil:"P5"},
+ {Semana:32,Mes:"2026-08",Data:"2026-08-05",Tipo:"Colocação",SubTipo:"-",Quant:4,Perfil:"P7"},
+ {Semana:32,Mes:"2026-08",Data:"2026-08-05",Tipo:"Colocação",SubTipo:"-",Quant:3,Perfil:"P6"}
+];
+
 let records=[],seq=0;
 const IMPORTS=[
   {id:"base", recs:SEED_DATA},
-  {id:"2026-07-31", recs:LOTE_20260731}
+  {id:"2026-07-31", recs:LOTE_20260731},
+  {id:"2026-08-10", recs:LOTE_20260810}
 ];
 const keyOf=r=>r.Data+"|"+r.Tipo+"|"+r.SubTipo+"|"+r.Perfil+"|"+r.Quant;
 function loadRecords(){
