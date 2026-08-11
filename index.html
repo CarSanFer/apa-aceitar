@@ -69,6 +69,11 @@
     padding:9px 12px;font-size:12px;font-weight:400;line-height:1.5;max-width:420px;width:max-content;
     box-shadow:0 10px 30px #0007;transition:opacity .12s;pointer-events:none;text-transform:none;letter-spacing:0}
   td.desc:hover .tip{visibility:visible;opacity:1}
+  /* Coluna Sub Tipo escondida na secção Colocação */
+  #temaRC.mode-col .colSub{display:none}
+  .fisc-ok{color:#4caf72;font-weight:800}
+  .fisc-alt{color:#f4a259;font-weight:800}
+  .fisc-none{color:var(--faint)}
   .btn{background:var(--panel2);color:var(--txt);border:1px solid var(--line);padding:8px 13px;border-radius:7px;font-size:12.5px;cursor:pointer;font-family:inherit;font-weight:600;transition:.12s}
   .btn:hover{border-color:var(--accent)}
   .btn.active{background:var(--accent);border-color:var(--accent);color:#1a1207}
@@ -180,7 +185,7 @@
         <button data-th="dark">Escuro</button>
         <button data-th="system">Sistema</button>
       </div>
-      <div class="badge">v26.08.10.1200</div>
+      <div class="badge">v26.08.10.1300</div>
     </div>
   </header>
 
@@ -219,31 +224,10 @@
     <div class="fgroup"><span class="flabel">Mês</span><select id="fMes"></select></div>
     <div class="fgroup"><span class="flabel">Semana</span><select id="fSemana"></select></div>
     <div class="fgroup"><span class="flabel">Dia</span><input type="date" id="fDia"></div>
-    <div class="fgroup" id="fgTipo"><span class="flabel">Tipo</span><select id="fTipo"></select></div>
     <div class="fgroup" id="fgSub"><span class="flabel">Sub Tipo</span><select id="fSub"></select></div>
+    <div class="fgroup"><span class="flabel">Perfil</span><select id="fPerfil"></select></div>
     <button class="btn" id="reset">Limpar</button>
     <button class="btn spacer" id="csv">Exportar CSV</button>
-  </div>
-
-  <div class="grid">
-    <div class="card">
-      <h2>Evolução Temporal</h2>
-      <div class="toggle">
-        <button class="btn active" data-mode="cum">Acumulado</button>
-        <button class="btn" data-mode="day">Por dia</button>
-        <button class="btn" data-mode="week">Por semana</button>
-      </div>
-      <div class="chartbox" id="chartTime"></div>
-    </div>
-    <div class="card">
-      <h2>Distribuição por Perfil</h2>
-      <div class="chartbox" id="chartPerfil"></div>
-    </div>
-  </div>
-
-  <div class="card">
-    <h2>Quantidade por Semana e Perfil</h2>
-    <div id="chartSemana"></div>
   </div>
 
   <details class="sec" id="secRec">
@@ -253,18 +237,18 @@
         <div class="fgroup"><span class="flabel">Dia</span><input type="date" id="rDia"></div>
         <div class="fgroup"><span class="flabel">Semana</span><input type="number" id="rSemana" min="1" max="53" style="min-width:90px"></div>
         <div class="fgroup"><span class="flabel">Mês</span><input type="text" id="rMes" readonly style="min-width:90px" placeholder="auto"></div>
-        <div class="fgroup" id="fgRTipo"><span class="flabel">Tipo</span><select id="rTipo"><option>Remoção</option><option>Colocação</option></select></div>
         <div class="fgroup" id="fgRSub"><span class="flabel">Sub Tipo</span><select id="rSub"><option>Inteiros</option><option>Partidos</option></select></div>
         <div class="fgroup"><span class="flabel">Perfil</span><select id="rPerfil"><option>P1</option><option>P2</option><option>P3</option><option>P4</option><option>P5</option><option>P6</option><option>P7</option><option>P8</option><option>P9</option><option>P10</option><option>P11</option><option>P12</option><option>P13</option><option>P14</option></select></div>
-        <div class="fgroup"><span class="flabel">Quant</span><input type="number" id="rQuant" min="1" value="1" style="min-width:80px"></div>
+        <div class="fgroup"><span class="flabel" id="rQuantLbl">Quant</span><input type="number" id="rQuant" min="1" value="1" style="min-width:80px"></div>
         <button class="btn amber" id="rAdd">Adicionar</button>
       </div>
       <div class="rectable">
         <table id="recTable">
           <thead><tr>
             <th data-k="Data">Dia</th><th data-k="Semana">Semana</th><th data-k="Mes">Mês</th>
-            <th data-k="Tipo">Tipo</th><th data-k="SubTipo">Sub Tipo</th>
-            <th data-k="Perfil">Perfil</th><th data-k="Quant">Quant</th>
+            <th data-k="SubTipo" id="thSub" class="colSub">Sub Tipo</th>
+            <th data-k="Perfil">Perfil</th><th data-k="Quant" id="thQuant">Quant</th>
+            <th data-k="Fisc">Fisc.</th>
             <th>Ações</th>
           </tr></thead>
           <tbody id="recBody"></tbody>
@@ -277,6 +261,23 @@
     <summary>Listagem por Perfil</summary>
     <div class="secbody"><div class="perfis" id="perfis"></div></div>
   </details>
+
+  <div class="grid">
+    <div class="card">
+      <h2>Evolução Temporal</h2>
+      <div class="toggle">
+        <button class="btn" data-mode="month">Mês</button>
+        <button class="btn" data-mode="week">Semana</button>
+        <button class="btn" data-mode="day">Dia</button>
+        <button class="btn active" data-mode="cum">Acumulado</button>
+      </div>
+      <div class="chartbox" id="chartTime"></div>
+    </div>
+    <div class="card">
+      <h2>Distribuição por Perfil</h2>
+      <div class="chartbox" id="chartPerfil"></div>
+    </div>
+  </div>
 
   </div><!-- /temaRC -->
 
@@ -330,6 +331,7 @@
             <thead><tr>
               <th data-k="Data">Dia</th><th data-k="Semana">Semana</th><th data-k="Mes">Mês</th>
               <th data-k="Prod">Produção</th><th data-k="Rend">Rendimento</th><th data-k="Desvio">Desvio</th>
+              <th data-k="Fisc">Fisc.</th>
               <th>Ações</th>
             </tr></thead>
             <tbody id="pRecBody"></tbody>
@@ -602,7 +604,7 @@ const mesOf=s=>s.slice(0,7);                                   // "2026-06"
 const mesLabel=m=>{const p=m.split("-");return MESNOMES[+p[1]]+"/"+p[0].slice(2)}; // "Jun/26"
 function isoWeek(s){const d=new Date(s+"T00:00:00");const t=new Date(d);t.setHours(0,0,0,0);t.setDate(t.getDate()+3-((t.getDay()+6)%7));const w1=new Date(t.getFullYear(),0,4);return 1+Math.round(((t-w1)/86400000-3+((w1.getDay()+6)%7))/7);}
 
-let state={rcMode:"Remoção",mes:"Todos",semana:"Todas",dia:"",tipo:"Todos",sub:"Todos",timeMode:"cum",sortK:null,sortDir:1,highlight:null,editId:null};
+let state={rcMode:"Remoção",mes:"Todos",semana:"Todas",dia:"",sub:"Todos",perfil:"Todos",timeMode:"cum",sortK:null,sortDir:1,highlight:null,editId:null};
 
 /* ===== MQT / PROJ ===== */
 const MQT_DATA=[{"Id": "2.1", "Descricao": "Remoção de Tetrápodes (Inteiros e Partidos | 30 tf)", "PopUP": "Remoção de tetrápodes e de tetrápodes partidos do manto do talude sul e cabeça", "Un": "un", "Quant": 384.0, "PrUnit": 218.51, "Total": 83907.84}, {"Id": "2.2", "Descricao": "Enrocamento (Coroamente do Manto | 12 a 15 tf)", "PopUP": "Remoção e posterior reposição de enrocamento de 12 a 15 tf do remate do coroamento do manto de tetrápodes", "Un": "m3", "Quant": 800.0, "PrUnit": 39.42, "Total": 31536.0}, {"Id": "2.3", "Descricao": "Enrocamento (Cabeça -> Talude Sul | 12 a 15 tf)", "PopUP": "Remoção de enrocamento de 12 a 15 tf  do manto para execução da transição da cabeça para o talude norte", "Un": "m3", "Quant": 700.0, "PrUnit": 40.82, "Total": 28574.0}, {"Id": "2.4", "Descricao": "Remoção de Materiais de Qualquer Natureza", "PopUP": "Remoção de materiais de qualquer natureza (areia, enrocamento, bocados de terápodes) para reconstrução da banqueta de pé de talude", "Un": "m3", "Quant": 3000.0, "PrUnit": 46.1, "Total": 138300.0}, {"Id": "2.5", "Descricao": "Enrocamento (Banqueta | 12 a 15 tf)", "PopUP": "Reconstrução da banqueta de pé de talude em enrocamento de 12 a 15 tf", "Un": "m3", "Quant": 1900.0, "PrUnit": 55.85, "Total": 106115.0}, {"Id": "2.6", "Descricao": "Colocação de Tetrápodes Recuperados (Cabeça e Talude Sul)", "PopUP": "Colocação de tetrápodes recuperados da cabeça e do talude sul na reconstituição do manto de protecção do talude sul", "Un": "un", "Quant": 161.0, "PrUnit": 411.04, "Total": 66177.44}, {"Id": "2.7", "Descricao": "Transporte e Depósito Tetrápodes Recuperados e não Utilizados (Cabeça e Sul)", "PopUP": "Transporte a depósito de tetrápodes recuperados da cabeça e do talude sul e não utilizados na reconstituição do manto de protecção do talude sul (depósito localizado num raio de 2,5Km de distância ao local da obra)", "Un": "un", "Quant": 108.0, "PrUnit": 313.84, "Total": 33894.719999999994}, {"Id": "2.8", "Descricao": "nan", "PopUP": "Fornecimento e colocação de tetrápodes de 34,4 tf, em betão NP EN 206-1: C35/45, XA1 (Pt), Cl 1.0, Dmax20, S3, simples", "Un": "", "Quant": null, "PrUnit": null, "Total": null}, {"Id": "2.8.1", "Descricao": "Produção de Tetrápodes Novos", "PopUP": "Fabrico e colocação em depósito dos tetrápodes", "Un": "un", "Quant": 360.0, "PrUnit": 2534.16, "Total": 912297.6}, {"Id": "2.8.2", "Descricao": "Transporte e Colocação de Tetrápodes Novos", "PopUP": "Transporte e colocação de tetrápodes", "Un": "un", "Quant": 360.0, "PrUnit": 539.93, "Total": 194374.8}, {"Id": "2.9", "Descricao": "Enrocamento (Submanto | 1 a 4 tf)", "PopUP": "Fornecimento e colocação de enrocamento de 1 a 4 tf no submanto na transição entre o talude sul e a cabeça", "Un": "m3", "Quant": 500.0, "PrUnit": 41.0, "Total": 20500.0}, {"Id": "2.10", "Descricao": "Enrocamento (Talude Norte -> Cabeça | 12 a 15 tf)", "PopUP": "Fornecimento e colocação de enrocamento de 12 a 15 tf no manto da transição entre o talude norte e a cabeça", "Un": "m3", "Quant": 1200.0, "PrUnit": 51.69, "Total": 62028.0}, {"Id": "2.11", "Descricao": "Fornecimento, Transporte e Colocação de Betão", "PopUP": "Fornecimento, transporte e colocação de betão simples C30/37, XA1, Dmax=25mm, para rematar o capeamento da superestrutura junto dos blocos no coroamento", "Un": "m3", "Quant": 50.0, "PrUnit": 196.26, "Total": 9813.0}];
@@ -635,6 +637,7 @@ function filtered(){
     (state.mes==="Todos"||r.Mes===state.mes)&&
     (state.semana==="Todas"||r.Semana==+state.semana)&&
     (state.dia===""||r.Data===state.dia)&&
+    (state.perfil==="Todos"||r.Perfil===state.perfil)&&
     (state.sub==="Todos"||r.SubTipo===state.sub));
 }
 
@@ -643,13 +646,17 @@ function buildFilters(){
   const meses=["Todos"].concat([...new Set(base.map(r=>r.Mes))].sort());
   const sem=["Todas"].concat([...new Set(base.map(r=>r.Semana))].sort((a,b)=>a-b));
   const sub=["Todos","Inteiros","Partidos"];
+  const perfis=["Todos"].concat([...new Set(base.map(r=>r.Perfil))].sort(pcmp));
   document.getElementById("fMes").innerHTML=meses.map(v=>`<option value="${v}" ${v===state.mes?"selected":""}>${v==="Todos"?"Todos":mesLabel(v)}</option>`).join("");
   const fill=(id,arr,cur)=>document.getElementById(id).innerHTML=arr.map(v=>`<option ${v==cur?"selected":""}>${v}</option>`).join("");
-  fill("fSemana",sem,state.semana);fill("fSub",sub,state.sub);
+  fill("fSemana",sem,state.semana);fill("fSub",sub,state.sub);fill("fPerfil",perfis,state.perfil);
   document.getElementById("fDia").value=state.dia;
-  // o Tipo é dado pela secção; SubTipo só se aplica a Remoção
-  document.getElementById("fgTipo").style.display="none";
-  document.getElementById("fgSub").style.display=state.rcMode==="Remoção"?"":"none";
+  const rem=state.rcMode==="Remoção";
+  document.getElementById("fgSub").style.display=rem?"":"none";
+  document.getElementById("temaRC").classList.toggle("mode-col",!rem);
+  const lbl=rem?"Removidos":"Colocados";
+  document.getElementById("thQuant").textContent=lbl;
+  document.getElementById("rQuantLbl").textContent=lbl;
 }
 
 function renderKPIs(){
@@ -665,26 +672,34 @@ function renderKPIs(){
   document.getElementById("kpis").innerHTML=cards.map(c=>`<div class="kpi ${c[2]}"><div class="v">${c[1]}</div><div class="l">${c[0]}</div></div>`).join("");
 }
 
+function fiscCell(r){
+  if(r.Fisc==null||r.Fisc===undefined)
+    return isAdmin?`<td><button class="ibtn ok" title="Validar (=${r.Quant})" onclick="validar('${r.id}')">&#10003;</button></td>`
+                  :`<td class="fisc-none">&mdash;</td>`;
+  const cls=r.Fisc===r.Quant?"fisc-ok":"fisc-alt";
+  return `<td><span class="${cls}">${r.Fisc}</span></td>`;
+}
 function rowView(r){
   return `<tr>
-    <td class="l">${fmtD(r.Data)}</td><td>${r.Semana}</td><td>${mesLabel(r.Mes)}</td><td>${r.Tipo}</td><td>${r.SubTipo}</td>
+    <td class="l">${fmtD(r.Data)}</td><td>${r.Semana}</td><td>${mesLabel(r.Mes)}</td>
+    <td class="colSub">${r.SubTipo}</td>
     <td><span class="chip" style="background:${PC[r.Perfil]||"#888"}">${r.Perfil}</span></td>
     <td><b>${r.Quant}</b></td>
+    ${fiscCell(r)}
     <td><span class="iact">
       <button class="ibtn ed" title="Editar" onclick="startEdit('${r.id}')">&#9998;</button>
       <button class="ibtn del" title="Eliminar" onclick="removeRec('${r.id}')">&times;</button>
     </span></td></tr>`;
 }
 function rowEdit(r){
-  const col=r.Tipo==="Colocação";
   return `<tr>
     <td><input type="date" class="ei dia" id="e_dia" value="${r.Data}" onchange="e_recalc(this.value)"></td>
     <td><input type="number" class="ei" id="e_sem" value="${r.Semana}" style="max-width:64px"></td>
     <td><span id="e_mesLbl">${mesLabel(r.Mes)}</span><input type="hidden" id="e_mes" value="${r.Mes}"></td>
-    <td><select class="ei" id="e_tipo" onchange="onEditTipo()"><option ${r.Tipo==="Remoção"?"selected":""}>Remoção</option><option ${col?"selected":""}>Colocação</option></select></td>
-    <td><select class="ei" id="e_sub" ${col?"disabled":""}><option ${r.SubTipo==="Inteiros"?"selected":""}>Inteiros</option><option ${r.SubTipo==="Partidos"?"selected":""}>Partidos</option></select></td>
+    <td class="colSub"><select class="ei" id="e_sub"><option ${r.SubTipo==="Inteiros"?"selected":""}>Inteiros</option><option ${r.SubTipo==="Partidos"?"selected":""}>Partidos</option></select></td>
     <td><select class="ei" id="e_perfil">${perfilOptions(r.Perfil)}</select></td>
     <td><input type="number" class="ei" id="e_quant" min="1" value="${r.Quant}" style="max-width:64px"></td>
+    <td><input type="number" class="ei" id="e_fisc" value="${r.Fisc==null?"":r.Fisc}" placeholder="${r.Quant}" style="max-width:64px" title="Fiscalização (vazio = por validar)"></td>
     <td><span class="iact">
       <button class="ibtn ok" title="Guardar" onclick="saveEdit('${r.id}')">&#10003;</button>
       <button class="ibtn del" title="Cancelar" onclick="cancelEdit()">&times;</button>
@@ -693,32 +708,38 @@ function rowEdit(r){
 function e_recalc(v){if(!v)return;document.getElementById("e_sem").value=isoWeek(v);document.getElementById("e_mes").value=mesOf(v);document.getElementById("e_mesLbl").textContent=mesLabel(mesOf(v));}
 function renderRecTable(){
   let d=filtered().slice();
-  if(state.sortK)d.sort((a,b)=>{const x=a[state.sortK],y=b[state.sortK];return(x>y?1:x<y?-1:0)*state.sortDir;});
+  if(state.sortK)d.sort((a,b)=>{const gv=(x)=>state.sortK==="Fisc"?(x.Fisc==null?-1:x.Fisc):x[state.sortK];const x=gv(a),y=gv(b);return(x>y?1:x<y?-1:0)*state.sortDir;});
   else d.sort((a,b)=>a.Data<b.Data?1:-1);
   document.getElementById("regCount").textContent="("+d.length+")";
   document.getElementById("recBody").innerHTML=d.length
     ?d.map(r=>r.id===state.editId?rowEdit(r):rowView(r)).join("")
     :`<tr><td colspan="8" class="empty">Sem registos para os filtros aplicados.</td></tr>`;
 }
-function onEditTipo(){const col=document.getElementById("e_tipo").value==="Colocação";const s=document.getElementById("e_sub");s.disabled=col;s.style.opacity=col?.4:1;}
 function startEdit(id){state.editId=id;renderRecTable();}
 function cancelEdit(){state.editId=null;renderRecTable();}
 function saveEdit(id){
   const dia=document.getElementById("e_dia").value,q=parseInt(document.getElementById("e_quant").value,10);
   if(!dia){alert("Indique o dia.");return;}
   if(!q||q<1){alert("Quantidade inválida.");return;}
-  const tipo=document.getElementById("e_tipo").value,r=records.find(x=>x.id===id);
+  const fv=document.getElementById("e_fisc").value.trim();
+  const fisc=fv===""?null:parseInt(fv,10);
+  const r=records.find(x=>x.id===id);
   Object.assign(r,{Data:dia,Semana:parseInt(document.getElementById("e_sem").value,10)||isoWeek(dia),Mes:mesOf(dia),
-    Tipo:tipo,SubTipo:tipo==="Colocação"?"-":document.getElementById("e_sub").value,
-    Perfil:document.getElementById("e_perfil").value,Quant:q});
+    Tipo:state.rcMode,SubTipo:state.rcMode==="Colocação"?"-":document.getElementById("e_sub").value,
+    Perfil:document.getElementById("e_perfil").value,Quant:q,Fisc:fisc});
   state.editId=null;saveRecords();render();
 }
+function validar(id){const r=records.find(x=>x.id===id);if(!r)return;r.Fisc=r.Quant;saveRecords();render();}
 function removeRec(id){if(!confirm("Eliminar este registo?"))return;records=records.filter(r=>r.id!==id);saveRecords();render();}
 
 function renderTime(){
   const d=filtered();
   let labels,vals;
-  if(state.timeMode==="week"){
+  if(state.timeMode==="month"){
+    const meses=[...new Set(d.map(r=>r.Mes))].sort();
+    labels=meses.map(mesLabel);
+    vals=meses.map(m=>sum(d.filter(r=>r.Mes===m).map(r=>r.Quant)));
+  }else if(state.timeMode==="week"){
     const sems=[...new Set(d.map(r=>r.Semana))].sort((a,b)=>a-b);
     labels=sems.map(s=>"S"+s);
     vals=sems.map(s=>sum(d.filter(r=>r.Semana===s).map(r=>r.Quant)));
@@ -987,12 +1008,20 @@ function prodRenderSemana(){
 }
 
 /* Tabela de registos (com Desvio calculado) */
+function pFiscCell(r){
+  if(r.Fisc==null||r.Fisc===undefined)
+    return isAdmin?`<td><button class="ibtn ok" title="Validar (=${r.Prod})" onclick="pValidar('${r.id}')">&#10003;</button></td>`
+                  :`<td class="fisc-none">&mdash;</td>`;
+  const cls=r.Fisc===r.Prod?"fisc-ok":"fisc-alt";
+  return `<td><span class="${cls}">${r.Fisc}</span></td>`;
+}
 function pRowView(r){
   const dv=r.Prod-r.Rend;
   return `<tr>
     <td class="l">${fmtD(r.Data)}</td><td>${r.Semana}</td><td>${mesLabel(r.Mes)}</td>
     <td><b>${r.Prod}</b></td><td>${r.Rend}</td>
     <td style="color:${dv<0?"#e76f51":dv>0?"#4caf72":"var(--muted)"}">${dv>0?"+":""}${dv}</td>
+    ${pFiscCell(r)}
     <td><span class="iact">
       <button class="ibtn ed" title="Editar" onclick="pStartEdit('${r.id}')">&#9998;</button>
       <button class="ibtn del" title="Eliminar" onclick="pRemove('${r.id}')">&times;</button>
@@ -1006,6 +1035,7 @@ function pRowEdit(r){
     <td><input type="number" class="ei" id="pe_prod" min="0" value="${r.Prod}" style="max-width:64px"></td>
     <td><input type="number" class="ei" id="pe_rend" min="0" value="${r.Rend}" style="max-width:64px"></td>
     <td>-</td>
+    <td><input type="number" class="ei" id="pe_fisc" value="${r.Fisc==null?"":r.Fisc}" placeholder="${r.Prod}" style="max-width:64px" title="Fiscalização (vazio = por validar)"></td>
     <td><span class="iact">
       <button class="ibtn ok" title="Guardar" onclick="pSaveEdit('${r.id}')">&#10003;</button>
       <button class="ibtn del" title="Cancelar" onclick="pCancelEdit()">&times;</button>
@@ -1014,12 +1044,12 @@ function pRowEdit(r){
 function pe_recalc(v){if(!v)return;document.getElementById("pe_sem").value=isoWeek(v);document.getElementById("pe_mes").value=mesOf(v);document.getElementById("pe_mesLbl").textContent=mesLabel(mesOf(v));}
 function prodRenderRecTable(){
   let d=prodFiltered();
-  if(pstate.sortK)d.sort((a,b)=>{const x=pstate.sortK==="Desvio"?(a.Prod-a.Rend):a[pstate.sortK],y=pstate.sortK==="Desvio"?(b.Prod-b.Rend):b[pstate.sortK];return(x>y?1:x<y?-1:0)*pstate.sortDir;});
+  if(pstate.sortK)d.sort((a,b)=>{const gv=(x)=>pstate.sortK==="Desvio"?(x.Prod-x.Rend):pstate.sortK==="Fisc"?(x.Fisc==null?-1:x.Fisc):x[pstate.sortK];const x=gv(a),y=gv(b);return(x>y?1:x<y?-1:0)*pstate.sortDir;});
   else d.sort((a,b)=>a.Data<b.Data?1:-1);
   document.getElementById("pRegCount").textContent="("+d.length+")";
   document.getElementById("pRecBody").innerHTML=d.length
     ?d.map(r=>r.id===pstate.editId?pRowEdit(r):pRowView(r)).join("")
-    :`<tr><td colspan="7" class="empty">Sem registos para os filtros aplicados.</td></tr>`;
+    :`<tr><td colspan="8" class="empty">Sem registos para os filtros aplicados.</td></tr>`;
 }
 function pStartEdit(id){pstate.editId=id;prodRenderRecTable();}
 function pCancelEdit(){pstate.editId=null;prodRenderRecTable();}
@@ -1028,10 +1058,13 @@ function pSaveEdit(id){
   const prod=parseInt(document.getElementById("pe_prod").value,10),rend=parseInt(document.getElementById("pe_rend").value,10);
   if(!dia){alert("Indique o dia.");return;}
   if(isNaN(prod)||prod<0||isNaN(rend)||rend<0){alert("Valores inválidos.");return;}
+  const fv=document.getElementById("pe_fisc").value.trim();
+  const fisc=fv===""?null:parseInt(fv,10);
   const r=prodRecords.find(x=>x.id===id);
-  Object.assign(r,{Data:dia,Semana:parseInt(document.getElementById("pe_sem").value,10)||isoWeek(dia),Mes:mesOf(dia),Prod:prod,Rend:rend});
+  Object.assign(r,{Data:dia,Semana:parseInt(document.getElementById("pe_sem").value,10)||isoWeek(dia),Mes:mesOf(dia),Prod:prod,Rend:rend,Fisc:fisc});
   pstate.editId=null;prodSave();prodRender();
 }
+function pValidar(id){const r=prodRecords.find(x=>x.id===id);if(!r)return;r.Fisc=r.Prod;prodSave();prodRender();}
 function pRemove(id){if(!confirm("Eliminar este registo?"))return;prodRecords=prodRecords.filter(r=>r.id!==id);prodSave();prodRender();}
 
 /* Resumo por semana */
@@ -1051,14 +1084,9 @@ function prodRender(){
 }
 
 function render(){
-  buildPC();buildFilters();renderKPIs();renderRecTable();renderPerfis();renderTime();renderPerfil();renderSemana();
-  // formulário: o Tipo é fixado pela secção; SubTipo só em Remoção
-  const rem=state.rcMode==="Remoção";
-  const fgRT=document.getElementById("fgRTipo");if(fgRT)fgRT.style.display="none";
-  const fgRS=document.getElementById("fgRSub");if(fgRS)fgRS.style.display=rem?"":"none";
-  const tot=sum(filtered().map(r=>r.Quant));
-  document.getElementById("fnote").textContent=
-    `${state.rcMode}: ${tot} un.  ·  Total obra: ${sum(records.map(r=>r.Quant))} un. (Remoção ${sum(records.filter(r=>r.Tipo==="Remoção").map(r=>r.Quant))} / Colocação ${sum(records.filter(r=>r.Tipo==="Colocação").map(r=>r.Quant))})`;
+  buildPC();buildFilters();renderKPIs();renderRecTable();renderPerfis();renderTime();renderPerfil();
+  const fg=document.getElementById("fgRSub");if(fg)fg.style.display=state.rcMode==="Remoção"?"":"none";
+  const fn=document.getElementById("fnote");if(fn)fn.textContent="";
 }
 
 function init(){
@@ -1069,32 +1097,34 @@ function init(){
   const EB="Empreitada de Reabilitação do Esporão Sul de Espinho";
   const TEMAS={
     mqt:{tema:"temaMQT",title:"2. MQT / PROJ",sub:"Mapa de Quantidades e Trabalhos"},
-    remocao:{tema:"temaRC",rcMode:"Remoção",title:"2.1 Remoção",sub:"Remoção de tetrápodes (inteiros e partidos)"},
-    colocacao:{tema:"temaRC",rcMode:"Colocação",title:"2.6 Colocação",sub:"Colocação de tetrápodes recuperados"},
-    prod:{tema:"temaProd",title:"2.8.1 Produção",sub:"Produção de tetrápodes novos"}
+    remocao:{tema:"temaRC",rcMode:"Remoção",title:"2.1 Remoção",sub:"Remoção de Tetrápodes (Inteiros e Partidos)"},
+    colocacao:{tema:"temaRC",rcMode:"Colocação",title:"2.6 Colocação",sub:"Colocação de Tetrápodes Recuperados"},
+    prod:{tema:"temaProd",title:"2.8.1 Produção",sub:"Produção de Tetrápodes Novos"}
   };
   document.querySelectorAll(".temabar button").forEach(b=>b.onclick=()=>{
     const t=b.dataset.tema,cfg=TEMAS[t];
     document.querySelectorAll(".temabar button").forEach(x=>x.classList.toggle("active",x===b));
     ["temaMQT","temaRC","temaProd"].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display="none";});
     document.getElementById(cfg.tema).style.display="block";
-    if(cfg.rcMode){state.rcMode=cfg.rcMode;state.mes="Todos";state.semana="Todas";state.dia="";state.sub="Todos";state.editId=null;render();}
+    if(cfg.rcMode){state.rcMode=cfg.rcMode;state.mes="Todos";state.semana="Todas";state.dia="";state.sub="Todos";state.perfil="Todos";state.editId=null;render();}
     if(t==="mqt")renderMQT();
     if(t==="prod")prodRender();
     document.getElementById("hdEyebrow").textContent=EB;
     document.getElementById("hdTitle").textContent=cfg.title;
     document.getElementById("hdSub").textContent=cfg.sub;
   });
-  document.getElementById("fMes").onchange=e=>{state.mes=e.target.value;render();};
-  document.getElementById("fSemana").onchange=e=>{state.semana=e.target.value;render();};
-  document.getElementById("fSub").onchange=e=>{state.sub=e.target.value;render();};
-  document.getElementById("fDia").onchange=e=>{state.dia=e.target.value;render();};
+  const openRec=()=>{const s=document.getElementById("secRec");if(s)s.open=true;};
+  document.getElementById("fMes").onchange=e=>{state.mes=e.target.value;openRec();render();};
+  document.getElementById("fSemana").onchange=e=>{state.semana=e.target.value;openRec();render();};
+  document.getElementById("fSub").onchange=e=>{state.sub=e.target.value;openRec();render();};
+  document.getElementById("fPerfil").onchange=e=>{state.perfil=e.target.value;openRec();render();};
+  document.getElementById("fDia").onchange=e=>{state.dia=e.target.value;openRec();render();};
   document.querySelectorAll("[data-mode]").forEach(b=>b.onclick=()=>{state.timeMode=b.dataset.mode;document.querySelectorAll("[data-mode]").forEach(x=>x.classList.toggle("active",x===b));renderTime();});
   document.querySelectorAll("#recTable th[data-k]").forEach(th=>th.onclick=()=>{const k=th.dataset.k;if(state.sortK===k)state.sortDir*=-1;else{state.sortK=k;state.sortDir=1;}renderRecTable();});
-  document.getElementById("reset").onclick=()=>{state=Object.assign({},state,{mes:"Todos",semana:"Todas",dia:"",sub:"Todos",highlight:null,sortK:null,editId:null});render();};
+  document.getElementById("reset").onclick=()=>{state=Object.assign({},state,{mes:"Todos",semana:"Todas",dia:"",sub:"Todos",perfil:"Todos",highlight:null,sortK:null,editId:null});render();};
   document.getElementById("csv").onclick=()=>{
-    const d=filtered(),head="Data,Semana,Mes,Tipo,Sub Tipo,Perfil,Quant";
-    const body=d.map(r=>`${r.Data},${r.Semana},${r.Mes},${r.Tipo},${r.SubTipo},${r.Perfil},${r.Quant}`).join("\n");
+    const d=filtered(),head="Data,Semana,Mes,Sub Tipo,Perfil,Quant,Fisc";
+    const body=d.map(r=>`${r.Data},${r.Semana},${r.Mes},${r.SubTipo},${r.Perfil},${r.Quant},${r.Fisc==null?"":r.Fisc}`).join("\n");
     const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([head+"\n"+body],{type:"text/csv;charset=utf-8"}));a.download=(state.rcMode==="Remoção"?"remocao":"colocacao")+".csv";a.click();};
 
   const rSub=document.getElementById("rSub"),rDia=document.getElementById("rDia"),rSem=document.getElementById("rSemana"),rMes=document.getElementById("rMes");
@@ -1105,7 +1135,7 @@ function init(){
     if(!q||q<1){alert("Quantidade inválida.");return;}
     const tipo=state.rcMode;
     records.push({id:newId(),Semana:parseInt(rSem.value,10)||isoWeek(dia),Mes:mesOf(dia),Data:dia,Tipo:tipo,
-      SubTipo:tipo==="Colocação"?"-":rSub.value,Quant:q,Perfil:document.getElementById("rPerfil").value});
+      SubTipo:tipo==="Colocação"?"-":rSub.value,Quant:q,Fisc:null,Perfil:document.getElementById("rPerfil").value});
     saveRecords();document.getElementById("secRec").open=true;render();
   };
 
