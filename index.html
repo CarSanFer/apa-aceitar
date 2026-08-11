@@ -55,6 +55,20 @@
   select,input[type=date],input[type=number],input[type=text]{background:var(--field);color:var(--fieldtx);border:1px solid var(--line);border-radius:7px;padding:7px 10px;font-size:13px;font-family:inherit;min-width:120px}
   input[readonly]{color:var(--muted);cursor:default}
   input::placeholder{color:var(--faint)}
+
+  /* Secção MQT */
+  #mqtTable td{padding:8px 10px}
+  #mqtTable td.id{font-weight:700;color:var(--accent);white-space:nowrap}
+  #mqtTable td.desc{text-align:left;cursor:help;position:relative}
+  #mqtTable td.desc .dtxt{border-bottom:1px dotted var(--faint)}
+  #mqtTable td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+  #mqtTable tr.total td{border-top:2px solid var(--accent);font-weight:800;font-size:13px}
+  /* tooltip do PopUP */
+  td.desc .tip{visibility:hidden;opacity:0;position:absolute;left:0;top:100%;z-index:20;
+    background:var(--panel2);color:var(--txt);border:1px solid var(--accent);border-radius:8px;
+    padding:9px 12px;font-size:12px;font-weight:400;line-height:1.5;max-width:420px;width:max-content;
+    box-shadow:0 10px 30px #0007;transition:opacity .12s;pointer-events:none;text-transform:none;letter-spacing:0}
+  td.desc:hover .tip{visibility:visible;opacity:1}
   .btn{background:var(--panel2);color:var(--txt);border:1px solid var(--line);padding:8px 13px;border-radius:7px;font-size:12.5px;cursor:pointer;font-family:inherit;font-weight:600;transition:.12s}
   .btn:hover{border-color:var(--accent)}
   .btn.active{background:var(--accent);border-color:var(--accent);color:#1a1207}
@@ -156,8 +170,8 @@
   <header>
     <div>
       <div class="eyebrow" id="hdEyebrow">Empreitada de Reabilitação do Esporão Sul de Espinho</div>
-      <h1 id="hdTitle">Produção de Tetrápodes</h1>
-      <div class="sub" id="hdSub">Fabrico &middot; Dashboard de acompanhamento</div>
+      <h1 id="hdTitle">2. MQT / PROJ</h1>
+      <div class="sub" id="hdSub">Mapa de Quantidades e Trabalhos</div>
     </div>
     <div class="htools">
       <button class="btn" id="adminBtn">&#128274; Superadmin</button>
@@ -166,15 +180,33 @@
         <button data-th="dark">Escuro</button>
         <button data-th="system">Sistema</button>
       </div>
-      <div class="badge">v26.08.10.1000</div>
+      <div class="badge">v26.08.10.1200</div>
     </div>
   </header>
 
   <div class="temabar">
     <span class="temalabel">Secção:</span>
     <div class="segwrap">
-      <button data-tema="prod" class="active">Produção</button>
-      <button data-tema="rc">Remoção e Colocação</button>
+      <button data-tema="mqt" class="active">2. MQT / PROJ</button>
+      <button data-tema="remocao">2.1 Remoção</button>
+      <button data-tema="colocacao">2.6 Colocação</button>
+      <button data-tema="prod">2.8.1 Produção</button>
+    </div>
+  </div>
+
+  <!-- ============ SECÇÃO: 2. MQT / PROJ ============ -->
+  <div id="temaMQT" class="tema">
+    <div class="card">
+      <h2>Mapa de Quantidades e Trabalhos</h2>
+      <div class="rectable">
+        <table id="mqtTable">
+          <thead><tr>
+            <th>Id</th><th style="text-align:left">Descrição</th><th>Un</th>
+            <th style="text-align:right">Quant</th><th style="text-align:right">Pr. Unit. (€)</th><th style="text-align:right">Total (€)</th>
+          </tr></thead>
+          <tbody id="mqtBody"></tbody>
+        </table>
+      </div>
     </div>
   </div>
 
@@ -187,8 +219,8 @@
     <div class="fgroup"><span class="flabel">Mês</span><select id="fMes"></select></div>
     <div class="fgroup"><span class="flabel">Semana</span><select id="fSemana"></select></div>
     <div class="fgroup"><span class="flabel">Dia</span><input type="date" id="fDia"></div>
-    <div class="fgroup"><span class="flabel">Tipo</span><select id="fTipo"></select></div>
-    <div class="fgroup"><span class="flabel">Sub Tipo</span><select id="fSub"></select></div>
+    <div class="fgroup" id="fgTipo"><span class="flabel">Tipo</span><select id="fTipo"></select></div>
+    <div class="fgroup" id="fgSub"><span class="flabel">Sub Tipo</span><select id="fSub"></select></div>
     <button class="btn" id="reset">Limpar</button>
     <button class="btn spacer" id="csv">Exportar CSV</button>
   </div>
@@ -221,8 +253,8 @@
         <div class="fgroup"><span class="flabel">Dia</span><input type="date" id="rDia"></div>
         <div class="fgroup"><span class="flabel">Semana</span><input type="number" id="rSemana" min="1" max="53" style="min-width:90px"></div>
         <div class="fgroup"><span class="flabel">Mês</span><input type="text" id="rMes" readonly style="min-width:90px" placeholder="auto"></div>
-        <div class="fgroup"><span class="flabel">Tipo</span><select id="rTipo"><option>Remoção</option><option>Colocação</option></select></div>
-        <div class="fgroup"><span class="flabel">Sub Tipo</span><select id="rSub"><option>Inteiros</option><option>Partidos</option></select></div>
+        <div class="fgroup" id="fgRTipo"><span class="flabel">Tipo</span><select id="rTipo"><option>Remoção</option><option>Colocação</option></select></div>
+        <div class="fgroup" id="fgRSub"><span class="flabel">Sub Tipo</span><select id="rSub"><option>Inteiros</option><option>Partidos</option></select></div>
         <div class="fgroup"><span class="flabel">Perfil</span><select id="rPerfil"><option>P1</option><option>P2</option><option>P3</option><option>P4</option><option>P5</option><option>P6</option><option>P7</option><option>P8</option><option>P9</option><option>P10</option><option>P11</option><option>P12</option><option>P13</option><option>P14</option></select></div>
         <div class="fgroup"><span class="flabel">Quant</span><input type="number" id="rQuant" min="1" value="1" style="min-width:80px"></div>
         <button class="btn amber" id="rAdd">Adicionar</button>
@@ -249,7 +281,7 @@
   </div><!-- /temaRC -->
 
   <!-- ============ BLOCO 2: PRODUÇÃO DE TETRÁPODES ============ -->
-  <div id="temaProd" class="tema">
+  <div id="temaProd" class="tema" style="display:none">
 
     <div class="kpis" id="pKpis"></div>
 
@@ -542,11 +574,10 @@ function loadRecords(){
   if(!Array.isArray(saved))saved=[];
   let done=null;try{done=JSON.parse(store.get("esporao_imports")||"null")}catch(e){}
   if(done===null||!Array.isArray(done))done=saved.length?["base"]:[];
-  const keys=new Set(saved.map(keyOf));
   let changed=false;
   IMPORTS.forEach(lot=>{
     if(done.includes(lot.id))return;
-    lot.recs.forEach(r=>{const k=keyOf(r);if(!keys.has(k)){saved.push(Object.assign({id:"r"+Date.now()+"_"+(seq++)},r));keys.add(k);}});
+    lot.recs.forEach(r=>saved.push(Object.assign({id:"r"+Date.now()+"_"+(seq++)},r)));
     done.push(lot.id);changed=true;
   });
   records=saved;
@@ -571,33 +602,66 @@ const mesOf=s=>s.slice(0,7);                                   // "2026-06"
 const mesLabel=m=>{const p=m.split("-");return MESNOMES[+p[1]]+"/"+p[0].slice(2)}; // "Jun/26"
 function isoWeek(s){const d=new Date(s+"T00:00:00");const t=new Date(d);t.setHours(0,0,0,0);t.setDate(t.getDate()+3-((t.getDay()+6)%7));const w1=new Date(t.getFullYear(),0,4);return 1+Math.round(((t-w1)/86400000-3+((w1.getDay()+6)%7))/7);}
 
-let state={mes:"Todos",semana:"Todas",dia:"",tipo:"Todos",sub:"Todos",timeMode:"cum",sortK:null,sortDir:1,highlight:null,editId:null};
+let state={rcMode:"Remoção",mes:"Todos",semana:"Todas",dia:"",tipo:"Todos",sub:"Todos",timeMode:"cum",sortK:null,sortDir:1,highlight:null,editId:null};
+
+/* ===== MQT / PROJ ===== */
+const MQT_DATA=[{"Id": "2.1", "Descricao": "Remoção de Tetrápodes (Inteiros e Partidos | 30 tf)", "PopUP": "Remoção de tetrápodes e de tetrápodes partidos do manto do talude sul e cabeça", "Un": "un", "Quant": 384.0, "PrUnit": 218.51, "Total": 83907.84}, {"Id": "2.2", "Descricao": "Enrocamento (Coroamente do Manto | 12 a 15 tf)", "PopUP": "Remoção e posterior reposição de enrocamento de 12 a 15 tf do remate do coroamento do manto de tetrápodes", "Un": "m3", "Quant": 800.0, "PrUnit": 39.42, "Total": 31536.0}, {"Id": "2.3", "Descricao": "Enrocamento (Cabeça -> Talude Sul | 12 a 15 tf)", "PopUP": "Remoção de enrocamento de 12 a 15 tf  do manto para execução da transição da cabeça para o talude norte", "Un": "m3", "Quant": 700.0, "PrUnit": 40.82, "Total": 28574.0}, {"Id": "2.4", "Descricao": "Remoção de Materiais de Qualquer Natureza", "PopUP": "Remoção de materiais de qualquer natureza (areia, enrocamento, bocados de terápodes) para reconstrução da banqueta de pé de talude", "Un": "m3", "Quant": 3000.0, "PrUnit": 46.1, "Total": 138300.0}, {"Id": "2.5", "Descricao": "Enrocamento (Banqueta | 12 a 15 tf)", "PopUP": "Reconstrução da banqueta de pé de talude em enrocamento de 12 a 15 tf", "Un": "m3", "Quant": 1900.0, "PrUnit": 55.85, "Total": 106115.0}, {"Id": "2.6", "Descricao": "Colocação de Tetrápodes Recuperados (Cabeça e Talude Sul)", "PopUP": "Colocação de tetrápodes recuperados da cabeça e do talude sul na reconstituição do manto de protecção do talude sul", "Un": "un", "Quant": 161.0, "PrUnit": 411.04, "Total": 66177.44}, {"Id": "2.7", "Descricao": "Transporte e Depósito Tetrápodes Recuperados e não Utilizados (Cabeça e Sul)", "PopUP": "Transporte a depósito de tetrápodes recuperados da cabeça e do talude sul e não utilizados na reconstituição do manto de protecção do talude sul (depósito localizado num raio de 2,5Km de distância ao local da obra)", "Un": "un", "Quant": 108.0, "PrUnit": 313.84, "Total": 33894.719999999994}, {"Id": "2.8", "Descricao": "nan", "PopUP": "Fornecimento e colocação de tetrápodes de 34,4 tf, em betão NP EN 206-1: C35/45, XA1 (Pt), Cl 1.0, Dmax20, S3, simples", "Un": "", "Quant": null, "PrUnit": null, "Total": null}, {"Id": "2.8.1", "Descricao": "Produção de Tetrápodes Novos", "PopUP": "Fabrico e colocação em depósito dos tetrápodes", "Un": "un", "Quant": 360.0, "PrUnit": 2534.16, "Total": 912297.6}, {"Id": "2.8.2", "Descricao": "Transporte e Colocação de Tetrápodes Novos", "PopUP": "Transporte e colocação de tetrápodes", "Un": "un", "Quant": 360.0, "PrUnit": 539.93, "Total": 194374.8}, {"Id": "2.9", "Descricao": "Enrocamento (Submanto | 1 a 4 tf)", "PopUP": "Fornecimento e colocação de enrocamento de 1 a 4 tf no submanto na transição entre o talude sul e a cabeça", "Un": "m3", "Quant": 500.0, "PrUnit": 41.0, "Total": 20500.0}, {"Id": "2.10", "Descricao": "Enrocamento (Talude Norte -> Cabeça | 12 a 15 tf)", "PopUP": "Fornecimento e colocação de enrocamento de 12 a 15 tf no manto da transição entre o talude norte e a cabeça", "Un": "m3", "Quant": 1200.0, "PrUnit": 51.69, "Total": 62028.0}, {"Id": "2.11", "Descricao": "Fornecimento, Transporte e Colocação de Betão", "PopUP": "Fornecimento, transporte e colocação de betão simples C30/37, XA1, Dmax=25mm, para rematar o capeamento da superestrutura junto dos blocos no coroamento", "Un": "m3", "Quant": 50.0, "PrUnit": 196.26, "Total": 9813.0}];
+const fmtN=(x,d=0)=>x==null?"":Number(x).toLocaleString("pt-PT",{minimumFractionDigits:d,maximumFractionDigits:d});
+const fmtE=x=>x==null?"":Number(x).toLocaleString("pt-PT",{minimumFractionDigits:2,maximumFractionDigits:2});
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+function renderMQT(){
+  let total=0;
+  const rows=MQT_DATA.filter(a=>!((a.Descricao==="nan"||!a.Descricao)&&a.Total==null)).map(a=>{
+    const desc=(a.Descricao==="nan"?"":a.Descricao);
+    const pop=(a.PopUP&&a.PopUP!=="nan")?a.PopUP:"";
+    if(a.Total!=null)total+=a.Total;
+    const tip=pop?`<span class="tip">${esc(pop)}</span>`:"";
+    return `<tr>
+      <td class="id">${esc(a.Id)}</td>
+      <td class="desc"><span class="dtxt">${esc(desc)}</span>${tip}</td>
+      <td style="text-align:center">${esc(a.Un||"")}</td>
+      <td class="num">${a.Quant!=null?fmtN(a.Quant):""}</td>
+      <td class="num">${a.PrUnit!=null?fmtE(a.PrUnit):""}</td>
+      <td class="num">${a.Total!=null?fmtE(a.Total):""}</td>
+    </tr>`;
+  }).join("");
+  const totalRow=`<tr class="total"><td></td><td class="desc" style="text-align:left">TOTAL</td><td></td><td></td><td></td><td class="num">${fmtE(total)}</td></tr>`;
+  document.getElementById("mqtBody").innerHTML=rows+totalRow;
+}
 
 function filtered(){
   return records.filter(r=>
+    (r.Tipo===state.rcMode)&&
     (state.mes==="Todos"||r.Mes===state.mes)&&
     (state.semana==="Todas"||r.Semana==+state.semana)&&
     (state.dia===""||r.Data===state.dia)&&
-    (state.tipo==="Todos"||r.Tipo===state.tipo)&&
     (state.sub==="Todos"||r.SubTipo===state.sub));
 }
 
 function buildFilters(){
-  const meses=["Todos"].concat([...new Set(records.map(r=>r.Mes))].sort());
-  const sem=["Todas"].concat([...new Set(records.map(r=>r.Semana))].sort((a,b)=>a-b));
-  const tip=["Todos"].concat([...new Set(records.map(r=>r.Tipo))]);
+  const base=records.filter(r=>r.Tipo===state.rcMode);
+  const meses=["Todos"].concat([...new Set(base.map(r=>r.Mes))].sort());
+  const sem=["Todas"].concat([...new Set(base.map(r=>r.Semana))].sort((a,b)=>a-b));
   const sub=["Todos","Inteiros","Partidos"];
   document.getElementById("fMes").innerHTML=meses.map(v=>`<option value="${v}" ${v===state.mes?"selected":""}>${v==="Todos"?"Todos":mesLabel(v)}</option>`).join("");
   const fill=(id,arr,cur)=>document.getElementById(id).innerHTML=arr.map(v=>`<option ${v==cur?"selected":""}>${v}</option>`).join("");
-  fill("fSemana",sem,state.semana);fill("fTipo",tip,state.tipo);fill("fSub",sub,state.sub);
+  fill("fSemana",sem,state.semana);fill("fSub",sub,state.sub);
   document.getElementById("fDia").value=state.dia;
+  // o Tipo é dado pela secção; SubTipo só se aplica a Remoção
+  document.getElementById("fgTipo").style.display="none";
+  document.getElementById("fgSub").style.display=state.rcMode==="Remoção"?"":"none";
 }
 
 function renderKPIs(){
   const d=filtered(),v=f=>sum(d.filter(f).map(r=>r.Quant));
-  const cards=[["Total",sum(d.map(r=>r.Quant)),""],["Remoção",v(r=>r.Tipo==="Remoção"),""],
-    ["Colocação",v(r=>r.Tipo==="Colocação"),""],["Partidos",v(r=>r.SubTipo==="Partidos"),"alt"],
-    ["Inteiros",v(r=>r.SubTipo==="Inteiros"),"alt"],["Dias ativos",new Set(d.map(r=>r.Data)).size,"alt"]];
+  const nP=new Set(d.map(r=>r.Perfil)).size, nS=new Set(d.map(r=>r.Semana)).size, nD=new Set(d.map(r=>r.Data)).size;
+  let cards;
+  if(state.rcMode==="Remoção"){
+    cards=[["Total",sum(d.map(r=>r.Quant)),""],["Partidos",v(r=>r.SubTipo==="Partidos"),""],
+      ["Inteiros",v(r=>r.SubTipo==="Inteiros"),""],["Perfis",nP,"alt"],["Semanas",nS,"alt"],["Dias ativos",nD,"alt"]];
+  }else{
+    cards=[["Total",sum(d.map(r=>r.Quant)),""],["Perfis",nP,"alt"],["Semanas",nS,"alt"],["Dias ativos",nD,"alt"]];
+  }
   document.getElementById("kpis").innerHTML=cards.map(c=>`<div class="kpi ${c[2]}"><div class="v">${c[1]}</div><div class="l">${c[0]}</div></div>`).join("");
 }
 
@@ -988,49 +1052,58 @@ function prodRender(){
 
 function render(){
   buildPC();buildFilters();renderKPIs();renderRecTable();renderPerfis();renderTime();renderPerfil();renderSemana();
+  // formulário: o Tipo é fixado pela secção; SubTipo só em Remoção
+  const rem=state.rcMode==="Remoção";
+  const fgRT=document.getElementById("fgRTipo");if(fgRT)fgRT.style.display="none";
+  const fgRS=document.getElementById("fgRSub");if(fgRS)fgRS.style.display=rem?"":"none";
+  const tot=sum(filtered().map(r=>r.Quant));
   document.getElementById("fnote").textContent=
-    `Total geral: ${sum(records.map(r=>r.Quant))} un. (Remoção ${sum(records.filter(r=>r.Tipo==="Remoção").map(r=>r.Quant))} / Colocação ${sum(records.filter(r=>r.Tipo==="Colocação").map(r=>r.Quant))})`;
+    `${state.rcMode}: ${tot} un.  ·  Total obra: ${sum(records.map(r=>r.Quant))} un. (Remoção ${sum(records.filter(r=>r.Tipo==="Remoção").map(r=>r.Quant))} / Colocação ${sum(records.filter(r=>r.Tipo==="Colocação").map(r=>r.Quant))})`;
 }
 
 function init(){
   loadRecords();prodLoad();applyTheme(themePref);
   document.querySelectorAll(".theme button").forEach(b=>b.onclick=()=>{themePref=b.dataset.th;applyTheme(themePref);});
 
-  // Navegação entre os 2 blocos (temas)
+  // Navegação entre secções
+  const EB="Empreitada de Reabilitação do Esporão Sul de Espinho";
   const TEMAS={
-    rc:{eyebrow:"Empreitada de Reabilitação do Esporão Sul de Espinho",title:"Remoção e Colocação de Tetrápodes",sub:"Listagem por perfil · Dashboard de acompanhamento"},
-    prod:{eyebrow:"Empreitada de Reabilitação do Esporão Sul de Espinho",title:"Produção de Tetrápodes",sub:"Fabrico · Dashboard de acompanhamento"}
+    mqt:{tema:"temaMQT",title:"2. MQT / PROJ",sub:"Mapa de Quantidades e Trabalhos"},
+    remocao:{tema:"temaRC",rcMode:"Remoção",title:"2.1 Remoção",sub:"Remoção de tetrápodes (inteiros e partidos)"},
+    colocacao:{tema:"temaRC",rcMode:"Colocação",title:"2.6 Colocação",sub:"Colocação de tetrápodes recuperados"},
+    prod:{tema:"temaProd",title:"2.8.1 Produção",sub:"Produção de tetrápodes novos"}
   };
   document.querySelectorAll(".temabar button").forEach(b=>b.onclick=()=>{
     const t=b.dataset.tema,cfg=TEMAS[t];
     document.querySelectorAll(".temabar button").forEach(x=>x.classList.toggle("active",x===b));
-    document.getElementById("temaRC").style.display=t==="rc"?"block":"none";
-    document.getElementById("temaProd").style.display=t==="prod"?"block":"none";
-    document.getElementById("hdEyebrow").textContent=cfg.eyebrow;
+    ["temaMQT","temaRC","temaProd"].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display="none";});
+    document.getElementById(cfg.tema).style.display="block";
+    if(cfg.rcMode){state.rcMode=cfg.rcMode;state.mes="Todos";state.semana="Todas";state.dia="";state.sub="Todos";state.editId=null;render();}
+    if(t==="mqt")renderMQT();
+    if(t==="prod")prodRender();
+    document.getElementById("hdEyebrow").textContent=EB;
     document.getElementById("hdTitle").textContent=cfg.title;
     document.getElementById("hdSub").textContent=cfg.sub;
   });
   document.getElementById("fMes").onchange=e=>{state.mes=e.target.value;render();};
   document.getElementById("fSemana").onchange=e=>{state.semana=e.target.value;render();};
-  document.getElementById("fTipo").onchange=e=>{state.tipo=e.target.value;render();};
   document.getElementById("fSub").onchange=e=>{state.sub=e.target.value;render();};
   document.getElementById("fDia").onchange=e=>{state.dia=e.target.value;render();};
   document.querySelectorAll("[data-mode]").forEach(b=>b.onclick=()=>{state.timeMode=b.dataset.mode;document.querySelectorAll("[data-mode]").forEach(x=>x.classList.toggle("active",x===b));renderTime();});
   document.querySelectorAll("#recTable th[data-k]").forEach(th=>th.onclick=()=>{const k=th.dataset.k;if(state.sortK===k)state.sortDir*=-1;else{state.sortK=k;state.sortDir=1;}renderRecTable();});
-  document.getElementById("reset").onclick=()=>{state=Object.assign({},state,{mes:"Todos",semana:"Todas",dia:"",tipo:"Todos",sub:"Todos",highlight:null,sortK:null,editId:null});render();};
+  document.getElementById("reset").onclick=()=>{state=Object.assign({},state,{mes:"Todos",semana:"Todas",dia:"",sub:"Todos",highlight:null,sortK:null,editId:null});render();};
   document.getElementById("csv").onclick=()=>{
     const d=filtered(),head="Data,Semana,Mes,Tipo,Sub Tipo,Perfil,Quant";
     const body=d.map(r=>`${r.Data},${r.Semana},${r.Mes},${r.Tipo},${r.SubTipo},${r.Perfil},${r.Quant}`).join("\n");
-    const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([head+"\n"+body],{type:"text/csv;charset=utf-8"}));a.download="tetrapodes_listagem.csv";a.click();};
+    const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([head+"\n"+body],{type:"text/csv;charset=utf-8"}));a.download=(state.rcMode==="Remoção"?"remocao":"colocacao")+".csv";a.click();};
 
-  const rTipo=document.getElementById("rTipo"),rSub=document.getElementById("rSub"),rDia=document.getElementById("rDia"),rSem=document.getElementById("rSemana"),rMes=document.getElementById("rMes");
+  const rSub=document.getElementById("rSub"),rDia=document.getElementById("rDia"),rSem=document.getElementById("rSemana"),rMes=document.getElementById("rMes");
   rDia.onchange=()=>{if(rDia.value){rSem.value=isoWeek(rDia.value);rMes.value=mesLabel(mesOf(rDia.value));rMes.dataset.val=mesOf(rDia.value);}};
-  rTipo.onchange=()=>{const col=rTipo.value==="Colocação";rSub.disabled=col;rSub.style.opacity=col?.4:1;};
   document.getElementById("rAdd").onclick=()=>{
     const dia=rDia.value,q=parseInt(document.getElementById("rQuant").value,10);
     if(!dia){alert("Indique o dia.");return;}
     if(!q||q<1){alert("Quantidade inválida.");return;}
-    const tipo=rTipo.value;
+    const tipo=state.rcMode;
     records.push({id:newId(),Semana:parseInt(rSem.value,10)||isoWeek(dia),Mes:mesOf(dia),Data:dia,Tipo:tipo,
       SubTipo:tipo==="Colocação"?"-":rSub.value,Quant:q,Perfil:document.getElementById("rPerfil").value});
     saveRecords();document.getElementById("secRec").open=true;render();
@@ -1057,7 +1130,7 @@ function init(){
     prodSave();document.getElementById("pSecRec").open=true;prodRender();
   };
 
-  render();prodRender();
+  render();prodRender();renderMQT();
   document.getElementById("adminBtn").onclick=toggleAdmin;
 }
 
