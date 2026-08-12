@@ -206,7 +206,7 @@
         <button data-th="dark">Escuro</button>
         <button data-th="system">Sistema</button>
       </div>
-      <div class="badge">v26.08.10.2300</div>
+      <div class="badge">v26.08.10.2315</div>
     </div>
   </header>
 
@@ -1103,7 +1103,7 @@ function renderPerfis(){
       <table><thead>${head}</thead><tbody>${body}</tbody></table></div>`;
   }).join("");
 }
-function toggleHL(p){state.perfil=state.perfil===p?"Todos":p;const s=document.getElementById("secRec");if(s&&state.perfil!=="Todos")s.open=true;render();}
+function toggleHL(p){state.perfil=state.perfil===p?"Todos":p;if(state.perfil!=="Todos")["secRec","secEvol","secDistTotal","cardPerfilSub"].forEach(id=>{const s=document.getElementById(id);if(s)s.open=true;});render();}
 
 /* ================= BLOCO 2: PRODUÇÃO ================= */
 const SEED_PROD=[
@@ -1432,7 +1432,7 @@ function init(){
     document.getElementById("hdTitle").textContent=cfg.title;
     document.getElementById("hdSub").textContent=cfg.sub;
   });
-  const openRec=()=>{const s=document.getElementById("secRec");if(s)s.open=true;};
+  const openRec=()=>{["secRec","secEvol","secDistTotal","cardPerfilSub"].forEach(id=>{const s=document.getElementById(id);if(s)s.open=true;});};
   document.getElementById("fMes").onchange=e=>{state.mes=e.target.value;openRec();render();};
   document.getElementById("fSemana").onchange=e=>{state.semana=e.target.value;openRec();render();};
   document.getElementById("fSub").onchange=e=>{state.sub=e.target.value;openRec();render();};
@@ -1440,7 +1440,7 @@ function init(){
   document.getElementById("fDia").onchange=e=>{state.dia=e.target.value;openRec();render();};
   document.querySelectorAll("[data-mode]").forEach(b=>b.onclick=()=>{state.timeMode=b.dataset.mode;document.querySelectorAll("[data-mode]").forEach(x=>x.classList.toggle("active",x===b));renderTime();});
   document.querySelectorAll("#recTable th[data-k]").forEach(th=>th.onclick=()=>{const k=th.dataset.k;if(state.sortK===k)state.sortDir*=-1;else{state.sortK=k;state.sortDir=1;}renderRecTable();});
-  document.getElementById("reset").onclick=()=>{state=Object.assign({},state,{mes:"Todos",semana:"Todas",dia:"",sub:"Todos",perfil:"Todos",highlight:null,sortK:null,editId:null});const s=document.getElementById("secRec");if(s)s.open=false;render();};
+  document.getElementById("reset").onclick=()=>{state=Object.assign({},state,{mes:"Todos",semana:"Todas",dia:"",sub:"Todos",perfil:"Todos",highlight:null,sortK:null,editId:null});["secRec","secEvol","secDistTotal","cardPerfilSub"].forEach(id=>{const s=document.getElementById(id);if(s)s.open=false;});render();};
   document.getElementById("csv").onclick=()=>{
     const d=filtered(),head="Data,Semana,Mes,Sub Tipo,Perfil,Quant,Fisc";
     const body=d.map(r=>`${r.Data},${r.Semana},${r.Mes},${r.SubTipo},${r.Perfil},${r.Quant},${r.Fisc==null?"":r.Fisc}`).join("\n");
@@ -1459,13 +1459,13 @@ function init(){
   };
 
   /* ===== Handlers Bloco 2: Produção ===== */
-  const pOpenRec=()=>{const s=document.getElementById("pSecRec");if(s)s.open=true;};
+  const pOpenRec=()=>{["pSecRec","secEvolProd","secProdSemana"].forEach(id=>{const s=document.getElementById(id);if(s)s.open=true;});};
   document.getElementById("pFMes").onchange=e=>{pstate.mes=e.target.value;pOpenRec();prodRender();};
   document.getElementById("pFSemana").onchange=e=>{pstate.semana=e.target.value;pOpenRec();prodRender();};
   document.getElementById("pFDia").onchange=e=>{pstate.dia=e.target.value;pOpenRec();prodRender();};
   document.querySelectorAll("[data-pmode]").forEach(b=>b.onclick=()=>{pstate.timeMode=b.dataset.pmode;document.querySelectorAll("[data-pmode]").forEach(x=>x.classList.toggle("active",x===b));prodRenderTime();});
   document.querySelectorAll("#pRecTable th[data-k]").forEach(th=>th.onclick=()=>{const k=th.dataset.k;if(pstate.sortK===k)pstate.sortDir*=-1;else{pstate.sortK=k;pstate.sortDir=1;}prodRenderRecTable();});
-  document.getElementById("pReset").onclick=()=>{pstate=Object.assign({},pstate,{mes:"Todos",semana:"Todas",dia:"",sortK:null,editId:null});const s=document.getElementById("pSecRec");if(s)s.open=false;prodRender();};
+  document.getElementById("pReset").onclick=()=>{pstate=Object.assign({},pstate,{mes:"Todos",semana:"Todas",dia:"",sortK:null,editId:null});["pSecRec","secEvolProd","secProdSemana"].forEach(id=>{const s=document.getElementById(id);if(s)s.open=false;});prodRender();};
   const totC=document.getElementById("totCutoff");
   if(totC){totC.onchange=e=>{cutoff=e.target.value||null;renderTotais();};}
   document.getElementById("pCsv").onclick=()=>{
