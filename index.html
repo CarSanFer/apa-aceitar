@@ -193,7 +193,7 @@
         <button data-th="dark">Escuro</button>
         <button data-th="system">Sistema</button>
       </div>
-      <div class="badge">v26.08.10.1800</div>
+      <div class="badge">v26.08.10.1830</div>
     </div>
   </header>
 
@@ -454,15 +454,15 @@ const SEED_DATA=[
  {Semana:28,Mes:"2026-07",Data:"2026-07-06",Tipo:"Remoção",SubTipo:"Partidos",Quant:1,Perfil:"P7"},
  {Semana:28,Mes:"2026-07",Data:"2026-07-06",Tipo:"Remoção",SubTipo:"Inteiros",Quant:8,Perfil:"P6"},
  {Semana:28,Mes:"2026-07",Data:"2026-07-06",Tipo:"Remoção",SubTipo:"Inteiros",Quant:5,Perfil:"P7"},
- {Semana:28,Mes:"2026-07",Data:"2026-07-06",Tipo:"Colocação",SubTipo:"-",Quant:4,Perfil:"P1"},
- {Semana:28,Mes:"2026-07",Data:"2026-07-06",Tipo:"Colocação",SubTipo:"-",Quant:4,Perfil:"P2"},
- {Semana:28,Mes:"2026-07",Data:"2026-07-06",Tipo:"Colocação",SubTipo:"-",Quant:3,Perfil:"P3"},
+ {Semana:28,Mes:"2026-07",Data:"2026-07-06",Tipo:"Colocação",SubTipo:"-",Quant:5,Perfil:"P1"},
+ {Semana:28,Mes:"2026-07",Data:"2026-07-06",Tipo:"Colocação",SubTipo:"-",Quant:5,Perfil:"P2"},
+ {Semana:28,Mes:"2026-07",Data:"2026-07-06",Tipo:"Colocação",SubTipo:"-",Quant:1,Perfil:"P3"},
  {Semana:28,Mes:"2026-07",Data:"2026-07-07",Tipo:"Remoção",SubTipo:"Partidos",Quant:1,Perfil:"P7"},
  {Semana:28,Mes:"2026-07",Data:"2026-07-07",Tipo:"Remoção",SubTipo:"Inteiros",Quant:2,Perfil:"P7"},
- {Semana:28,Mes:"2026-07",Data:"2026-07-07",Tipo:"Colocação",SubTipo:"-",Quant:4,Perfil:"P3"},
- {Semana:28,Mes:"2026-07",Data:"2026-07-07",Tipo:"Colocação",SubTipo:"-",Quant:6,Perfil:"P2"},
- {Semana:28,Mes:"2026-07",Data:"2026-07-08",Tipo:"Colocação",SubTipo:"-",Quant:10,Perfil:"P3"},
- {Semana:28,Mes:"2026-07",Data:"2026-07-08",Tipo:"Colocação",SubTipo:"-",Quant:2,Perfil:"P4"},
+ {Semana:28,Mes:"2026-07",Data:"2026-07-07",Tipo:"Colocação",SubTipo:"-",Quant:6,Perfil:"P3"},
+ {Semana:28,Mes:"2026-07",Data:"2026-07-07",Tipo:"Colocação",SubTipo:"-",Quant:4,Perfil:"P2"},
+ {Semana:28,Mes:"2026-07",Data:"2026-07-08",Tipo:"Colocação",SubTipo:"-",Quant:9,Perfil:"P3"},
+ {Semana:28,Mes:"2026-07",Data:"2026-07-08",Tipo:"Colocação",SubTipo:"-",Quant:3,Perfil:"P4"},
  {Semana:28,Mes:"2026-07",Data:"2026-07-08",Tipo:"Remoção",SubTipo:"Partidos",Quant:4,Perfil:"P7"},
  {Semana:28,Mes:"2026-07",Data:"2026-07-08",Tipo:"Remoção",SubTipo:"Partidos",Quant:5,Perfil:"P8"},
  {Semana:28,Mes:"2026-07",Data:"2026-07-08",Tipo:"Remoção",SubTipo:"Inteiros",Quant:5,Perfil:"P7"},
@@ -470,8 +470,8 @@ const SEED_DATA=[
  {Semana:28,Mes:"2026-07",Data:"2026-07-09",Tipo:"Colocação",SubTipo:"-",Quant:3,Perfil:"P3"},
  {Semana:28,Mes:"2026-07",Data:"2026-07-09",Tipo:"Remoção",SubTipo:"Partidos",Quant:4,Perfil:"P7"},
  {Semana:28,Mes:"2026-07",Data:"2026-07-09",Tipo:"Remoção",SubTipo:"Inteiros",Quant:9,Perfil:"P8"},
- {Semana:28,Mes:"2026-07",Data:"2026-07-10",Tipo:"Colocação",SubTipo:"-",Quant:7,Perfil:"P4"},
- {Semana:28,Mes:"2026-07",Data:"2026-07-10",Tipo:"Colocação",SubTipo:"-",Quant:3,Perfil:"P2"},
+ {Semana:28,Mes:"2026-07",Data:"2026-07-10",Tipo:"Colocação",SubTipo:"-",Quant:6,Perfil:"P4"},
+ {Semana:28,Mes:"2026-07",Data:"2026-07-10",Tipo:"Colocação",SubTipo:"-",Quant:4,Perfil:"P2"},
  {Semana:29,Mes:"2026-07",Data:"2026-07-13",Tipo:"Colocação",SubTipo:"-",Quant:2,Perfil:"P2"},
  {Semana:29,Mes:"2026-07",Data:"2026-07-17",Tipo:"Remoção",SubTipo:"Partidos",Quant:13,Perfil:"P10"},
  {Semana:29,Mes:"2026-07",Data:"2026-07-17",Tipo:"Remoção",SubTipo:"Partidos",Quant:6,Perfil:"P9"},
@@ -574,6 +574,21 @@ const IMPORTS=[
   {id:"2026-08-10", recs:LOTE_20260810}
 ];
 const keyOf=r=>r.Data+"|"+r.Tipo+"|"+r.SubTipo+"|"+r.Perfil+"|"+r.Quant;
+/* Correções a registos já existentes (aplicadas uma vez em browsers com dados guardados).
+   Atualizam Quant E Fisc (validação = quantidade). */
+const CORRECTIONS=[
+  {id:"corr-2026-07-11-colocacao", recs:[
+    {Data:"2026-07-06",Tipo:"Colocação",Perfil:"P1",Quant:5},
+    {Data:"2026-07-06",Tipo:"Colocação",Perfil:"P2",Quant:5},
+    {Data:"2026-07-06",Tipo:"Colocação",Perfil:"P3",Quant:1},
+    {Data:"2026-07-07",Tipo:"Colocação",Perfil:"P3",Quant:6},
+    {Data:"2026-07-07",Tipo:"Colocação",Perfil:"P2",Quant:4},
+    {Data:"2026-07-08",Tipo:"Colocação",Perfil:"P3",Quant:9},
+    {Data:"2026-07-08",Tipo:"Colocação",Perfil:"P4",Quant:3},
+    {Data:"2026-07-10",Tipo:"Colocação",Perfil:"P4",Quant:6},
+    {Data:"2026-07-10",Tipo:"Colocação",Perfil:"P2",Quant:4}
+  ]}
+];
 function loadRecords(){
   let saved=[];try{saved=JSON.parse(store.get("esporao_records")||"[]")}catch(e){}
   if(!Array.isArray(saved))saved=[];
@@ -586,6 +601,20 @@ function loadRecords(){
     done.push(lot.id);changed=true;
   });
   records=saved;
+  // Correções a registos existentes (Quant + Fisc), aplicadas uma vez
+  let corrDone=[];try{corrDone=JSON.parse(store.get("esporao_corrections")||"[]")}catch(e){}
+  if(!Array.isArray(corrDone))corrDone=[];
+  CORRECTIONS.forEach(c=>{
+    if(corrDone.includes(c.id))return;
+    c.recs.forEach(cr=>{
+      const alvo=records.filter(r=>r.Tipo===cr.Tipo&&r.Data===cr.Data&&r.Perfil===cr.Perfil);
+      alvo.forEach(r=>{r.Quant=cr.Quant;r.Fisc=cr.Quant;});
+    });
+    corrDone.push(c.id);changed=true;
+  });
+  store.set("esporao_corrections",JSON.stringify(corrDone));
+  // Validação da fiscalização = quantidade do empreiteiro, por defeito (gravado no browser)
+  records.forEach(r=>{if(r.Fisc==null){r.Fisc=r.Quant;changed=true;}});
   if(changed||store.get("esporao_imports")===null){store.set("esporao_imports",JSON.stringify(done));saveRecords();}
 }
 function saveRecords(){store.set("esporao_records",JSON.stringify(records))}
@@ -930,9 +959,11 @@ const PROD_VERSION="2026-07-06-prodA";
 function prodLoad(){
   const ver=store.get("esporao_prod_version");
   let saved=null;try{saved=JSON.parse(store.get("esporao_prod_records")||"null")}catch(e){}
-  if(ver===PROD_VERSION&&saved&&Array.isArray(saved)&&saved.length){prodRecords=saved;return;}
-  prodRecords=SEED_PROD.map((r,i)=>Object.assign({id:"p"+(i+1)},r));
-  store.set("esporao_prod_version",PROD_VERSION);prodSave();
+  if(ver===PROD_VERSION&&saved&&Array.isArray(saved)&&saved.length){prodRecords=saved;}
+  else{prodRecords=SEED_PROD.map((r,i)=>Object.assign({id:"p"+(i+1)},r));store.set("esporao_prod_version",PROD_VERSION);}
+  // Validação da fiscalização = produção do empreiteiro, por defeito
+  let ch=false;prodRecords.forEach(r=>{if(r.Fisc==null){r.Fisc=r.Prod;ch=true;}});
+  if(ch)prodSave();
 }
 function prodSave(){store.set("esporao_prod_records",JSON.stringify(prodRecords))}
 function pNewId(){return "p"+Date.now()+"_"+(pseq++)}
