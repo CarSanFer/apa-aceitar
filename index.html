@@ -163,8 +163,9 @@
   @media print{body{background:#fff;color:#000}.btn,.filters,.theme,.temabar{display:none}#gate{display:none!important}details.sec[open]>summary::before{display:none}}
 
   /* Navegação de secções (menus bem visíveis) */
-  .temabar{display:flex;gap:8px;align-items:center;margin:0 0 18px;flex-wrap:wrap}
-  .temalabel{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1.2px;font-weight:700;margin-right:2px}
+  .temabar{display:flex;gap:8px;align-items:center;margin:0 0 8px;flex-wrap:wrap}
+  .temabar:last-of-type{margin-bottom:18px}
+  .temalabel{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1.2px;font-weight:700;margin-right:2px;min-width:70px}
   .segwrap{display:flex;gap:4px;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:3px}
   .temabar button{background:none;border:none;color:var(--muted);font-size:11px;font-weight:600;padding:5px 10px;border-radius:5px;cursor:pointer;font-family:inherit;letter-spacing:.3px}
   .temabar button:hover{color:var(--txt)}
@@ -210,14 +211,13 @@
         <button data-th="dark">Escuro</button>
         <button data-th="system">Sistema</button>
       </div>
-      <div class="badge">v26.08.10.2545</div>
+      <div class="badge">v26.08.10.2630</div>
     </div>
   </header>
 
   <div class="temabar">
-    <span class="temalabel">Secção:</span>
+    <span class="temalabel">Capítulos:</span>
     <div class="segwrap">
-      <button data-tema="mqt" class="active">MQT</button>
       <button data-tema="remocao"><b>2.1</b> Remoção</button>
       <button data-tema="enroc22"><b>2.2</b> Enroc.</button>
       <button data-tema="enroc23"><b>2.3</b> Enroc.</button>
@@ -227,9 +227,15 @@
       <button data-tema="colocnovo"><b>2.8.2</b> Colocação</button>
       <button data-tema="enroc29"><b>2.9</b> Enroc.</button>
       <button data-tema="enroc210"><b>2.10</b> Enroc.</button>
-      <button data-tema="resumo">Resumo</button>
-      <button data-tema="autos">Autos</button>
-      <button data-tema="totais">Totais</button>
+    </div>
+  </div>
+  <div class="temabar">
+    <span class="temalabel">Análise:</span>
+    <div class="segwrap">
+      <button data-tema="mqt" class="active">MQT</button>
+      <button data-tema="autos">AM</button>
+      <button data-tema="resumo">RES</button>
+      <button data-tema="totais">TOT</button>
     </div>
   </div>
 
@@ -440,8 +446,23 @@
 
   <!-- ============ ENROCAMENTOS ============ -->
   <div id="temaEnroc" class="tema" style="display:none">
+    <details class="sec" id="secEnrocRec">
+      <summary>Registos <span class="count" id="enrocRegCount"></span></summary>
+      <div class="secbody">
+        <div class="rectable">
+          <table id="enrocRecTable">
+            <thead><tr>
+              <th>Dia</th><th>Semana</th><th>Mês</th><th style="text-align:left">Perfil</th>
+              <th style="text-align:right">Enrocamento (m³)</th><th style="text-align:right">Fiscalização</th>
+            </tr></thead>
+            <tbody id="enrocRecBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </details>
+
     <details class="sec" id="secEnroc">
-      <summary>Comparação de Projeto</summary>
+      <summary>Comparação Projeto</summary>
       <div class="secbody">
       <div class="mqtwrap">
         <table id="enrocTable">
@@ -450,6 +471,8 @@
             <th style="text-align:right">Projeto</th>
             <th style="text-align:right">Ent Exec</th>
             <th style="text-align:right">Fiscaliz</th>
+            <th style="text-align:right">Desvio</th>
+            <th style="text-align:right">Desvio %</th>
           </tr></thead>
           <tbody id="enrocBody"></tbody>
         </table>
@@ -812,12 +835,18 @@ const MQT_DATA=[{"Id": "2.1", "Descricao": "Remoção de Tetrápodes (Inteiros e
 const fmtN=(x,d=0)=>x==null?"":Number(x).toLocaleString("pt-PT",{minimumFractionDigits:d,maximumFractionDigits:d,useGrouping:"always"});
 const fmtE=x=>x==null?"":Number(x).toLocaleString("pt-PT",{minimumFractionDigits:2,maximumFractionDigits:2,useGrouping:"always"});
 const fmtA=x=>x==null?"":Number(x).toLocaleString("pt-PT",{maximumFractionDigits:2,useGrouping:"always"});
+const ENROC_RECORDS=[
+  {cap:"2.2",Data:"2026-05-25",Perfil:"P1 a P9",Enroc:190,Fisc:190},
+  {cap:"2.2",Data:"2026-05-25",Perfil:"P10 e P11",Enroc:70,Fisc:70},
+  {cap:"2.2",Data:"2026-05-25",Perfil:"P11 a P11",Enroc:80,Fisc:80},
+  {cap:"2.2",Data:"2026-05-25",Perfil:"P11 a P9",Enroc:60,Fisc:60}
+];
 const ENROC_DATA={
   "2.2":{sub:"Coroamento do Manto | 12 a 15 tf",linhas:[
-    {perfis:"P1 a P9",proj:380,fisc:190},
-    {perfis:"P10 e P11",proj:140,fisc:70},
-    {perfis:"P11 a P11",proj:155,fisc:77.5},
-    {perfis:"P11 a P9",proj:125,fisc:62.5}
+    {perfis:"P1 a P9",proj:380},
+    {perfis:"P10 e P11",proj:140},
+    {perfis:"P11 a P11",proj:155},
+    {perfis:"P11 a P9",proj:125}
   ]},
   "2.3":{sub:"Cabeça \u2192 Talude Sul | 12 a 15 tf",linhas:[
     {perfis:"P10",proj:700}
@@ -877,15 +906,37 @@ function execAte(id,corte){
   return null;
 }
 const autoDe=id=>AUTOS_DATA.find(a=>a.Id===id)||null;
+function renderEnrocRec(){
+  const el=document.getElementById("enrocRecBody");if(!el)return;
+  const recs=ENROC_RECORDS.filter(r=>r.cap===curEnroc);
+  const cnt=document.getElementById("enrocRegCount");if(cnt)cnt.textContent=recs.length?`(${recs.length})`:"";
+  if(!recs.length){el.innerHTML='<tr><td colspan="6" class="empty" style="padding:20px">Sem registos.</td></tr>';return;}
+  el.innerHTML=recs.slice().sort((a,b)=>a.Data<b.Data?1:-1).map(r=>{
+    const cls=r.Fisc===r.Enroc?"fisc-ok":"fisc-alt";
+    return `<tr><td>${fmtD(r.Data)}</td><td>${isoWeek(r.Data)}</td><td>${mesLabel(mesOf(r.Data))}</td><td class="l">${esc(r.Perfil)}</td><td class="num">${fmtE(r.Enroc)}</td><td class="num"><span class="${cls}">${fmtE(r.Fisc)}</span></td></tr>`;
+  }).join("");
+}
 function renderEnroc(){
   const el=document.getElementById("enrocBody");if(!el)return;
   const e=ENROC_DATA[curEnroc];
-  if(!e||!e.linhas.length){el.innerHTML='<tr><td colspan="4" class="empty" style="padding:20px">Sem dados.</td></tr>';return;}
-  let sP=0,sE=0,sF=0,hasE=false,hasF=false;
-  const rows=e.linhas.map(l=>{sP+=l.proj||0;if(l.ent!=null){sE+=l.ent;hasE=true;}if(l.fisc!=null){sF+=l.fisc;hasF=true;}
-    return `<tr><td>${esc(l.perfis)}</td><td class="num">${fmtE(l.proj)}</td><td class="num">${l.ent!=null?fmtE(l.ent):"&mdash;"}</td><td class="num">${l.fisc!=null?fmtE(l.fisc):"&mdash;"}</td></tr>`;
+  if(!e||!e.linhas.length){el.innerHTML='<tr><td colspan="6" class="empty" style="padding:20px">Sem dados.</td></tr>';return;}
+  const recs=ENROC_RECORDS.filter(r=>r.cap===curEnroc);
+  const sumBy=(perfil,campo)=>recs.filter(r=>r.Perfil===perfil).reduce((s,r)=>s+(r[campo]||0),0);
+  const hasRec=recs.length>0;
+  let sP=0,sE=0,sF=0;
+  const cor=v=>v<0?"#e76f51":v>0?"#4caf72":"inherit";
+  const rows=e.linhas.map(l=>{
+    const proj=l.proj||0,ent=sumBy(l.perfis,"Enroc"),fisc=sumBy(l.perfis,"Fisc");
+    sP+=proj;sE+=ent;sF+=fisc;
+    const dv=hasRec?fisc-proj:null,pct=(dv!=null&&proj)?dv/proj*100:null;
+    return `<tr><td>${esc(l.perfis)}</td><td class="num">${fmtE(proj)}</td><td class="num">${hasRec?fmtE(ent):"&mdash;"}</td><td class="num">${hasRec?fmtE(fisc):"&mdash;"}</td>`+
+      `<td class="num">${dv==null?"&mdash;":`<span style="color:${cor(dv)}">${dv>0?"+":""}${fmtE(dv)}</span>`}</td>`+
+      `<td class="num">${pct==null?"&mdash;":`<span style="color:${cor(pct)}">${pct>0?"+":""}${fmtN(pct,1)}%</span>`}</td></tr>`;
   }).join("");
-  el.innerHTML=rows+`<tr class="total"><td>TOTAL</td><td class="num">${fmtE(sP)}</td><td class="num">${hasE?fmtE(sE):"&mdash;"}</td><td class="num">${hasF?fmtE(sF):"&mdash;"}</td></tr>`;
+  const dvT=hasRec?sF-sP:null,pctT=(dvT!=null&&sP)?dvT/sP*100:null;
+  el.innerHTML=rows+`<tr class="total"><td>TOTAL</td><td class="num">${fmtE(sP)}</td><td class="num">${hasRec?fmtE(sE):"&mdash;"}</td><td class="num">${hasRec?fmtE(sF):"&mdash;"}</td>`+
+    `<td class="num">${dvT==null?"&mdash;":`<span style="color:${cor(dvT)}">${dvT>0?"+":""}${fmtE(dvT)}</span>`}</td>`+
+    `<td class="num">${pctT==null?"&mdash;":`<span style="color:${cor(pctT)}">${pctT>0?"+":""}${fmtN(pctT,1)}%</span>`}</td></tr>`;
 }
 function renderResumo(){
   const rows=MQT_DATA.filter(a=>!((a.Descricao==="nan"||!a.Descricao)&&a.Total==null)).map(a=>{
@@ -1516,7 +1567,7 @@ function init(){
     if(t==="autos")renderAutos();
     if(t==="resumo")renderResumo();
     if(t==="totais")renderTotais();
-    if(cfg.enrocId){curEnroc=cfg.enrocId;renderEnroc();}
+    if(cfg.enrocId){curEnroc=cfg.enrocId;renderEnrocRec();renderEnroc();}
     document.getElementById("hdEyebrow").textContent=EB;
     document.getElementById("hdTitle").textContent=cfg.title;
     document.getElementById("hdSub").textContent=cfg.sub;
