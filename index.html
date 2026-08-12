@@ -84,7 +84,7 @@
   .spacer{margin-left:auto}
 
   details.sec{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);margin-bottom:16px;overflow:hidden}
-  details.sec>summary{cursor:pointer;list-style:none;padding:14px 18px;display:flex;align-items:center;gap:10px;font-size:13px;text-transform:uppercase;letter-spacing:1.2px;font-weight:700;user-select:none}
+  details.sec>summary{cursor:pointer;list-style:none;padding:13px 18px;display:flex;align-items:center;gap:10px;font-size:11px;text-transform:uppercase;letter-spacing:1px;font-weight:700;user-select:none}
   details.sec>summary::-webkit-details-marker{display:none}
   details.sec>summary::before{content:"";border-left:6px solid var(--accent);border-top:5px solid transparent;border-bottom:5px solid transparent;transition:transform .15s}
   details.sec[open]>summary::before{transform:rotate(90deg)}
@@ -95,7 +95,7 @@
   .recform .fgroup input,.recform .fgroup select{min-width:120px}
 
   .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;margin-bottom:16px}
-  .card h2{font-size:13px;text-transform:uppercase;letter-spacing:1.2px;text-align:center;font-weight:700;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+  .card h2{font-size:11px;text-transform:uppercase;letter-spacing:1px;text-align:center;font-weight:700;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--line)}
   .toggle{display:flex;gap:6px;justify-content:center;margin-bottom:10px}
   .toggle .btn{padding:4px 11px;font-size:11.5px}
   .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;align-items:stretch}
@@ -127,11 +127,11 @@
   .chip{display:inline-block;padding:2px 9px;border-radius:11px;font-size:11px;font-weight:700;color:#0f151c}
   .rectable{overflow:auto}
   .mqtwrap{overflow:visible}
-  #cmpTable td,#cmp282Table td{padding:7px 10px}
-  #cmpTable td.id,#cmp282Table td.id{font-weight:700;white-space:nowrap}
-  #cmpTable td.num,#cmp282Table td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
-  #cmpTable tr.total td,#cmp282Table tr.total td{border-top:2px solid var(--accent);font-weight:800}
-  #cmpTable td:first-child,#cmp282Table td:first-child{text-align:left}
+  #cmpTable td,#cmp282Table td,#cmpProdTable td{padding:7px 10px}
+  #cmpTable td.id,#cmp282Table td.id,#cmpProdTable td.id{font-weight:700;white-space:nowrap}
+  #cmpTable td.num,#cmp282Table td.num,#cmpProdTable td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+  #cmpTable tr.total td,#cmp282Table tr.total td,#cmpProdTable tr.total td{border-top:2px solid var(--accent);font-weight:800}
+  #cmpTable td:first-child,#cmp282Table td:first-child,#cmpProdTable td:first-child{text-align:left}
   .autoswrap{overflow-x:auto;overflow-y:hidden}
   #autosTable{min-width:1100px}
   #totaisTable{min-width:820px}
@@ -206,7 +206,7 @@
         <button data-th="dark">Escuro</button>
         <button data-th="system">Sistema</button>
       </div>
-      <div class="badge">v26.08.10.2315</div>
+      <div class="badge">v26.08.10.2400</div>
     </div>
   </header>
 
@@ -386,13 +386,32 @@
       <div class="secbody"><div id="pChartSemana"></div></div>
     </details>
 
+    <details class="sec" id="cmpProd">
+      <summary>Comparação Projeto</summary>
+      <div class="secbody">
+        <div class="mqtwrap">
+          <table id="cmpProdTable">
+            <thead><tr>
+              <th style="text-align:left"></th>
+              <th style="text-align:right">Projeto</th>
+              <th style="text-align:right">Produzidos</th>
+              <th style="text-align:right">Fiscalização</th>
+              <th style="text-align:right">Desvio</th>
+              <th style="text-align:right">Desvio %</th>
+            </tr></thead>
+            <tbody id="cmpProdBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </details>
 
   </div><!-- /temaProd -->
 
   <!-- ============ 2.8.2 COLOCAÇÃO DE TETRÁPODES NOVOS ============ -->
   <div id="temaColocNovo" class="tema" style="display:none">
-    <div class="card">
-      <h2>Comparação Projeto &mdash; Colocação de Tetrápodes Novos</h2>
+    <details class="sec" id="secCmp282">
+      <summary>Comparação Projeto &mdash; Colocação de Tetrápodes Novos</summary>
+      <div class="secbody">
       <p style="color:var(--muted);font-size:12.5px;margin:2px 0 12px">Previsão do projetista (2.8.2). A coluna Colocados será preenchida quando houver registo da colocação dos novos.</p>
       <div class="mqtwrap">
         <table id="cmp282Table">
@@ -406,7 +425,8 @@
           <tbody id="cmp282Body"></tbody>
         </table>
       </div>
-    </div>
+      </div>
+    </details>
   </div><!-- /temaColocNovo -->
 
   <!-- ============ BLOCO 3: AUTOS DE MEDIÇÃO ============ -->
@@ -996,6 +1016,15 @@ function renderTime(){
   g+=`</svg>`;
   document.getElementById("chartTime").innerHTML=n?g:`<div class="empty">Sem dados.</div>`;
 }
+function renderCmpProd(){
+  const el=document.getElementById("cmpProdBody");if(!el)return;
+  const art=MQT_DATA.find(a=>a.Id==="2.8.1");
+  const proj=art&&art.Quant!=null?art.Quant:0;
+  const prod=prodRecords.reduce((s,r)=>s+(r.Prod||0),0);
+  const fisc=prodRecords.reduce((s,r)=>s+(r.Fisc!=null?r.Fisc:(r.Prod||0)),0);
+  const dv=prod-proj,pct=proj>0?dv/proj*100:null,cor=v=>v<0?"#e76f51":v>0?"#4caf72":"inherit";
+  el.innerHTML=`<tr class="total"><td>Total</td><td class="num">${fmtN(proj)}</td><td class="num">${fmtN(prod)}</td><td class="num">${fmtN(fisc)}</td><td class="num"><span style="color:${cor(dv)}">${dv>0?"+":""}${dv}</span></td><td class="num">${pct==null?"&mdash;":`<span style="color:${cor(pct)}">${pct>0?"+":""}${fmtN(pct,1)}%</span>`}</td></tr>`;
+}
 function renderCmp282(){
   const el=document.getElementById("cmp282Body");if(!el)return;
   const proj=PROJ_COL_NOV,perfis=Object.keys(proj).sort(pcmp);
@@ -1382,7 +1411,7 @@ function prodResumo(){
 }
 
 function prodRender(){
-  prodBuildFilters();prodRenderKPIs();prodRenderTime();prodRenderSemana();prodRenderRecTable();
+  prodBuildFilters();prodRenderKPIs();prodRenderTime();prodRenderSemana();prodRenderRecTable();renderCmpProd();
 }
 
 function render(){
