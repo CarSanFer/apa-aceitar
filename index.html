@@ -193,7 +193,7 @@
         <button data-th="dark">Escuro</button>
         <button data-th="system">Sistema</button>
       </div>
-      <div class="badge">v26.08.10.1715</div>
+      <div class="badge">v26.08.10.1730</div>
     </div>
   </header>
 
@@ -849,7 +849,7 @@ function renderPerfis(){
       <table><thead>${head}</thead><tbody>${body}</tbody></table></div>`;
   }).join("");
 }
-function toggleHL(p){state.highlight=state.highlight===p?null:p;render();}
+function toggleHL(p){state.perfil=state.perfil===p?"Todos":p;const s=document.getElementById("secRec");if(s&&state.perfil!=="Todos")s.open=true;render();}
 
 /* ================= BLOCO 2: PRODUÇÃO ================= */
 const SEED_PROD=[
@@ -1145,7 +1145,16 @@ function init(){
     document.querySelectorAll(".temabar button").forEach(x=>x.classList.toggle("active",x===b));
     ["temaMQT","temaRC","temaProd"].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display="none";});
     document.getElementById(cfg.tema).style.display="block";
-    if(cfg.rcMode){state.rcMode=cfg.rcMode;state.mes="Todos";state.semana="Todas";state.dia="";state.sub="Todos";state.perfil="Todos";state.editId=null;render();}
+    if(cfg.rcMode){
+      state.rcMode=cfg.rcMode;
+      const base=records.filter(r=>r.Tipo===cfg.rcMode);
+      if(state.mes!=="Todos"&&!base.some(r=>r.Mes===state.mes))state.mes="Todos";
+      if(state.semana!=="Todas"&&!base.some(r=>r.Semana==+state.semana))state.semana="Todas";
+      if(state.dia!==""&&!base.some(r=>r.Data===state.dia))state.dia="";
+      if(state.perfil!=="Todos"&&!base.some(r=>r.Perfil===state.perfil))state.perfil="Todos";
+      if(cfg.rcMode==="Colocação")state.sub="Todos"; // Colocação não tem Sub Tipo
+      state.editId=null;render();
+    }
     if(t==="mqt")renderMQT();
     if(t==="prod")prodRender();
     document.getElementById("hdEyebrow").textContent=EB;
