@@ -193,7 +193,7 @@
         <button data-th="dark">Escuro</button>
         <button data-th="system">Sistema</button>
       </div>
-      <div class="badge">v26.08.10.1730</div>
+      <div class="badge">v26.08.10.1800</div>
     </div>
   </header>
 
@@ -307,27 +307,6 @@
       <button class="btn spacer" id="pCsv">Exportar CSV</button>
     </div>
 
-    <div class="card">
-      <h2>Evolução da Produção</h2>
-      <div class="toggle">
-        <button class="btn" data-pmode="month">Mês</button>
-        <button class="btn" data-pmode="week">Semana</button>
-        <button class="btn" data-pmode="day">Dia</button>
-        <button class="btn active" data-pmode="cum">Acumulado</button>
-      </div>
-      <div class="chartbox" id="pChartTime"></div>
-    </div>
-
-    <div class="card">
-      <h2>Produção vs Meta (Acumulado)</h2>
-      <div class="chartbox" id="pChartMeta"></div>
-    </div>
-
-    <div class="card">
-      <h2>Produção por Semana</h2>
-      <div id="pChartSemana"></div>
-    </div>
-
     <details class="sec" id="pSecRec">
       <summary>Registos <span class="count" id="pRegCount"></span></summary>
       <div class="secbody">
@@ -353,10 +332,21 @@
       </div>
     </details>
 
-    <details class="sec" id="pSecResumo">
-      <summary>Resumo por Semana</summary>
-      <div class="secbody"><div class="perfis" id="pResumo"></div></div>
-    </details>
+    <div class="card">
+      <h2>Evolução da Produção</h2>
+      <div class="toggle">
+        <button class="btn" data-pmode="month">Mês</button>
+        <button class="btn" data-pmode="week">Semana</button>
+        <button class="btn" data-pmode="day">Dia</button>
+        <button class="btn active" data-pmode="cum">Acumulado</button>
+      </div>
+      <div class="chartbox" id="pChartTime"></div>
+    </div>
+
+    <div class="card">
+      <h2>Produção por Semana</h2>
+      <div id="pChartSemana"></div>
+    </div>
 
   </div><!-- /temaProd -->
 
@@ -781,9 +771,10 @@ function renderTime(){
 function renderPerfil(){
   const d=filtered(),ps=[...new Set(d.map(r=>r.Perfil))].sort(pcmp);
   const data=ps.map(p=>({p,q:sum(d.filter(r=>r.Perfil===p).map(r=>r.Quant))}));
-  const max=Math.max(...data.map(o=>o.q),1),W=700,H=480,pl=44,pr=60,pt=14,pb=14,ih=H-pt-pb,rowH=ih/Math.max(data.length,1);
+  const max=Math.max(...data.map(o=>o.q),1);
+  const rowH=34,pt=14,pb=14,W=700,pl=44,pr=60,H=pt+pb+Math.max(data.length,1)*rowH,ih=H-pt-pb;
   let g=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet">`;
-  data.forEach((o,i)=>{const yc=pt+i*rowH+rowH/2,bw=(o.q/max)*(W-pl-pr),bh=Math.min(30,rowH*0.66),op=(state.highlight&&state.highlight!==o.p)?0.3:1;
+  data.forEach((o,i)=>{const yc=pt+i*rowH+rowH/2,bw=(o.q/max)*(W-pl-pr),bh=Math.min(22,rowH*0.62),op=(state.highlight&&state.highlight!==o.p)?0.3:1;
     g+=`<text x="6" y="${yc+5}" class="glabel" style="fill:${PC[o.p]};font-size:13px">${o.p}</text>`;
     g+=`<rect x="${pl}" y="${yc-bh/2}" width="${W-pl-pr}" height="${bh}" rx="3" fill="var(--panel2)"/>`;
     g+=`<rect x="${pl}" y="${yc-bh/2}" width="${bw}" height="${bh}" rx="3" fill="${PC[o.p]}" opacity="${op}"/>`;
@@ -815,9 +806,10 @@ function renderPerfilSub(){
   const data=ps.map(p=>({p,
     int:sum(d.filter(r=>r.Perfil===p&&r.SubTipo==="Inteiros").map(r=>r.Quant)),
     part:sum(d.filter(r=>r.Perfil===p&&r.SubTipo==="Partidos").map(r=>r.Quant))}));
-  const max=Math.max(...data.map(o=>o.int+o.part),1),W=700,H=480,pl=44,pr=60,pt=14,pb=14,ih=H-pt-pb,rowH=ih/Math.max(data.length,1);
+  const max=Math.max(...data.map(o=>o.int+o.part),1);
+  const rowH=34,pt=14,pb=14,W=700,pl=44,pr=60,H=pt+pb+Math.max(data.length,1)*rowH,ih=H-pt-pb;
   let g=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet">`;
-  data.forEach((o,i)=>{const yc=pt+i*rowH+rowH/2,bh=Math.min(30,rowH*0.66),tot=o.int+o.part;
+  data.forEach((o,i)=>{const yc=pt+i*rowH+rowH/2,bh=Math.min(22,rowH*0.62),tot=o.int+o.part;
     const wI=(o.int/max)*(W-pl-pr),wP=(o.part/max)*(W-pl-pr);
     g+=`<text x="6" y="${yc+5}" class="glabel" style="fill:${PC[o.p]};font-size:13px">${o.p}</text>`;
     g+=`<rect x="${pl}" y="${yc-bh/2}" width="${W-pl-pr}" height="${bh}" rx="3" fill="var(--panel2)"/>`;
@@ -1033,15 +1025,21 @@ function prodRenderMeta(){
 function prodRenderSemana(){
   const d=prodFiltered(),sems=[...new Set(d.map(r=>r.Semana))].sort((a,b)=>a-b);
   const tot=sems.map(s=>sum(d.filter(r=>r.Semana===s).map(r=>r.Prod)));
+  const metaSem=sems.map(s=>sum(d.filter(r=>r.Semana===s).map(r=>r.Rend)));
+  const metaMedia=metaSem.length?metaSem.reduce((a,b)=>a+b,0)/metaSem.length:0;
   const W=1400,H=340,pl=76,pr=28,pt=22,pb=56,iw=W-pl-pr,ih=H-pt-pb;
-  const max=Math.max(...tot,1),gap=sems.length?iw/sems.length:0,bw=sems.length?Math.min(90,gap*0.6):0;
+  const max=Math.max(...tot,metaMedia,1),gap=sems.length?iw/sems.length:0,bw=sems.length?Math.min(90,gap*0.6):0;
+  const yOf=v=>pt+ih-(v/max)*ih;
   let g=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet">`;
-  for(let i=0;i<=4;i++){const gv=Math.round(max*i/4),gy=pt+ih-(gv/max)*ih;
+  for(let i=0;i<=4;i++){const gv=Math.round(max*i/4),gy=yOf(gv);
     g+=`<line x1="${pl}" y1="${gy}" x2="${W-pr}" y2="${gy}" stroke="var(--line)"/><text x="${pl-8}" y="${gy+3}" text-anchor="end" class="glabel">${gv}</text>`;}
   sems.forEach((s,i)=>{const cx=pl+gap*i+gap/2,h=(tot[i]/max)*ih,yy=pt+ih-h;
     g+=`<rect x="${cx-bw/2}" y="${yy}" width="${bw}" height="${h}" rx="2" fill="var(--accent)"/>`;
     g+=`<text x="${cx}" y="${yy-8}" text-anchor="middle" class="gval">${tot[i]}</text>`;
     g+=`<text x="${cx}" y="${pt+ih+20}" text-anchor="middle" class="glabel">S${s}</text>`;});
+  if(metaMedia>0){const my=yOf(metaMedia);
+    g+=`<line x1="${pl}" y1="${my}" x2="${W-pr}" y2="${my}" stroke="#e76f51" stroke-width="2.5" stroke-dasharray="8 5"/>`;
+    g+=`<text x="${W-pr}" y="${my-7}" text-anchor="end" class="glabel" style="fill:#e76f51;font-weight:700">Meta ${metaMedia.toFixed(1).replace(".",",")}/sem.</text>`;}
   g+=`</svg>`;
   document.getElementById("pChartSemana").innerHTML=sems.length?g:`<div class="empty">Sem dados.</div>`;
 }
@@ -1119,7 +1117,7 @@ function prodResumo(){
 }
 
 function prodRender(){
-  prodBuildFilters();prodRenderKPIs();prodRenderTime();prodRenderMeta();prodRenderSemana();prodRenderRecTable();prodResumo();
+  prodBuildFilters();prodRenderKPIs();prodRenderTime();prodRenderSemana();prodRenderRecTable();
 }
 
 function render(){
@@ -1188,12 +1186,13 @@ function init(){
   };
 
   /* ===== Handlers Bloco 2: Produção ===== */
-  document.getElementById("pFMes").onchange=e=>{pstate.mes=e.target.value;prodRender();};
-  document.getElementById("pFSemana").onchange=e=>{pstate.semana=e.target.value;prodRender();};
-  document.getElementById("pFDia").onchange=e=>{pstate.dia=e.target.value;prodRender();};
+  const pOpenRec=()=>{const s=document.getElementById("pSecRec");if(s)s.open=true;};
+  document.getElementById("pFMes").onchange=e=>{pstate.mes=e.target.value;pOpenRec();prodRender();};
+  document.getElementById("pFSemana").onchange=e=>{pstate.semana=e.target.value;pOpenRec();prodRender();};
+  document.getElementById("pFDia").onchange=e=>{pstate.dia=e.target.value;pOpenRec();prodRender();};
   document.querySelectorAll("[data-pmode]").forEach(b=>b.onclick=()=>{pstate.timeMode=b.dataset.pmode;document.querySelectorAll("[data-pmode]").forEach(x=>x.classList.toggle("active",x===b));prodRenderTime();});
   document.querySelectorAll("#pRecTable th[data-k]").forEach(th=>th.onclick=()=>{const k=th.dataset.k;if(pstate.sortK===k)pstate.sortDir*=-1;else{pstate.sortK=k;pstate.sortDir=1;}prodRenderRecTable();});
-  document.getElementById("pReset").onclick=()=>{pstate=Object.assign({},pstate,{mes:"Todos",semana:"Todas",dia:"",sortK:null,editId:null});prodRender();};
+  document.getElementById("pReset").onclick=()=>{pstate=Object.assign({},pstate,{mes:"Todos",semana:"Todas",dia:"",sortK:null,editId:null});const s=document.getElementById("pSecRec");if(s)s.open=false;prodRender();};
   document.getElementById("pCsv").onclick=()=>{
     const d=prodFiltered(),head="Data,Semana,Mes,Producao,Rendimento,Desvio";
     const body=d.map(r=>`${r.Data},${r.Semana},${r.Mes},${r.Prod},${r.Rend},${r.Prod-r.Rend}`).join("\n");
