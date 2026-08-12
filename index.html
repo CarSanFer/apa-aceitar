@@ -94,12 +94,12 @@
   .recform{display:flex;flex-wrap:wrap;gap:13px;align-items:flex-end;padding:4px 0 14px;border-bottom:1px solid var(--line);margin-bottom:14px}
   .recform .fgroup input,.recform .fgroup select{min-width:120px}
 
-  .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;margin-bottom:16px}
   .card h2{font-size:13px;text-transform:uppercase;letter-spacing:1.2px;text-align:center;font-weight:700;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--line)}
   .toggle{display:flex;gap:6px;justify-content:center;margin-bottom:10px}
   .toggle .btn{padding:4px 11px;font-size:11.5px}
   .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;align-items:stretch}
-  .grid .card{display:flex;flex-direction:column}
+  .grid .card{display:flex;flex-direction:column;margin-bottom:0}
   .chartbox{flex:1;display:flex;align-items:center}
   svg{width:100%;display:block;overflow:visible}
   svg text{font-family:var(--font)}
@@ -193,7 +193,7 @@
         <button data-th="dark">Escuro</button>
         <button data-th="system">Sistema</button>
       </div>
-      <div class="badge">v26.08.10.1545</div>
+      <div class="badge">v26.08.10.1715</div>
     </div>
   </header>
 
@@ -307,20 +307,20 @@
       <button class="btn spacer" id="pCsv">Exportar CSV</button>
     </div>
 
-    <div class="grid">
-      <div class="card">
-        <h2>Evolução da Produção</h2>
-        <div class="toggle">
-          <button class="btn active" data-pmode="cum">Acumulado</button>
-          <button class="btn" data-pmode="day">Por dia</button>
-          <button class="btn" data-pmode="week">Por semana</button>
-        </div>
-        <div class="chartbox" id="pChartTime"></div>
+    <div class="card">
+      <h2>Evolução da Produção</h2>
+      <div class="toggle">
+        <button class="btn" data-pmode="month">Mês</button>
+        <button class="btn" data-pmode="week">Semana</button>
+        <button class="btn" data-pmode="day">Dia</button>
+        <button class="btn active" data-pmode="cum">Acumulado</button>
       </div>
-      <div class="card">
-        <h2>Produção vs Meta (Acumulado)</h2>
-        <div class="chartbox" id="pChartMeta"></div>
-      </div>
+      <div class="chartbox" id="pChartTime"></div>
+    </div>
+
+    <div class="card">
+      <h2>Produção vs Meta (Acumulado)</h2>
+      <div class="chartbox" id="pChartMeta"></div>
     </div>
 
     <div class="card">
@@ -772,14 +772,14 @@ function renderTime(){
     g+=`<path d="M ${x(0)} ${y(0)} ${vals.map((v,i)=>`L ${x(i)} ${y(v)}`).join(" ")} L ${x(n-1)} ${y(0)} Z" fill="var(--accent)" opacity="0.12"/>`;
     g+=`<path d="${vals.map((v,i)=>`${i?"L":"M"} ${x(i)} ${y(v)}`).join(" ")}" fill="none" stroke="var(--accent)" stroke-width="3"/>`;
     vals.forEach((v,i)=>{g+=`<circle cx="${x(i)}" cy="${y(v)}" r="4" fill="var(--accent)"/><text x="${x(i)}" y="${y(v)-11}" text-anchor="middle" class="gval">${v}</text>`;});
-    const lstep=Math.ceil(n/22);
+    const lstep=n>40?Math.ceil(n/28):1;
     labels.forEach((lb,i)=>{if(i%lstep===0||i===n-1)g+=`<text x="${x(i)}" y="${H-18}" text-anchor="middle" class="glabel">${lb}</text>`;});
   }
   g+=`</svg>`;
   document.getElementById("chartTime").innerHTML=n?g:`<div class="empty">Sem dados.</div>`;
 }
 function renderPerfil(){
-  const d=filtered(),ps=perfisList();
+  const d=filtered(),ps=[...new Set(d.map(r=>r.Perfil))].sort(pcmp);
   const data=ps.map(p=>({p,q:sum(d.filter(r=>r.Perfil===p).map(r=>r.Quant))}));
   const max=Math.max(...data.map(o=>o.q),1),W=700,H=480,pl=44,pr=60,pt=14,pb=14,ih=H-pt-pb,rowH=ih/Math.max(data.length,1);
   let g=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet">`;
@@ -810,7 +810,7 @@ function renderSemana(){
 }
 function renderPerfilSub(){
   const el=document.getElementById("chartPerfilSub");if(!el)return;
-  const d=filtered(),ps=perfisList();
+  const d=filtered(),ps=[...new Set(d.map(r=>r.Perfil))].sort(pcmp);
   const CI="#4895ef",CP="#f07b3f"; // Inteiros / Partidos
   const data=ps.map(p=>({p,
     int:sum(d.filter(r=>r.Perfil===p&&r.SubTipo==="Inteiros").map(r=>r.Quant)),
@@ -828,7 +828,7 @@ function renderPerfilSub(){
   g+=`</svg>`;el.innerHTML=g;
 }
 function renderPerfis(){
-  const d=filtered(),ps=perfisList(),rem=state.rcMode==="Remoção";
+  const d=filtered(),ps=[...new Set(d.map(r=>r.Perfil))].sort(pcmp),rem=state.rcMode==="Remoção";
   document.getElementById("perfis").innerHTML=ps.map(p=>{
     const rows=d.filter(r=>r.Perfil===p),tot=sum(rows.map(r=>r.Quant));
     const part=sum(rows.filter(r=>r.SubTipo==="Partidos").map(r=>r.Quant));
@@ -979,25 +979,27 @@ function prodRenderKPIs(){
 function prodRenderTime(){
   const d=prodFiltered();
   let labels,vals;
-  if(pstate.timeMode==="week"){
+  if(pstate.timeMode==="month"){
+    const meses=[...new Set(d.map(r=>r.Mes))].sort();
+    labels=meses.map(mesLabel);vals=meses.map(m=>sum(d.filter(r=>r.Mes===m).map(r=>r.Prod)));
+  }else if(pstate.timeMode==="week"){
     const sems=[...new Set(d.map(r=>r.Semana))].sort((a,b)=>a-b);
     labels=sems.map(s=>"S"+s);vals=sems.map(s=>sum(d.filter(r=>r.Semana===s).map(r=>r.Prod)));
   }else{
     labels=d.map(r=>fmtD(r.Data));vals=d.map(r=>r.Prod);
     if(pstate.timeMode==="cum"){let c=0;vals=vals.map(v=>c+=v);}
   }
-  const n=labels.length,W=700,H=320,pl=42,pr=18,pt=22,pb=42,iw=W-pl-pr,ih=H-pt-pb,max=Math.max(...vals,1);
+  const n=labels.length,W=1400,H=460,pl=54,pr=28,pt=30,pb=54,iw=W-pl-pr,ih=H-pt-pb,max=Math.max(...vals,1);
   const x=i=>n<2?pl+iw/2:pl+(i/(n-1))*iw,y=v=>pt+ih-(v/max)*ih;
   let g=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet">`;
   for(let i=0;i<=4;i++){const gv=Math.round(max*i/4),gy=y(gv);
-    g+=`<line x1="${pl}" y1="${gy}" x2="${W-pr}" y2="${gy}" stroke="var(--line)"/><text x="${pl-6}" y="${gy+3}" text-anchor="end" class="glabel">${gv}</text>`;}
+    g+=`<line x1="${pl}" y1="${gy}" x2="${W-pr}" y2="${gy}" stroke="var(--line)"/><text x="${pl-8}" y="${gy+3}" text-anchor="end" class="glabel">${gv}</text>`;}
   if(n){
     g+=`<path d="M ${x(0)} ${y(0)} ${vals.map((v,i)=>`L ${x(i)} ${y(v)}`).join(" ")} L ${x(n-1)} ${y(0)} Z" fill="var(--accent)" opacity="0.12"/>`;
-    g+=`<path d="${vals.map((v,i)=>`${i?"L":"M"} ${x(i)} ${y(v)}`).join(" ")}" fill="none" stroke="var(--accent)" stroke-width="2.5"/>`;
-    vals.forEach((v,i)=>g+=`<circle cx="${x(i)}" cy="${y(v)}" r="3" fill="var(--accent)"/>`);
-    if(n<=20)vals.forEach((v,i)=>g+=`<text x="${x(i)}" y="${y(v)-9}" text-anchor="middle" class="gval">${v}</text>`);
-    const step=Math.ceil(n/16);
-    labels.forEach((lb,i)=>{if(i%step===0||i===n-1)g+=`<text x="${x(i)}" y="${H-14}" text-anchor="middle" class="glabel">${lb}</text>`});
+    g+=`<path d="${vals.map((v,i)=>`${i?"L":"M"} ${x(i)} ${y(v)}`).join(" ")}" fill="none" stroke="var(--accent)" stroke-width="3"/>`;
+    vals.forEach((v,i)=>g+=`<circle cx="${x(i)}" cy="${y(v)}" r="4" fill="var(--accent)"/><text x="${x(i)}" y="${y(v)-11}" text-anchor="middle" class="gval">${v}</text>`);
+    const lstep=n>40?Math.ceil(n/28):1;
+    labels.forEach((lb,i)=>{if(i%lstep===0||i===n-1)g+=`<text x="${x(i)}" y="${H-18}" text-anchor="middle" class="glabel">${lb}</text>`;});
   }
   g+=`</svg>`;
   document.getElementById("pChartTime").innerHTML=n?g:`<div class="empty">Sem dados.</div>`;
@@ -1008,22 +1010,21 @@ function prodRenderMeta(){
   const d=prodFiltered();
   let cp=0,cr=0;const prod=d.map(r=>cp+=r.Prod),meta=d.map(r=>cr+=r.Rend);
   const labels=d.map(r=>fmtD(r.Data)),n=labels.length;
-  const W=700,H=320,pl=42,pr=18,pt=22,pb=42,iw=W-pl-pr,ih=H-pt-pb,max=Math.max(...prod,...meta,1);
+  const W=1400,H=460,pl=54,pr=28,pt=30,pb=64,iw=W-pl-pr,ih=H-pt-pb,max=Math.max(...prod,...meta,1);
   const x=i=>n<2?pl+iw/2:pl+(i/(n-1))*iw,y=v=>pt+ih-(v/max)*ih;
   let g=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet">`;
   for(let i=0;i<=4;i++){const gv=Math.round(max*i/4),gy=y(gv);
-    g+=`<line x1="${pl}" y1="${gy}" x2="${W-pr}" y2="${gy}" stroke="var(--line)"/><text x="${pl-6}" y="${gy+3}" text-anchor="end" class="glabel">${gv}</text>`;}
+    g+=`<line x1="${pl}" y1="${gy}" x2="${W-pr}" y2="${gy}" stroke="var(--line)"/><text x="${pl-8}" y="${gy+3}" text-anchor="end" class="glabel">${gv}</text>`;}
   if(n){
-    g+=`<path d="${meta.map((v,i)=>`${i?"L":"M"} ${x(i)} ${y(v)}`).join(" ")}" fill="none" stroke="var(--muted)" stroke-width="2" stroke-dasharray="5 4"/>`;
-    g+=`<path d="${prod.map((v,i)=>`${i?"L":"M"} ${x(i)} ${y(v)}`).join(" ")}" fill="none" stroke="var(--accent)" stroke-width="2.5"/>`;
-    g+=`<text x="${x(n-1)}" y="${y(prod[n-1])-8}" text-anchor="end" class="gval">${prod[n-1]}</text>`;
-    g+=`<text x="${x(n-1)}" y="${y(meta[n-1])-8}" text-anchor="end" class="glabel">meta ${meta[n-1]}</text>`;
-    const step=Math.ceil(n/16);
-    labels.forEach((lb,i)=>{if(i%step===0||i===n-1)g+=`<text x="${x(i)}" y="${H-26}" text-anchor="middle" class="glabel">${lb}</text>`});
+    g+=`<path d="${meta.map((v,i)=>`${i?"L":"M"} ${x(i)} ${y(v)}`).join(" ")}" fill="none" stroke="var(--muted)" stroke-width="2.5" stroke-dasharray="6 5"/>`;
+    g+=`<path d="${prod.map((v,i)=>`${i?"L":"M"} ${x(i)} ${y(v)}`).join(" ")}" fill="none" stroke="var(--accent)" stroke-width="3"/>`;
+    g+=`<text x="${x(n-1)}" y="${y(prod[n-1])-10}" text-anchor="end" class="gval">${prod[n-1]}</text>`;
+    g+=`<text x="${x(n-1)}" y="${y(meta[n-1])-10}" text-anchor="end" class="glabel">meta ${meta[n-1]}</text>`;
+    const lstep=n>40?Math.ceil(n/28):1;
+    labels.forEach((lb,i)=>{if(i%lstep===0||i===n-1)g+=`<text x="${x(i)}" y="${H-30}" text-anchor="middle" class="glabel">${lb}</text>`;});
   }
-  // legenda
-  g+=`<rect x="${pl}" y="${H-14}" width="14" height="3" fill="var(--accent)"/><text x="${pl+20}" y="${H-11}" class="glabel">Produção</text>`;
-  g+=`<rect x="${pl+110}" y="${H-14}" width="14" height="3" fill="var(--muted)"/><text x="${pl+130}" y="${H-11}" class="glabel">Meta</text>`;
+  g+=`<rect x="${pl}" y="${H-16}" width="16" height="3" fill="var(--accent)"/><text x="${pl+22}" y="${H-12}" class="glabel">Produção</text>`;
+  g+=`<rect x="${pl+130}" y="${H-16}" width="16" height="3" fill="var(--muted)"/><text x="${pl+152}" y="${H-12}" class="glabel">Meta</text>`;
   g+=`</svg>`;
   document.getElementById("pChartMeta").innerHTML=n?g:`<div class="empty">Sem dados.</div>`;
 }
