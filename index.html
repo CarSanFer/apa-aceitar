@@ -127,6 +127,8 @@
   .chip{display:inline-block;padding:2px 9px;border-radius:11px;font-size:11px;font-weight:700;color:#0f151c}
   .rectable{overflow:auto}
   .mqtwrap{overflow:visible}
+  #enrocRecTable,#enrocTable{table-layout:fixed}
+  #enrocRecTable th,#enrocRecTable td,#enrocTable th,#enrocTable td{text-align:center;font-variant-numeric:tabular-nums}
   #enrocTable td{padding:7px 10px}
   #enrocTable td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
   #enrocTable td:first-child{text-align:left;font-weight:600}
@@ -211,11 +213,11 @@
         <button data-th="dark">Escuro</button>
         <button data-th="system">Sistema</button>
       </div>
-      <div class="badge">v26.08.10.2630</div>
+      <div class="badge">v26.08.10.2700</div>
     </div>
   </header>
 
-  <div class="temabar">
+  <div class="temabar" id="barCapitulos">
     <span class="temalabel">Capítulos:</span>
     <div class="segwrap">
       <button data-tema="remocao"><b>2.1</b> Remoção</button>
@@ -452,8 +454,8 @@
         <div class="rectable">
           <table id="enrocRecTable">
             <thead><tr>
-              <th>Dia</th><th>Semana</th><th>Mês</th><th style="text-align:left">Perfil</th>
-              <th style="text-align:right">Enrocamento (m³)</th><th style="text-align:right">Fiscalização</th>
+              <th>Dia</th><th>Semana</th><th>Mês</th><th>Perfil</th>
+              <th>Enrocamento (m³)</th><th>Fiscalização</th>
             </tr></thead>
             <tbody id="enrocRecBody"></tbody>
           </table>
@@ -467,12 +469,12 @@
       <div class="mqtwrap">
         <table id="enrocTable">
           <thead><tr>
-            <th style="text-align:left">Perfis</th>
-            <th style="text-align:right">Projeto</th>
-            <th style="text-align:right">Ent Exec</th>
-            <th style="text-align:right">Fiscaliz</th>
-            <th style="text-align:right">Desvio</th>
-            <th style="text-align:right">Desvio %</th>
+            <th>Perfis</th>
+            <th>Projeto</th>
+            <th>Ent Exec</th>
+            <th>Fiscaliz</th>
+            <th>Desvio</th>
+            <th>Desvio %</th>
           </tr></thead>
           <tbody id="enrocBody"></tbody>
         </table>
@@ -913,7 +915,7 @@ function renderEnrocRec(){
   if(!recs.length){el.innerHTML='<tr><td colspan="6" class="empty" style="padding:20px">Sem registos.</td></tr>';return;}
   el.innerHTML=recs.slice().sort((a,b)=>a.Data<b.Data?1:-1).map(r=>{
     const cls=r.Fisc===r.Enroc?"fisc-ok":"fisc-alt";
-    return `<tr><td>${fmtD(r.Data)}</td><td>${isoWeek(r.Data)}</td><td>${mesLabel(mesOf(r.Data))}</td><td class="l">${esc(r.Perfil)}</td><td class="num">${fmtE(r.Enroc)}</td><td class="num"><span class="${cls}">${fmtE(r.Fisc)}</span></td></tr>`;
+    return `<tr><td>${fmtD(r.Data)}</td><td>${isoWeek(r.Data)}</td><td>${mesLabel(mesOf(r.Data))}</td><td>${esc(r.Perfil)}</td><td>${fmtE(r.Enroc)}</td><td><span class="${cls}">${fmtE(r.Fisc)}</span></td></tr>`;
   }).join("");
 }
 function renderEnroc(){
@@ -929,14 +931,14 @@ function renderEnroc(){
     const proj=l.proj||0,ent=sumBy(l.perfis,"Enroc"),fisc=sumBy(l.perfis,"Fisc");
     sP+=proj;sE+=ent;sF+=fisc;
     const dv=hasRec?fisc-proj:null,pct=(dv!=null&&proj)?dv/proj*100:null;
-    return `<tr><td>${esc(l.perfis)}</td><td class="num">${fmtE(proj)}</td><td class="num">${hasRec?fmtE(ent):"&mdash;"}</td><td class="num">${hasRec?fmtE(fisc):"&mdash;"}</td>`+
-      `<td class="num">${dv==null?"&mdash;":`<span style="color:${cor(dv)}">${dv>0?"+":""}${fmtE(dv)}</span>`}</td>`+
-      `<td class="num">${pct==null?"&mdash;":`<span style="color:${cor(pct)}">${pct>0?"+":""}${fmtN(pct,1)}%</span>`}</td></tr>`;
+    return `<tr><td>${esc(l.perfis)}</td><td >${fmtE(proj)}</td><td >${hasRec?fmtE(ent):"&mdash;"}</td><td >${hasRec?fmtE(fisc):"&mdash;"}</td>`+
+      `<td >${dv==null?"&mdash;":`<span style="color:${cor(dv)}">${dv>0?"+":""}${fmtE(dv)}</span>`}</td>`+
+      `<td >${pct==null?"&mdash;":`<span style="color:${cor(pct)}">${pct>0?"+":""}${fmtN(pct,1)}%</span>`}</td></tr>`;
   }).join("");
   const dvT=hasRec?sF-sP:null,pctT=(dvT!=null&&sP)?dvT/sP*100:null;
-  el.innerHTML=rows+`<tr class="total"><td>TOTAL</td><td class="num">${fmtE(sP)}</td><td class="num">${hasRec?fmtE(sE):"&mdash;"}</td><td class="num">${hasRec?fmtE(sF):"&mdash;"}</td>`+
-    `<td class="num">${dvT==null?"&mdash;":`<span style="color:${cor(dvT)}">${dvT>0?"+":""}${fmtE(dvT)}</span>`}</td>`+
-    `<td class="num">${pctT==null?"&mdash;":`<span style="color:${cor(pctT)}">${pctT>0?"+":""}${fmtN(pctT,1)}%</span>`}</td></tr>`;
+  el.innerHTML=rows+`<tr class="total"><td>TOTAL</td><td >${fmtE(sP)}</td><td >${hasRec?fmtE(sE):"&mdash;"}</td><td >${hasRec?fmtE(sF):"&mdash;"}</td>`+
+    `<td >${dvT==null?"&mdash;":`<span style="color:${cor(dvT)}">${dvT>0?"+":""}${fmtE(dvT)}</span>`}</td>`+
+    `<td >${pctT==null?"&mdash;":`<span style="color:${cor(pctT)}">${pctT>0?"+":""}${fmtN(pctT,1)}%</span>`}</td></tr>`;
 }
 function renderResumo(){
   const rows=MQT_DATA.filter(a=>!((a.Descricao==="nan"||!a.Descricao)&&a.Total==null)).map(a=>{
@@ -1624,6 +1626,15 @@ function init(){
 
   render();prodRender();renderMQT();
   document.getElementById("adminBtn").onclick=toggleAdmin;
+  uniformizarCapitulos();
+  window.addEventListener("resize",uniformizarCapitulos);
+}
+function uniformizarCapitulos(){
+  const bar=document.getElementById("barCapitulos");if(!bar)return;
+  const btns=[...bar.querySelectorAll("button")];
+  btns.forEach(b=>b.style.width="");
+  let max=0;btns.forEach(b=>{const w=Math.ceil(b.getBoundingClientRect().width);if(w>max)max=w;});
+  if(max>0)btns.forEach(b=>b.style.width=max+"px");
 }
 
 /* Auto-login só aqui, depois de tudo estar definido */
