@@ -127,7 +127,6 @@
   .chip{display:inline-block;padding:2px 9px;border-radius:11px;font-size:11px;font-weight:700;color:#0f151c}
   .rectable{overflow:auto}
   .mqtwrap{overflow:visible}
-  #temaRC.mode-col #cmpProjeto{display:none}
   #cmpTable td,#cmp282Table td{padding:7px 10px}
   #cmpTable td.id,#cmp282Table td.id{font-weight:700;white-space:nowrap}
   #cmpTable td.num,#cmp282Table td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
@@ -207,7 +206,7 @@
         <button data-th="dark">Escuro</button>
         <button data-th="system">Sistema</button>
       </div>
-      <div class="badge">v26.08.10.2145</div>
+      <div class="badge">v26.08.10.2230</div>
     </div>
   </header>
 
@@ -231,7 +230,7 @@
       <div class="mqtwrap">
         <table id="mqtTable">
           <thead><tr>
-            <th style="width:6%">Id</th><th style="text-align:left;width:43%">Descrição</th><th style="width:6%">Un</th>
+            <th style="width:6%">Id</th><th style="width:43%">Descrição</th><th style="width:6%">Un</th>
             <th style="text-align:right;width:15%">MQT</th><th style="text-align:right;width:15%">Pr. Unit. (€)</th><th style="text-align:right;width:15%">Total (€)</th>
           </tr></thead>
           <tbody id="mqtBody"></tbody>
@@ -309,21 +308,23 @@
     </div>
   </div>
 
-  <div class="card" id="cmpProjeto">
-    <h2>Comparação Projeto</h2>
-    <div class="mqtwrap">
-      <table id="cmpTable">
-        <thead><tr>
-          <th style="text-align:left">Perfil</th>
-          <th style="text-align:right">Projeto</th>
-          <th style="text-align:right" id="cmpObraLbl">Obra</th>
-          <th style="text-align:right">Desvio</th>
-          <th style="text-align:right">Desvio %</th>
-        </tr></thead>
-        <tbody id="cmpBody"></tbody>
-      </table>
+  <details class="sec" id="cmpProjeto">
+    <summary>Comparação Projeto</summary>
+    <div class="secbody">
+      <div class="mqtwrap">
+        <table id="cmpTable">
+          <thead><tr>
+            <th style="text-align:left">Perfil</th>
+            <th style="text-align:right">Projeto</th>
+            <th style="text-align:right" id="cmpObraLbl">Obra</th>
+            <th style="text-align:right">Desvio</th>
+            <th style="text-align:right">Desvio %</th>
+          </tr></thead>
+          <tbody id="cmpBody"></tbody>
+        </table>
+      </div>
     </div>
-  </div>
+  </details>
 
   </div><!-- /temaRC -->
 
@@ -381,22 +382,24 @@
       <div id="pChartSemana"></div>
     </div>
 
-    <div class="card" id="cmp282">
-      <h2>Comparação Projeto &mdash; 2.8.2 Colocação de Tetrápodes Novos</h2>
+    <details class="sec" id="cmp282">
+      <summary>Comparação Projeto &mdash; 2.8.2 Colocação de Tetrápodes Novos</summary>
+      <div class="secbody">
       <p style="color:var(--muted);font-size:12.5px;margin:2px 0 12px">Previsão do projetista. A colocação real será registada quando existir a secção 2.8.2.</p>
       <div class="mqtwrap">
         <table id="cmp282Table">
           <thead><tr>
             <th style="text-align:left">Perfil</th>
             <th style="text-align:right">Projeto</th>
-            <th style="text-align:right">Colocado</th>
+            <th style="text-align:right">Colocados</th>
             <th style="text-align:right">Desvio</th>
             <th style="text-align:right">Desvio %</th>
           </tr></thead>
           <tbody id="cmp282Body"></tbody>
         </table>
       </div>
-    </div>
+      </div>
+    </details>
 
   </div><!-- /temaProd -->
 
@@ -407,7 +410,7 @@
       <div class="autoswrap">
         <table id="autosTable">
           <thead><tr>
-            <th>Id</th><th style="text-align:left">Descrição</th><th>Un</th>
+            <th>Id</th><th>Descrição</th><th>Un</th>
             <th style="text-align:right">MQT</th>
             <th style="text-align:right">AM 01</th><th style="text-align:right">AM 02</th><th style="text-align:right">AM 03</th><th style="text-align:right">AM 04</th>
             <th style="text-align:right">AM 05</th><th style="text-align:right">AM 06</th><th style="text-align:right">AM 07</th><th style="text-align:right">AM 08</th>
@@ -426,7 +429,7 @@
       <div class="mqtwrap">
         <table id="resumoTable">
           <thead><tr>
-            <th style="width:8%">Id</th><th style="text-align:left;width:64%">Descrição</th><th style="width:8%">Un</th>
+            <th style="width:8%">Id</th><th style="width:64%">Descrição</th><th style="width:8%">Un</th>
             <th style="text-align:right;width:20%">Total</th>
           </tr></thead>
           <tbody id="resumoBody"></tbody>
@@ -445,7 +448,7 @@
       <div class="autoswrap">
         <table id="totaisTable">
           <thead><tr>
-            <th>Id</th><th style="text-align:left">Descrição</th><th>Un</th>
+            <th>Id</th><th>Descrição</th><th>Un</th>
             <th style="text-align:right">MQT</th>
             <th style="text-align:right">Autos</th>
             <th style="text-align:right">Saldo</th>
@@ -660,12 +663,12 @@ const LOTE_20260810=[
  {Semana:32,Mes:"2026-08",Data:"2026-08-04",Tipo:"Remoção",SubTipo:"Partidos",Quant:8,Perfil:"P14"},
  {Semana:33,Mes:"2026-08",Data:"2026-08-10",Tipo:"Remoção",SubTipo:"Inteiros",Quant:4,Perfil:"P13"},
  {Semana:33,Mes:"2026-08",Data:"2026-08-10",Tipo:"Remoção",SubTipo:"Inteiros",Quant:2,Perfil:"P14"},
- {Semana:33,Mes:"2026-08",Data:"2026-08-10",Tipo:"Remoção",SubTipo:"Inteiros",Quant:3,Perfil:"P11N"},
- {Semana:32,Mes:"2026-08",Data:"2026-08-07",Tipo:"Remoção",SubTipo:"Inteiros",Quant:6,Perfil:"P11N"},
+ {Semana:33,Mes:"2026-08",Data:"2026-08-10",Tipo:"Remoção",SubTipo:"Inteiros",Quant:3,Perfil:"P11 N"},
+ {Semana:32,Mes:"2026-08",Data:"2026-08-07",Tipo:"Remoção",SubTipo:"Inteiros",Quant:6,Perfil:"P11 N"},
  {Semana:32,Mes:"2026-08",Data:"2026-08-06",Tipo:"Remoção",SubTipo:"Inteiros",Quant:4,Perfil:"P13"},
- {Semana:32,Mes:"2026-08",Data:"2026-08-06",Tipo:"Remoção",SubTipo:"Inteiros",Quant:9,Perfil:"P11N"},
+ {Semana:32,Mes:"2026-08",Data:"2026-08-06",Tipo:"Remoção",SubTipo:"Inteiros",Quant:9,Perfil:"P11 N"},
  {Semana:32,Mes:"2026-08",Data:"2026-08-06",Tipo:"Remoção",SubTipo:"Inteiros",Quant:8,Perfil:"P14"},
- {Semana:32,Mes:"2026-08",Data:"2026-08-05",Tipo:"Remoção",SubTipo:"Inteiros",Quant:7,Perfil:"P11N"},
+ {Semana:32,Mes:"2026-08",Data:"2026-08-05",Tipo:"Remoção",SubTipo:"Inteiros",Quant:7,Perfil:"P11 N"},
  {Semana:32,Mes:"2026-08",Data:"2026-08-04",Tipo:"Remoção",SubTipo:"Inteiros",Quant:4,Perfil:"P14"},
  {Semana:32,Mes:"2026-08",Data:"2026-08-06",Tipo:"Colocação",SubTipo:"-",Quant:6,Perfil:"P6"},
  {Semana:32,Mes:"2026-08",Data:"2026-08-06",Tipo:"Colocação",SubTipo:"-",Quant:2,Perfil:"P8"},
@@ -723,6 +726,7 @@ function loadRecords(){
   });
   store.set("esporao_corrections",JSON.stringify(corrDone));
   // Validação da fiscalização = quantidade do empreiteiro, por defeito (gravado no browser)
+  records.forEach(r=>{if(r.Perfil==="P11N"){r.Perfil="P11 N";changed=true;}});
   records.forEach(r=>{if(r.Fisc==null){r.Fisc=r.Quant;changed=true;}});
   if(changed||store.get("esporao_imports")===null){store.set("esporao_imports",JSON.stringify(done));saveRecords();}
 }
@@ -753,8 +757,9 @@ const MQT_DATA=[{"Id": "2.1", "Descricao": "Remoção de Tetrápodes (Inteiros e
 const fmtN=(x,d=0)=>x==null?"":Number(x).toLocaleString("pt-PT",{minimumFractionDigits:d,maximumFractionDigits:d,useGrouping:"always"});
 const fmtE=x=>x==null?"":Number(x).toLocaleString("pt-PT",{minimumFractionDigits:2,maximumFractionDigits:2,useGrouping:"always"});
 const fmtA=x=>x==null?"":Number(x).toLocaleString("pt-PT",{maximumFractionDigits:2,useGrouping:"always"});
-const PROJ_REMOCAO={"P1": 19, "P2": 8, "P3": 8, "P4": 5, "P5": 7, "P6": 6, "P7": 7, "P8": 5, "P9": 8, "P10": 37, "P11N": 58, "P11 S": 50, "P12": 55, "P13": 52, "P14": 59};
-const PROJ_COLOCACAO={"P10": 44, "P11N": 60, "P11 S": 36, "P12": 72, "P13": 72, "P14": 76};
+const PROJ_REMOCAO={"P1": 19, "P2": 8, "P3": 8, "P4": 5, "P5": 7, "P6": 6, "P7": 7, "P8": 5, "P9": 8, "P10": 37, "P11 N": 58, "P11 S": 50, "P12": 55, "P13": 52, "P14": 59};
+const PROJ_COL_NOV={"P10": 44, "P11 N": 60, "P11 S": 36, "P12": 72, "P13": 72, "P14": 76};
+const PROJ_COL_REC={"P1": 40, "P2": 22, "P3": 16, "P4": 10, "P5": 10, "P6": 9, "P7": 9, "P8": 8, "P9": 11, "P10": 26};
 const AUTOS_DATA=[{"Id": "2.1", "Descricao": "Remoção de Tetrápodes (Inteiros e Partidos | 30 tf)", "PopUP": "Remoção de tetrápodes e de tetrápodes partidos do manto do talude sul e cabeça", "Un": "un", "Quant": 384, "AM": [null, null, null, null, null, 9, 150, 185], "Total": 344, "Saldo": 40}, {"Id": "2.2", "Descricao": "Enrocamento (Coroamente do Manto | 12 a 15 tf)", "PopUP": "Remoção e posterior reposição de enrocamento de 12 a 15 tf do remate do coroamento do manto de tetrápodes", "Un": "m3", "Quant": 800, "AM": [null, null, null, null, null, 400, null, null], "Total": 400, "Saldo": 400}, {"Id": "2.3", "Descricao": "Enrocamento (Cabeça -> Talude Sul | 12 a 15 tf)", "PopUP": "Remoção de enrocamento de 12 a 15 tf  do manto para execução da transição da cabeça para o talude norte", "Un": "m3", "Quant": 700, "AM": [null, null, null, null, null, null, null, null], "Total": 0, "Saldo": 700}, {"Id": "2.4", "Descricao": "Remoção de Materiais de Qualquer Natureza", "PopUP": "Remoção de materiais de qualquer natureza (areia, enrocamento, bocados de terápodes) para reconstrução da banqueta de pé de talude", "Un": "m3", "Quant": 3000, "AM": [null, null, null, null, null, null, null, 2087.87], "Total": 2087.87, "Saldo": 912.1300000000001}, {"Id": "2.5", "Descricao": "Enrocamento (Banqueta | 12 a 15 tf)", "PopUP": "Reconstrução da banqueta de pé de talude em enrocamento de 12 a 15 tf", "Un": "m3", "Quant": 1900, "AM": [null, null, null, null, null, null, null, 422.43], "Total": 422.43, "Saldo": 1477.57}, {"Id": "2.6", "Descricao": "Colocação de Tetrápodes Recuperados (Cabeça e Talude Sul)", "PopUP": "Colocação de tetrápodes recuperados da cabeça e do talude sul na reconstituição do manto de protecção do talude sul ", "Un": "un", "Quant": 161, "AM": [null, null, null, null, null, null, 13, 148], "Total": 161, "Saldo": 0}, {"Id": "2.7", "Descricao": "Transporte e Depósito Tetrápodes Recuperados e não Utilizados (Cabeça e Sul)", "PopUP": "Transporte a depósito de tetrápodes recuperados da cabeça e do talude sul e não utilizados na reconstituição do manto de protecção do talude sul (depósito localizado num raio de 2,5Km de distância ao local da obra) ", "Un": "un", "Quant": 108, "AM": [null, null, null, null, null, null, null, null], "Total": 0, "Saldo": 108}, {"Id": "2.8", "Descricao": null, "PopUP": "Fornecimento e colocação de tetrápodes de 34,4 tf, em betão NP EN 206-1: C35/45, XA1 (Pt), Cl 1.0, Dmax20, S3, simples", "Un": null, "Quant": null, "AM": [null, null, null, null, null, null, null, null], "Total": null, "Saldo": null}, {"Id": "2.8.1", "Descricao": "Produção de Tetrápodes Novos", "PopUP": "Fabrico e colocação em depósito dos tetrápodes", "Un": "un", "Quant": 360, "AM": [14.4, null, null, 52.6, 73, 85, 68, 7], "Total": 300, "Saldo": 60}, {"Id": "2.8.2", "Descricao": "Transporte e Colocação de Tetrápodes Novos", "PopUP": "Transporte e colocação de tetrápodes", "Un": "un", "Quant": 360, "AM": [null, null, null, null, null, null, null, null], "Total": null, "Saldo": null}, {"Id": "2.9", "Descricao": "Enrocamento (Submanto | 1 a 4 tf)", "PopUP": "Fornecimento e colocação de enrocamento de 1 a 4 tf no submanto na transição entre o talude sul e a cabeça ", "Un": "m3", "Quant": 500, "AM": [null, null, null, null, null, null, null, 500], "Total": 500, "Saldo": 0}, {"Id": "2.10", "Descricao": "Enrocamento (Talude Norte -> Cabeça | 12 a 15 tf)", "PopUP": "Fornecimento e colocação de enrocamento de 12 a 15 tf no manto da transição entre o talude norte e a cabeça ", "Un": "m3", "Quant": 1200, "AM": [null, null, null, null, null, null, null, null], "Total": 0, "Saldo": 1200}, {"Id": "2.11", "Descricao": "Fornecimento, Transporte e Colocação de Betão", "PopUP": "Fornecimento, transporte e colocação de betão simples C30/37, XA1, Dmax=25mm, para rematar o capeamento da superestrutura junto dos blocos no coroamento", "Un": "m3", "Quant": 50, "AM": [null, null, null, null, null, null, null, null], "Total": 0, "Saldo": 50}];
 function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
 function renderMQT(){
@@ -987,7 +992,7 @@ function renderTime(){
 }
 function renderCmp282(){
   const el=document.getElementById("cmp282Body");if(!el)return;
-  const proj=PROJ_COLOCACAO,perfis=Object.keys(proj).sort(pcmp);
+  const proj=PROJ_COL_NOV,perfis=Object.keys(proj).sort(pcmp);
   let sP=0;
   const rows=perfis.map(p=>{const pr=proj[p]||0;sP+=pr;
     return `<tr><td class="id" style="color:${PC[p]||'var(--accent)'}">${esc(p)}</td><td class="num">${pr}</td><td class="num">&mdash;</td><td class="num">&mdash;</td><td class="num">&mdash;</td></tr>`;}).join("");
@@ -995,7 +1000,7 @@ function renderCmp282(){
 }
 function renderCmpProjeto(){
   const rem=state.rcMode==="Remoção";
-  const proj=rem?PROJ_REMOCAO:PROJ_COLOCACAO;
+  const proj=rem?PROJ_REMOCAO:PROJ_COL_REC;
   const tipo=rem?"Remoção":"Colocação";
   // Realidade de obra: TOTAL por perfil (sem filtros — não indexa com pesquisas)
   const real={};
@@ -1016,14 +1021,15 @@ function renderCmpProjeto(){
   }).join("");
   const dvT=sO-sP,pctT=sP>0?dvT/sP*100:null;
   const totalRow=`<tr class="total"><td>TOTAL</td><td class="num">${sP}</td><td class="num">${sO}</td><td class="num"><span style="color:${cor(dvT)}">${dvT>0?"+":""}${dvT}</span></td><td class="num">${pctT==null?"&mdash;":`<span style="color:${cor(pctT)}">${pctT>0?"+":""}${fmtN(pctT,1)}%</span>`}</td></tr>`;
-  const lbl=document.getElementById("cmpObraLbl");if(lbl)lbl.textContent=rem?"Removido":"Colocado";
+  const lbl=document.getElementById("cmpObraLbl");if(lbl)lbl.textContent=rem?"Removidos":"Colocados";
   document.getElementById("cmpBody").innerHTML=rows+totalRow;
 }
 function renderPerfil(){
   const d=filtered(),ps=[...new Set(d.map(r=>r.Perfil))].sort(pcmp);
   const data=ps.map(p=>({p,q:sum(d.filter(r=>r.Perfil===p).map(r=>r.Quant))}));
   const max=Math.max(...data.map(o=>o.q),1);
-  const rowH=34,pt=14,pb=14,W=700,pl=44,pr=60,H=pt+pb+Math.max(data.length,1)*rowH,ih=H-pt-pb;
+  const full=state.rcMode==="Colocação"; // gráfico ocupa a largura total (sem o gráfico ao lado)
+  const rowH=34,pt=14,pb=14,W=full?1400:700,pl=44,pr=60,H=pt+pb+Math.max(data.length,1)*rowH,ih=H-pt-pb;
   let g=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet">`;
   data.forEach((o,i)=>{const yc=pt+i*rowH+rowH/2,bw=(o.q/max)*(W-pl-pr),bh=Math.min(22,rowH*0.62),op=(state.highlight&&state.highlight!==o.p)?0.3:1;
     g+=`<text x="6" y="${yc+5}" class="glabel" style="fill:${PC[o.p]};font-size:13px">${o.p}</text>`;
