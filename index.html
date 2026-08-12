@@ -57,13 +57,13 @@
   input::placeholder{color:var(--faint)}
 
   /* Secção MQT */
-  #mqtTable{table-layout:fixed}
-  #mqtTable td{padding:8px 10px}
-  #mqtTable td.id{font-weight:700;color:var(--accent);white-space:nowrap}
-  #mqtTable td.desc{text-align:left;cursor:help;position:relative}
-  #mqtTable td.desc .dtxt{border-bottom:1px dotted var(--faint)}
-  #mqtTable td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
-  #mqtTable tr.total td{border-top:2px solid var(--accent);font-weight:800;font-size:13px}
+  #mqtTable,#resumoTable{table-layout:fixed}
+  #mqtTable td,#resumoTable td{padding:8px 10px}
+  #mqtTable td.id,#resumoTable td.id{font-weight:700;color:var(--accent);white-space:nowrap}
+  #mqtTable td.desc,#resumoTable td.desc{text-align:left;cursor:help;position:relative}
+  #mqtTable td.desc .dtxt,#resumoTable td.desc .dtxt{border-bottom:1px dotted var(--faint)}
+  #mqtTable td.num,#resumoTable td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+  #mqtTable tr.total td,#resumoTable tr.total td{border-top:2px solid var(--accent);font-weight:800;font-size:13px}
   /* tooltip do PopUP */
   td.desc .tip{visibility:hidden;opacity:0;position:absolute;left:0;top:100%;z-index:20;
     background:var(--panel2);color:var(--txt);border:1px solid var(--accent);border-radius:8px;
@@ -127,6 +127,15 @@
   .chip{display:inline-block;padding:2px 9px;border-radius:11px;font-size:11px;font-weight:700;color:#0f151c}
   .rectable{overflow:auto}
   .mqtwrap{overflow:visible}
+  .autoswrap{overflow-x:auto}
+  #autosTable{min-width:1100px}
+  #totaisTable{min-width:820px}
+  #autosTable,#totaisTable{font-size:12.5px}
+  #autosTable td,#totaisTable td{padding:7px 9px}
+  #autosTable td.id,#totaisTable td.id{font-weight:700;color:var(--accent);white-space:nowrap}
+  #autosTable td.desc,#totaisTable td.desc{text-align:left;cursor:help;position:relative;min-width:220px}
+  #autosTable td.desc .dtxt,#totaisTable td.desc .dtxt{border-bottom:1px dotted var(--faint)}
+  #autosTable td.num,#totaisTable td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
   #recTable th[data-k]{cursor:pointer;user-select:none}
   #recTable th[data-k]:hover{color:var(--accent)}
   .ei{min-width:0!important;width:100%;padding:4px 6px;font-size:12px}
@@ -193,7 +202,7 @@
         <button data-th="dark">Escuro</button>
         <button data-th="system">Sistema</button>
       </div>
-      <div class="badge">v26.08.10.1830</div>
+      <div class="badge">v26.08.10.2045</div>
     </div>
   </header>
 
@@ -204,6 +213,9 @@
       <button data-tema="remocao"><b>2.1</b> Remoção</button>
       <button data-tema="colocacao"><b>2.6</b> Colocação</button>
       <button data-tema="prod"><b>2.8.1</b> Produção</button>
+      <button data-tema="autos">Autos</button>
+      <button data-tema="resumo">Resumo</button>
+      <button data-tema="totais">Totais</button>
     </div>
   </div>
 
@@ -215,7 +227,7 @@
         <table id="mqtTable">
           <thead><tr>
             <th style="width:6%">Id</th><th style="text-align:left;width:43%">Descrição</th><th style="width:6%">Un</th>
-            <th style="text-align:right;width:15%">Quant</th><th style="text-align:right;width:15%">Pr. Unit. (€)</th><th style="text-align:right;width:15%">Total (€)</th>
+            <th style="text-align:right;width:15%">MQT</th><th style="text-align:right;width:15%">Pr. Unit. (€)</th><th style="text-align:right;width:15%">Total (€)</th>
           </tr></thead>
           <tbody id="mqtBody"></tbody>
         </table>
@@ -322,7 +334,7 @@
           <table id="pRecTable">
             <thead><tr>
               <th data-k="Data">Dia</th><th data-k="Semana">Semana</th><th data-k="Mes">Mês</th>
-              <th data-k="Prod">Produção</th><th data-k="Rend">Rendimento</th><th data-k="Desvio">Desvio</th>
+              <th data-k="Prod">Produzidos</th><th data-k="Rend">Rendimento</th><th data-k="Desvio">Desvio</th>
               <th data-k="Fisc">Fisc.</th>
               <th>Ações</th>
             </tr></thead>
@@ -349,6 +361,65 @@
     </div>
 
   </div><!-- /temaProd -->
+
+  <!-- ============ BLOCO 3: AUTOS DE MEDIÇÃO ============ -->
+  <div id="temaAutos" class="tema" style="display:none">
+    <div class="card">
+      <h2>Autos de Medição</h2>
+      <div class="autoswrap">
+        <table id="autosTable">
+          <thead><tr>
+            <th>Id</th><th style="text-align:left">Descrição</th><th>Un</th>
+            <th style="text-align:right">MQT</th>
+            <th style="text-align:right">AM 01</th><th style="text-align:right">AM 02</th><th style="text-align:right">AM 03</th><th style="text-align:right">AM 04</th>
+            <th style="text-align:right">AM 05</th><th style="text-align:right">AM 06</th><th style="text-align:right">AM 07</th><th style="text-align:right">AM 08</th>
+            <th style="text-align:right">Total</th><th style="text-align:right">Saldo</th>
+          </tr></thead>
+          <tbody id="autosBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div><!-- /temaAutos -->
+
+  <!-- ============ BLOCO 4: RESUMO (COMPARATIVO) ============ -->
+  <div id="temaResumo" class="tema" style="display:none">
+    <div class="card">
+      <h2>Resumo &mdash; Comparativo</h2>
+      <div class="mqtwrap">
+        <table id="resumoTable">
+          <thead><tr>
+            <th style="width:8%">Id</th><th style="text-align:left;width:64%">Descrição</th><th style="width:8%">Un</th>
+            <th style="text-align:right;width:20%">Total</th>
+          </tr></thead>
+          <tbody id="resumoBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div><!-- /temaResumo -->
+
+  <!-- ============ BLOCO 5: TOTAIS (CONTROLO) ============ -->
+  <div id="temaTotais" class="tema" style="display:none">
+    <div class="filters">
+      <div class="fgroup"><span class="flabel">Produção contabilizada até</span><select id="totCutoff"></select></div>
+    </div>
+    <div class="card">
+      <h2>Totais &mdash; Controlo de Obra</h2>
+      <div class="autoswrap">
+        <table id="totaisTable">
+          <thead><tr>
+            <th>Id</th><th style="text-align:left">Descrição</th><th>Un</th>
+            <th style="text-align:right">MQT</th>
+            <th style="text-align:right">Autos</th>
+            <th style="text-align:right">Saldo</th>
+            <th style="text-align:right">Produzido</th>
+            <th style="text-align:right">Desvio</th>
+          </tr></thead>
+          <tbody id="totaisBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div><!-- /temaTotais -->
+
 
   <footer>
     <span>Fiscalização &middot; Aceitar Sucessos, Lda.</span>
@@ -634,6 +705,7 @@ const fmtD=s=>{const p=s.split("-");return p[2]+"/"+p[1]};
 const MESNOMES=["","Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out","Nov","Dez"];
 const mesOf=s=>s.slice(0,7);                                   // "2026-06"
 const mesLabel=m=>{const p=m.split("-");return MESNOMES[+p[1]]+"/"+p[0].slice(2)}; // "Jun/26"
+const fimMes=m=>{const[y,mo]=m.split("-").map(Number);return m+"-"+String(new Date(y,mo,0).getDate()).padStart(2,"0");};
 function isoWeek(s){const d=new Date(s+"T00:00:00");const t=new Date(d);t.setHours(0,0,0,0);t.setDate(t.getDate()+3-((t.getDay()+6)%7));const w1=new Date(t.getFullYear(),0,4);return 1+Math.round(((t-w1)/86400000-3+((w1.getDay()+6)%7))/7);}
 
 let state={rcMode:"Remoção",mes:"Todos",semana:"Todas",dia:"",sub:"Todos",perfil:"Todos",timeMode:"cum",sortK:null,sortDir:1,highlight:null,editId:null};
@@ -642,6 +714,8 @@ let state={rcMode:"Remoção",mes:"Todos",semana:"Todas",dia:"",sub:"Todos",perf
 const MQT_DATA=[{"Id": "2.1", "Descricao": "Remoção de Tetrápodes (Inteiros e Partidos | 30 tf)", "PopUP": "Remoção de tetrápodes e de tetrápodes partidos do manto do talude sul e cabeça", "Un": "un", "Quant": 384.0, "PrUnit": 218.51, "Total": 83907.84}, {"Id": "2.2", "Descricao": "Enrocamento (Coroamente do Manto | 12 a 15 tf)", "PopUP": "Remoção e posterior reposição de enrocamento de 12 a 15 tf do remate do coroamento do manto de tetrápodes", "Un": "m3", "Quant": 800.0, "PrUnit": 39.42, "Total": 31536.0}, {"Id": "2.3", "Descricao": "Enrocamento (Cabeça -> Talude Sul | 12 a 15 tf)", "PopUP": "Remoção de enrocamento de 12 a 15 tf  do manto para execução da transição da cabeça para o talude norte", "Un": "m3", "Quant": 700.0, "PrUnit": 40.82, "Total": 28574.0}, {"Id": "2.4", "Descricao": "Remoção de Materiais de Qualquer Natureza", "PopUP": "Remoção de materiais de qualquer natureza (areia, enrocamento, bocados de terápodes) para reconstrução da banqueta de pé de talude", "Un": "m3", "Quant": 3000.0, "PrUnit": 46.1, "Total": 138300.0}, {"Id": "2.5", "Descricao": "Enrocamento (Banqueta | 12 a 15 tf)", "PopUP": "Reconstrução da banqueta de pé de talude em enrocamento de 12 a 15 tf", "Un": "m3", "Quant": 1900.0, "PrUnit": 55.85, "Total": 106115.0}, {"Id": "2.6", "Descricao": "Colocação de Tetrápodes Recuperados (Cabeça e Talude Sul)", "PopUP": "Colocação de tetrápodes recuperados da cabeça e do talude sul na reconstituição do manto de protecção do talude sul", "Un": "un", "Quant": 161.0, "PrUnit": 411.04, "Total": 66177.44}, {"Id": "2.7", "Descricao": "Transporte e Depósito Tetrápodes Recuperados e não Utilizados (Cabeça e Sul)", "PopUP": "Transporte a depósito de tetrápodes recuperados da cabeça e do talude sul e não utilizados na reconstituição do manto de protecção do talude sul (depósito localizado num raio de 2,5Km de distância ao local da obra)", "Un": "un", "Quant": 108.0, "PrUnit": 313.84, "Total": 33894.719999999994}, {"Id": "2.8", "Descricao": "nan", "PopUP": "Fornecimento e colocação de tetrápodes de 34,4 tf, em betão NP EN 206-1: C35/45, XA1 (Pt), Cl 1.0, Dmax20, S3, simples", "Un": "", "Quant": null, "PrUnit": null, "Total": null}, {"Id": "2.8.1", "Descricao": "Produção de Tetrápodes Novos", "PopUP": "Fabrico e colocação em depósito dos tetrápodes", "Un": "un", "Quant": 360.0, "PrUnit": 2534.16, "Total": 912297.6}, {"Id": "2.8.2", "Descricao": "Transporte e Colocação de Tetrápodes Novos", "PopUP": "Transporte e colocação de tetrápodes", "Un": "un", "Quant": 360.0, "PrUnit": 539.93, "Total": 194374.8}, {"Id": "2.9", "Descricao": "Enrocamento (Submanto | 1 a 4 tf)", "PopUP": "Fornecimento e colocação de enrocamento de 1 a 4 tf no submanto na transição entre o talude sul e a cabeça", "Un": "m3", "Quant": 500.0, "PrUnit": 41.0, "Total": 20500.0}, {"Id": "2.10", "Descricao": "Enrocamento (Talude Norte -> Cabeça | 12 a 15 tf)", "PopUP": "Fornecimento e colocação de enrocamento de 12 a 15 tf no manto da transição entre o talude norte e a cabeça", "Un": "m3", "Quant": 1200.0, "PrUnit": 51.69, "Total": 62028.0}, {"Id": "2.11", "Descricao": "Fornecimento, Transporte e Colocação de Betão", "PopUP": "Fornecimento, transporte e colocação de betão simples C30/37, XA1, Dmax=25mm, para rematar o capeamento da superestrutura junto dos blocos no coroamento", "Un": "m3", "Quant": 50.0, "PrUnit": 196.26, "Total": 9813.0}];
 const fmtN=(x,d=0)=>x==null?"":Number(x).toLocaleString("pt-PT",{minimumFractionDigits:d,maximumFractionDigits:d,useGrouping:"always"});
 const fmtE=x=>x==null?"":Number(x).toLocaleString("pt-PT",{minimumFractionDigits:2,maximumFractionDigits:2,useGrouping:"always"});
+const fmtA=x=>x==null?"":Number(x).toLocaleString("pt-PT",{maximumFractionDigits:2,useGrouping:"always"});
+const AUTOS_DATA=[{"Id": "2.1", "Descricao": "Remoção de Tetrápodes (Inteiros e Partidos | 30 tf)", "PopUP": "Remoção de tetrápodes e de tetrápodes partidos do manto do talude sul e cabeça", "Un": "un", "Quant": 384, "AM": [null, null, null, null, null, 9, 150, 185], "Total": 344, "Saldo": 40}, {"Id": "2.2", "Descricao": "Enrocamento (Coroamente do Manto | 12 a 15 tf)", "PopUP": "Remoção e posterior reposição de enrocamento de 12 a 15 tf do remate do coroamento do manto de tetrápodes", "Un": "m3", "Quant": 800, "AM": [null, null, null, null, null, 400, null, null], "Total": 400, "Saldo": 400}, {"Id": "2.3", "Descricao": "Enrocamento (Cabeça -> Talude Sul | 12 a 15 tf)", "PopUP": "Remoção de enrocamento de 12 a 15 tf  do manto para execução da transição da cabeça para o talude norte", "Un": "m3", "Quant": 700, "AM": [null, null, null, null, null, null, null, null], "Total": 0, "Saldo": 700}, {"Id": "2.4", "Descricao": "Remoção de Materiais de Qualquer Natureza", "PopUP": "Remoção de materiais de qualquer natureza (areia, enrocamento, bocados de terápodes) para reconstrução da banqueta de pé de talude", "Un": "m3", "Quant": 3000, "AM": [null, null, null, null, null, null, null, 2087.87], "Total": 2087.87, "Saldo": 912.1300000000001}, {"Id": "2.5", "Descricao": "Enrocamento (Banqueta | 12 a 15 tf)", "PopUP": "Reconstrução da banqueta de pé de talude em enrocamento de 12 a 15 tf", "Un": "m3", "Quant": 1900, "AM": [null, null, null, null, null, null, null, 422.43], "Total": 422.43, "Saldo": 1477.57}, {"Id": "2.6", "Descricao": "Colocação de Tetrápodes Recuperados (Cabeça e Talude Sul)", "PopUP": "Colocação de tetrápodes recuperados da cabeça e do talude sul na reconstituição do manto de protecção do talude sul ", "Un": "un", "Quant": 161, "AM": [null, null, null, null, null, null, 13, 148], "Total": 161, "Saldo": 0}, {"Id": "2.7", "Descricao": "Transporte e Depósito Tetrápodes Recuperados e não Utilizados (Cabeça e Sul)", "PopUP": "Transporte a depósito de tetrápodes recuperados da cabeça e do talude sul e não utilizados na reconstituição do manto de protecção do talude sul (depósito localizado num raio de 2,5Km de distância ao local da obra) ", "Un": "un", "Quant": 108, "AM": [null, null, null, null, null, null, null, null], "Total": 0, "Saldo": 108}, {"Id": "2.8", "Descricao": null, "PopUP": "Fornecimento e colocação de tetrápodes de 34,4 tf, em betão NP EN 206-1: C35/45, XA1 (Pt), Cl 1.0, Dmax20, S3, simples", "Un": null, "Quant": null, "AM": [null, null, null, null, null, null, null, null], "Total": null, "Saldo": null}, {"Id": "2.8.1", "Descricao": "Produção de Tetrápodes Novos", "PopUP": "Fabrico e colocação em depósito dos tetrápodes", "Un": "un", "Quant": 360, "AM": [14.4, null, null, 52.6, 73, 85, 68, 7], "Total": 300, "Saldo": 60}, {"Id": "2.8.2", "Descricao": "Transporte e Colocação de Tetrápodes Novos", "PopUP": "Transporte e colocação de tetrápodes", "Un": "un", "Quant": 360, "AM": [null, null, null, null, null, null, null, null], "Total": null, "Saldo": null}, {"Id": "2.9", "Descricao": "Enrocamento (Submanto | 1 a 4 tf)", "PopUP": "Fornecimento e colocação de enrocamento de 1 a 4 tf no submanto na transição entre o talude sul e a cabeça ", "Un": "m3", "Quant": 500, "AM": [null, null, null, null, null, null, null, 500], "Total": 500, "Saldo": 0}, {"Id": "2.10", "Descricao": "Enrocamento (Talude Norte -> Cabeça | 12 a 15 tf)", "PopUP": "Fornecimento e colocação de enrocamento de 12 a 15 tf no manto da transição entre o talude norte e a cabeça ", "Un": "m3", "Quant": 1200, "AM": [null, null, null, null, null, null, null, null], "Total": 0, "Saldo": 1200}, {"Id": "2.11", "Descricao": "Fornecimento, Transporte e Colocação de Betão", "PopUP": "Fornecimento, transporte e colocação de betão simples C30/37, XA1, Dmax=25mm, para rematar o capeamento da superestrutura junto dos blocos no coroamento", "Un": "m3", "Quant": 50, "AM": [null, null, null, null, null, null, null, null], "Total": 0, "Saldo": 50}];
 function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
 function renderMQT(){
   let total=0;
@@ -661,6 +735,81 @@ function renderMQT(){
   }).join("");
   const totalRow=`<tr class="total"><td></td><td class="desc" style="text-align:left">TOTAL</td><td></td><td></td><td></td><td class="num">${fmtE(total)}</td></tr>`;
   document.getElementById("mqtBody").innerHTML=rows+totalRow;
+}
+function renderAutos(){
+  const rows=AUTOS_DATA.filter(a=>!((a.Descricao==="nan"||!a.Descricao)&&a.Total==null)).map(a=>{
+    const desc=(a.Descricao==="nan"?"":a.Descricao);
+    const pop=(a.PopUP&&a.PopUP!=="nan")?a.PopUP:"";
+    const tip=pop?`<span class="tip">${esc(pop)}</span>`:"";
+    const ams=a.AM.map(v=>`<td class="num">${v!=null?fmtA(v):""}</td>`).join("");
+    return `<tr>
+      <td class="id">${esc(a.Id)}</td>
+      <td class="desc"><span class="dtxt">${esc(desc)}</span>${tip}</td>
+      <td style="text-align:center">${esc(a.Un||"")}</td>
+      <td class="num">${a.Quant!=null?fmtA(a.Quant):""}</td>
+      ${ams}
+      <td class="num" style="font-weight:700">${a.Total!=null?fmtA(a.Total):""}</td>
+      <td class="num">${a.Saldo!=null?fmtA(a.Saldo):""}</td>
+    </tr>`;
+  }).join("");
+  document.getElementById("autosBody").innerHTML=rows;
+}
+const sumArr=a=>a.reduce((s,x)=>s+x,0);
+// Executado real por artigo (Remoção/Colocação/Produção), opcionalmente até uma data-corte (inclusive)
+function execAte(id,corte){
+  const ok=d=>!corte||d<=corte;
+  if(id==="2.1")return sumArr(records.filter(r=>r.Tipo==="Remoção"&&ok(r.Data)).map(r=>r.Quant));
+  if(id==="2.6")return sumArr(records.filter(r=>r.Tipo==="Colocação"&&ok(r.Data)).map(r=>r.Quant));
+  if(id==="2.8.1")return sumArr(prodRecords.filter(r=>ok(r.Data)).map(r=>r.Prod));
+  return null;
+}
+const autoDe=id=>AUTOS_DATA.find(a=>a.Id===id)||null;
+function renderResumo(){
+  const rows=MQT_DATA.filter(a=>!((a.Descricao==="nan"||!a.Descricao)&&a.Total==null)).map(a=>{
+    const desc=(a.Descricao==="nan"?"":a.Descricao);
+    const pop=(a.PopUP&&a.PopUP!=="nan")?a.PopUP:"";
+    const tip=pop?`<span class="tip">${esc(pop)}</span>`:"";
+    const tot=execAte(a.Id,null);
+    return `<tr>
+      <td class="id">${esc(a.Id)}</td>
+      <td class="desc"><span class="dtxt">${esc(desc)}</span>${tip}</td>
+      <td style="text-align:center">${esc(a.Un||"")}</td>
+      <td class="num">${tot!=null?fmtN(tot):"&mdash;"}</td>
+    </tr>`;
+  }).join("");
+  document.getElementById("resumoBody").innerHTML=rows;
+}
+function renderTotais(){
+  const corte=cutoff||null;
+  const cInput=document.getElementById("totCutoff");
+  if(cInput){
+    const meses=[...new Set([...records.map(r=>r.Mes),...prodRecords.map(r=>r.Mes)])].filter(Boolean).sort();
+    let opts='<option value="">Tudo</option>'+meses.map(m=>`<option value="${fimMes(m)}">Até ${mesLabel(m)}</option>`).join("");
+    if(cInput.innerHTML!==opts)cInput.innerHTML=opts;
+    if(cInput.value!==(cutoff||""))cInput.value=cutoff||"";
+  }
+  const rows=MQT_DATA.filter(a=>!((a.Descricao==="nan"||!a.Descricao)&&a.Total==null)).map(a=>{
+    const desc=(a.Descricao==="nan"?"":a.Descricao);
+    const pop=(a.PopUP&&a.PopUP!=="nan")?a.PopUP:"";
+    const tip=pop?`<span class="tip">${esc(pop)}</span>`:"";
+    const au=autoDe(a.Id);
+    const autos=au&&au.Total!=null?au.Total:null;
+    const saldo=au&&au.Saldo!=null?au.Saldo:(a.Quant!=null&&autos!=null?a.Quant-autos:null);
+    const prod=execAte(a.Id,corte);
+    const desvio=(prod!=null&&autos!=null)?prod-autos:null;
+    const dvCol=desvio==null?"&mdash;":`<span style="color:${desvio<0?"#e76f51":desvio>0?"#4caf72":"inherit"}">${desvio>0?"+":""}${fmtA(desvio)}</span>`;
+    return `<tr>
+      <td class="id">${esc(a.Id)}</td>
+      <td class="desc"><span class="dtxt">${esc(desc)}</span>${tip}</td>
+      <td style="text-align:center">${esc(a.Un||"")}</td>
+      <td class="num">${a.Quant!=null?fmtA(a.Quant):"&mdash;"}</td>
+      <td class="num">${autos!=null?fmtA(autos):"&mdash;"}</td>
+      <td class="num">${saldo!=null?fmtA(saldo):"&mdash;"}</td>
+      <td class="num">${prod!=null?fmtA(prod):"&mdash;"}</td>
+      <td class="num">${dvCol}</td>
+    </tr>`;
+  }).join("");
+  document.getElementById("totaisBody").innerHTML=rows;
 }
 
 function filtered(){
@@ -955,6 +1104,7 @@ const SEED_PROD=[
  {Data:"2026-07-02",Semana:27,Mes:"2026-07",Prod:3,Rend:4}
 ];
 let prodRecords=[],pseq=0;
+let cutoff=null;
 const PROD_VERSION="2026-07-06-prodA";
 function prodLoad(){
   const ver=store.get("esporao_prod_version");
@@ -1167,12 +1317,15 @@ function init(){
     mqt:{tema:"temaMQT",title:"2. MQT / PROJ",sub:"Mapa de Quantidades e Trabalhos"},
     remocao:{tema:"temaRC",rcMode:"Remoção",title:"2.1 Remoção",sub:"Remoção de Tetrápodes (Inteiros e Partidos)"},
     colocacao:{tema:"temaRC",rcMode:"Colocação",title:"2.6 Colocação",sub:"Colocação de Tetrápodes Recuperados"},
-    prod:{tema:"temaProd",title:"2.8.1 Produção",sub:"Produção de Tetrápodes Novos"}
+    prod:{tema:"temaProd",title:"2.8.1 Produção",sub:"Produção de Tetrápodes Novos"},
+    autos:{tema:"temaAutos",title:"Autos",sub:"Autos de Medição"},
+    resumo:{tema:"temaResumo",title:"Resumo",sub:"Realidade de Obra"},
+    totais:{tema:"temaTotais",title:"Totais",sub:"Controlo: MQT · Autos · Saldo · Produzido · Desvio"}
   };
   document.querySelectorAll(".temabar button").forEach(b=>b.onclick=()=>{
     const t=b.dataset.tema,cfg=TEMAS[t];
     document.querySelectorAll(".temabar button").forEach(x=>x.classList.toggle("active",x===b));
-    ["temaMQT","temaRC","temaProd"].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display="none";});
+    ["temaMQT","temaRC","temaProd","temaAutos","temaResumo","temaTotais"].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display="none";});
     document.getElementById(cfg.tema).style.display="block";
     if(cfg.rcMode){
       state.rcMode=cfg.rcMode;
@@ -1186,6 +1339,9 @@ function init(){
     }
     if(t==="mqt")renderMQT();
     if(t==="prod")prodRender();
+    if(t==="autos")renderAutos();
+    if(t==="resumo")renderResumo();
+    if(t==="totais")renderTotais();
     document.getElementById("hdEyebrow").textContent=EB;
     document.getElementById("hdTitle").textContent=cfg.title;
     document.getElementById("hdSub").textContent=cfg.sub;
@@ -1224,6 +1380,8 @@ function init(){
   document.querySelectorAll("[data-pmode]").forEach(b=>b.onclick=()=>{pstate.timeMode=b.dataset.pmode;document.querySelectorAll("[data-pmode]").forEach(x=>x.classList.toggle("active",x===b));prodRenderTime();});
   document.querySelectorAll("#pRecTable th[data-k]").forEach(th=>th.onclick=()=>{const k=th.dataset.k;if(pstate.sortK===k)pstate.sortDir*=-1;else{pstate.sortK=k;pstate.sortDir=1;}prodRenderRecTable();});
   document.getElementById("pReset").onclick=()=>{pstate=Object.assign({},pstate,{mes:"Todos",semana:"Todas",dia:"",sortK:null,editId:null});const s=document.getElementById("pSecRec");if(s)s.open=false;prodRender();};
+  const totC=document.getElementById("totCutoff");
+  if(totC){totC.onchange=e=>{cutoff=e.target.value||null;renderTotais();};}
   document.getElementById("pCsv").onclick=()=>{
     const d=prodFiltered(),head="Data,Semana,Mes,Producao,Rendimento,Desvio";
     const body=d.map(r=>`${r.Data},${r.Semana},${r.Mes},${r.Prod},${r.Rend},${r.Prod-r.Rend}`).join("\n");
