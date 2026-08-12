@@ -206,17 +206,18 @@
         <button data-th="dark">Escuro</button>
         <button data-th="system">Sistema</button>
       </div>
-      <div class="badge">v26.08.10.2230</div>
+      <div class="badge">v26.08.10.2245</div>
     </div>
   </header>
 
   <div class="temabar">
     <span class="temalabel">Secção:</span>
     <div class="segwrap">
-      <button data-tema="mqt" class="active"><b>2.</b> MQT / PROJ</button>
+      <button data-tema="mqt" class="active">MQT</button>
       <button data-tema="remocao"><b>2.1</b> Remoção</button>
-      <button data-tema="colocacao"><b>2.6</b> Colocação</button>
-      <button data-tema="prod"><b>2.8.1</b> Produção</button>
+      <button data-tema="colocacao"><b>2.6</b> Colocação | Recup</button>
+      <button data-tema="prod"><b>2.8.1</b> Produção | Novo</button>
+      <button data-tema="colocnovo"><b>2.8.2</b> Colocação | Novo</button>
       <button data-tema="resumo">Resumo</button>
       <button data-tema="autos">Autos</button>
       <button data-tema="totais">Totais</button>
@@ -382,10 +383,14 @@
       <div id="pChartSemana"></div>
     </div>
 
-    <details class="sec" id="cmp282">
-      <summary>Comparação Projeto &mdash; 2.8.2 Colocação de Tetrápodes Novos</summary>
-      <div class="secbody">
-      <p style="color:var(--muted);font-size:12.5px;margin:2px 0 12px">Previsão do projetista. A colocação real será registada quando existir a secção 2.8.2.</p>
+
+  </div><!-- /temaProd -->
+
+  <!-- ============ 2.8.2 COLOCAÇÃO DE TETRÁPODES NOVOS ============ -->
+  <div id="temaColocNovo" class="tema" style="display:none">
+    <div class="card">
+      <h2>Comparação Projeto &mdash; Colocação de Tetrápodes Novos</h2>
+      <p style="color:var(--muted);font-size:12.5px;margin:2px 0 12px">Previsão do projetista (2.8.2). A coluna Colocados será preenchida quando houver registo da colocação dos novos.</p>
       <div class="mqtwrap">
         <table id="cmp282Table">
           <thead><tr>
@@ -398,10 +403,8 @@
           <tbody id="cmp282Body"></tbody>
         </table>
       </div>
-      </div>
-    </details>
-
-  </div><!-- /temaProd -->
+    </div>
+  </div><!-- /temaColocNovo -->
 
   <!-- ============ BLOCO 3: AUTOS DE MEDIÇÃO ============ -->
   <div id="temaAutos" class="tema" style="display:none">
@@ -1377,7 +1380,7 @@ function prodResumo(){
 }
 
 function prodRender(){
-  prodBuildFilters();prodRenderKPIs();prodRenderTime();prodRenderSemana();prodRenderRecTable();renderCmp282();
+  prodBuildFilters();prodRenderKPIs();prodRenderTime();prodRenderSemana();prodRenderRecTable();
 }
 
 function render(){
@@ -1393,10 +1396,11 @@ function init(){
   // Navegação entre secções
   const EB="Empreitada de Reabilitação do Esporão Sul de Espinho";
   const TEMAS={
-    mqt:{tema:"temaMQT",title:"2. MQT / PROJ",sub:"Mapa de Quantidades e Trabalhos"},
+    mqt:{tema:"temaMQT",title:"MQT",sub:"Mapa de Quantidades e Trabalhos"},
     remocao:{tema:"temaRC",rcMode:"Remoção",title:"2.1 Remoção",sub:"Remoção de Tetrápodes (Inteiros e Partidos)"},
-    colocacao:{tema:"temaRC",rcMode:"Colocação",title:"2.6 Colocação",sub:"Colocação de Tetrápodes Recuperados"},
-    prod:{tema:"temaProd",title:"2.8.1 Produção",sub:"Produção de Tetrápodes Novos"},
+    colocacao:{tema:"temaRC",rcMode:"Colocação",title:"2.6 Colocação | Recuperados",sub:"Colocação de Tetrápodes Recuperados"},
+    prod:{tema:"temaProd",title:"2.8.1 Produção | Novos",sub:"Produção de Tetrápodes Novos"},
+    colocnovo:{tema:"temaColocNovo",title:"2.8.2 Colocação | Novos",sub:"Colocação de Tetrápodes Novos"},
     autos:{tema:"temaAutos",title:"Autos",sub:"Autos de Medição"},
     resumo:{tema:"temaResumo",title:"Resumo",sub:"Realidade de Obra"},
     totais:{tema:"temaTotais",title:"Totais",sub:"Controlo: MQT · Autos · Saldo · Produzido · Desvio"}
@@ -1404,7 +1408,7 @@ function init(){
   document.querySelectorAll(".temabar button").forEach(b=>b.onclick=()=>{
     const t=b.dataset.tema,cfg=TEMAS[t];
     document.querySelectorAll(".temabar button").forEach(x=>x.classList.toggle("active",x===b));
-    ["temaMQT","temaRC","temaProd","temaAutos","temaResumo","temaTotais"].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display="none";});
+    ["temaMQT","temaRC","temaProd","temaColocNovo","temaAutos","temaResumo","temaTotais"].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display="none";});
     document.getElementById(cfg.tema).style.display="block";
     if(cfg.rcMode){
       state.rcMode=cfg.rcMode;
@@ -1418,6 +1422,7 @@ function init(){
     }
     if(t==="mqt")renderMQT();
     if(t==="prod")prodRender();
+    if(t==="colocnovo")renderCmp282();
     if(t==="autos")renderAutos();
     if(t==="resumo")renderResumo();
     if(t==="totais")renderTotais();
