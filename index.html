@@ -210,7 +210,7 @@
         <button data-th="dark">Escuro</button>
         <button data-th="system">Sistema</button>
       </div>
-      <div class="badge">v26.08.10.2430</div>
+      <div class="badge">v26.08.10.2545</div>
     </div>
   </header>
 
@@ -222,9 +222,9 @@
       <button data-tema="enroc22"><b>2.2</b> Enroc.</button>
       <button data-tema="enroc23"><b>2.3</b> Enroc.</button>
       <button data-tema="enroc25"><b>2.5</b> Enroc.</button>
-      <button data-tema="colocacao"><b>2.6</b> Colocação | Recup</button>
-      <button data-tema="prod"><b>2.8.1</b> Produção | Novo</button>
-      <button data-tema="colocnovo"><b>2.8.2</b> Colocação | Novo</button>
+      <button data-tema="colocacao"><b>2.6</b> Colocação</button>
+      <button data-tema="prod"><b>2.8.1</b> Produção</button>
+      <button data-tema="colocnovo"><b>2.8.2</b> Colocação</button>
       <button data-tema="enroc29"><b>2.9</b> Enroc.</button>
       <button data-tema="enroc210"><b>2.10</b> Enroc.</button>
       <button data-tema="resumo">Resumo</button>
@@ -440,8 +440,9 @@
 
   <!-- ============ ENROCAMENTOS ============ -->
   <div id="temaEnroc" class="tema" style="display:none">
-    <div class="card">
-      <h2>Enrocamento</h2>
+    <details class="sec" id="secEnroc">
+      <summary>Comparação de Projeto</summary>
+      <div class="secbody">
       <div class="mqtwrap">
         <table id="enrocTable">
           <thead><tr>
@@ -453,7 +454,8 @@
           <tbody id="enrocBody"></tbody>
         </table>
       </div>
-    </div>
+      </div>
+    </details>
   </div><!-- /temaEnroc -->
 
   <!-- ============ BLOCO 3: AUTOS DE MEDIÇÃO ============ -->
@@ -814,10 +816,12 @@ const ENROC_DATA={
   "2.2":{sub:"Coroamento do Manto | 12 a 15 tf",linhas:[
     {perfis:"P1 a P9",proj:380,fisc:190},
     {perfis:"P10 e P11",proj:140,fisc:70},
-    {perfis:"P11 a P11",proj:155,fisc:80},
-    {perfis:"P11 a P9",proj:125,fisc:60}
+    {perfis:"P11 a P11",proj:155,fisc:77.5},
+    {perfis:"P11 a P9",proj:125,fisc:62.5}
   ]},
-  "2.3":{sub:"Cabeça \u2192 Talude Sul | 12 a 15 tf",linhas:[]},
+  "2.3":{sub:"Cabeça \u2192 Talude Sul | 12 a 15 tf",linhas:[
+    {perfis:"P10",proj:700}
+  ]},
   "2.5":{sub:"Banqueta | 12 a 15 tf",linhas:[]},
   "2.9":{sub:"Submanto | 1 a 4 tf",linhas:[]},
   "2.10":{sub:"Talude Norte \u2192 Cabeça | 12 a 15 tf",linhas:[]}
@@ -877,11 +881,11 @@ function renderEnroc(){
   const el=document.getElementById("enrocBody");if(!el)return;
   const e=ENROC_DATA[curEnroc];
   if(!e||!e.linhas.length){el.innerHTML='<tr><td colspan="4" class="empty" style="padding:20px">Sem dados.</td></tr>';return;}
-  let sP=0,sE=0,sF=0,hasE=false;
-  const rows=e.linhas.map(l=>{sP+=l.proj||0;sF+=l.fisc||0;if(l.ent!=null){sE+=l.ent;hasE=true;}
-    return `<tr><td>${esc(l.perfis)}</td><td class="num">${fmtE(l.proj)}</td><td class="num">${l.ent!=null?fmtE(l.ent):"&mdash;"}</td><td class="num">${fmtE(l.fisc)}</td></tr>`;
+  let sP=0,sE=0,sF=0,hasE=false,hasF=false;
+  const rows=e.linhas.map(l=>{sP+=l.proj||0;if(l.ent!=null){sE+=l.ent;hasE=true;}if(l.fisc!=null){sF+=l.fisc;hasF=true;}
+    return `<tr><td>${esc(l.perfis)}</td><td class="num">${fmtE(l.proj)}</td><td class="num">${l.ent!=null?fmtE(l.ent):"&mdash;"}</td><td class="num">${l.fisc!=null?fmtE(l.fisc):"&mdash;"}</td></tr>`;
   }).join("");
-  el.innerHTML=rows+`<tr class="total"><td>TOTAL</td><td class="num">${fmtE(sP)}</td><td class="num">${hasE?fmtE(sE):"&mdash;"}</td><td class="num">${fmtE(sF)}</td></tr>`;
+  el.innerHTML=rows+`<tr class="total"><td>TOTAL</td><td class="num">${fmtE(sP)}</td><td class="num">${hasE?fmtE(sE):"&mdash;"}</td><td class="num">${hasF?fmtE(sF):"&mdash;"}</td></tr>`;
 }
 function renderResumo(){
   const rows=MQT_DATA.filter(a=>!((a.Descricao==="nan"||!a.Descricao)&&a.Total==null)).map(a=>{
