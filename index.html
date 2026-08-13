@@ -38,13 +38,13 @@
   .eyebrow{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);font-weight:700}
   h1{font-size:25px;font-weight:700;letter-spacing:-.3px}
   .sub{color:var(--muted);font-size:13px;margin-top:2px}
-  .htools{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-  .iconbtn{width:32px;height:32px;display:flex;align-items:center;justify-content:center;background:var(--panel);border:1px solid var(--line);border-radius:8px;cursor:pointer;color:var(--muted);padding:0}
+  .htools{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+  .iconbtn{min-width:32px;height:32px;display:flex;align-items:center;justify-content:center;background:var(--panel);border:1px solid var(--line);border-radius:8px;cursor:pointer;color:var(--muted);padding:0;box-sizing:border-box}
   .iconbtn:hover{color:var(--txt);border-color:var(--accent)}
   .iconbtn.active{background:var(--accent);border-color:var(--accent);color:#1a1207}
-  .iconbtn svg{width:17px;height:17px}
-  .theme{display:flex;gap:3px;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:3px}
-  .theme .iconbtn{width:28px;height:26px;border:none;background:transparent;border-radius:6px}
+  .iconbtn svg{width:17px;height:17px;flex:none}
+  .theme{display:flex;gap:3px;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:3px;box-sizing:border-box}
+  .theme .iconbtn{flex:1;min-width:0;width:auto;height:26px;border:none;background:transparent;border-radius:6px}
   .theme .iconbtn.active{background:var(--accent)}
 
   .kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:18px}
@@ -216,7 +216,7 @@
           <button class="iconbtn" data-th="dark" title="Escuro"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
           <button class="iconbtn" data-th="system" title="Sistema"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></button>
         </div>
-        <button class="iconbtn" id="verBtn" title="v26.08.10.2745"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></button>
+        <button class="iconbtn" id="verBtn" title="v26.08.10.2800"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></button>
       </div>
     </div>
     <div class="titlerow">
@@ -1642,8 +1642,17 @@ function init(){
 
   render();prodRender();renderMQT();
   document.getElementById("adminBtn").onclick=toggleAdmin;
-  uniformizarCapitulos();
-  window.addEventListener("resize",uniformizarCapitulos);
+  uniformizarCapitulos();alinharTopo();
+  window.addEventListener("resize",()=>{uniformizarCapitulos();alinharTopo();});
+}
+function alinharTopo(){
+  const a=[...document.querySelectorAll("#barAnalise button")];if(a.length<4)return;
+  const w=i=>Math.ceil(a[i].getBoundingClientRect().width);
+  const gap=6;
+  const lock=document.getElementById("adminBtn"),theme=document.querySelector(".theme"),ver=document.getElementById("verBtn");
+  if(lock)lock.style.width=w(0)+"px";
+  if(ver)ver.style.width=w(3)+"px";
+  if(theme)theme.style.width=(w(1)+gap+w(2))+"px";
 }
 function uniformizarCapitulos(){
   const bar=document.getElementById("barCapitulos");if(!bar)return;
