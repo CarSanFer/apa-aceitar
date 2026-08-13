@@ -135,6 +135,32 @@
   #enrocRecTable,#enrocTable{table-layout:fixed}
   #enrocRecTable th,#enrocRecTable td,#enrocTable th,#enrocTable td{text-align:center;font-variant-numeric:tabular-nums}
   #enrocTable td{padding:7px 10px}
+  .blocks{display:flex;flex-direction:column;gap:10px}
+  #temaPesq .hint{font-size:11.5px;color:var(--muted);margin:0 0 14px}
+  #temaPesq .hint b{color:var(--txt)}
+  #pesqBlocks details.sec>summary .cnt{margin-left:auto;color:var(--faint);font-weight:600;font-size:11px;text-transform:none;letter-spacing:0}
+  #pesqBlocks details.sec>summary b{font-weight:800;margin-right:6px}
+  #pesqBlocks details.sec>summary{text-transform:none;letter-spacing:0;font-size:13px}
+  .pqbody{border-top:1px solid var(--line)}
+  .pqtable{width:100%;border-collapse:collapse;table-layout:fixed}
+  .pqtable th,.pqtable td{padding:7px 10px;text-align:center;font-size:12px;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
+  .pqtable th{font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);font-weight:700}
+  .pqtable tr.tot td{border-bottom:none;border-top:2px solid var(--accent);font-weight:800}
+  .kgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:16px}
+  .kcard{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px}
+  .kcap{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--accent);font-weight:700;margin-bottom:10px;display:flex;justify-content:space-between}
+  .kcap .kart{color:var(--faint);font-weight:600}
+  .krow{display:flex;justify-content:space-between;align-items:baseline;padding:6px 0;border-bottom:1px solid var(--line)}
+  .krow:last-child{border:none}
+  .krow .klbl{font-size:12px;color:var(--muted)}
+  .krow .kval{font-size:20px;font-weight:800;font-variant-numeric:tabular-nums}
+  .krow .kval.sm{font-size:14px;font-weight:700}
+  .dbar{display:flex;align-items:center;gap:10px;margin:7px 0;font-size:12px}
+  .dbar .dbl{width:110px;color:var(--muted);flex:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .dbar .dtrack{flex:1;height:20px;background:var(--panel2);border-radius:5px;overflow:hidden}
+  .dbar .dfill{height:100%;border-radius:5px;min-width:2px}
+  .dbar .dbv{width:80px;text-align:right;font-variant-numeric:tabular-nums;font-weight:700;flex:none}
+  .dsep{height:8px}
   #enrocTable td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
   #enrocTable td:first-child{text-align:left;font-weight:600}
   #enrocTable tr.total td{border-top:2px solid var(--accent);font-weight:800}
@@ -216,7 +242,7 @@
           <button class="iconbtn" data-th="dark" title="Escuro"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
           <button class="iconbtn" data-th="system" title="Sistema"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></button>
         </div>
-        <button class="iconbtn" id="verBtn" title="v26.08.10.2830"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></button>
+        <button class="iconbtn" id="verBtn" title="v26.08.10.2915"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></button>
       </div>
     </div>
     <div class="titlerow">
@@ -229,6 +255,8 @@
         <button data-tema="autos">AM</button>
         <button data-tema="resumo">RES</button>
         <button data-tema="totais">TOT</button>
+        <button data-tema="dash">DASH</button>
+        <button data-tema="pesq">PESQ</button>
       </div>
     </div>
   </header>
@@ -250,7 +278,37 @@
     </div>
   </div>
 
+    <!-- ============ DASHBOARD ============ -->
+  <div id="temaDash" class="tema" style="display:none">
+    <div class="filters">
+      <div class="fgroup"><span class="flabel">Mês</span><select id="dfMes"></select></div>
+      <div class="fgroup"><span class="flabel">Semana</span><select id="dfSemana"></select></div>
+      <div class="fgroup"><span class="flabel">Dia</span><input type="date" id="dfDia"></div>
+      <div class="fgroup"><span class="flabel">Perfil</span><select id="dfPerfil"></select></div>
+      <button class="btn" id="dfReset">Limpar</button>
+    </div>
+    <div class="kgrid" id="dashKpis"></div>
+    <div class="grid" id="dashRow1">
+      <div class="card"><h2>Remoção — Inteiros vs Partidos</h2><div id="dashIP"></div></div>
+      <div class="card"><h2>Projeto vs Obra</h2><div id="dashPO"></div></div>
+    </div>
+    <div class="card"><h2 id="dashDistTit">Distribuição por Perfil</h2><div id="dashDist"></div></div>
+    <div class="card"><h2>Enrocamentos — Fiscalizado vs Projeto</h2><div id="dashEnroc"></div></div>
+  </div>
+
   <!-- ============ SECÇÃO: 2. MQT / PROJ ============ -->
+  <!-- ============ PESQUISA TRANSVERSAL ============ -->
+  <div id="temaPesq" class="tema" style="display:none">
+    <div class="filters">
+      <div class="fgroup"><span class="flabel">Perfil</span><select id="pqPerfil"></select></div>
+      <div class="fgroup"><span class="flabel">Data</span><input type="date" id="pqDia"></div>
+      <div class="fgroup"><span class="flabel">Semana</span><select id="pqSemana"></select></div>
+      <button class="btn" id="pqReset">Limpar</button>
+    </div>
+    <p class="hint" id="pqHint"></p>
+    <div class="blocks" id="pesqBlocks"></div>
+  </div>
+
   <div id="temaMQT" class="tema">
     <div class="card">
       <h2>Mapa de Quantidades e Trabalhos</h2>
@@ -871,27 +929,27 @@ const ENROC_RECORDS=[
   {cap:"2.2",Data:"2026-05-29",Perfil:"P11 a P9",Enroc:60,Fisc:60}
 ];
 const ENROC_DATA={
-  "2.2":{sub:"Coroamento do Manto",linhas:[
+  "2.2":{sub:"Coroamento do Manto | 12 a 15 tf",linhas:[
     {perfis:"P1 a P9",proj:380},
     {perfis:"P10 e P11",proj:140},
     {perfis:"P11 a P11",proj:155},
     {perfis:"P11 a P9",proj:125}
   ]},
-  "2.3":{sub:"Cabeça \u2192 Talude Sul",linhas:[
+  "2.3":{sub:"Cabeça \u2192 Talude Sul | 12 a 15 tf",linhas:[
     {perfis:"P10",proj:700}
   ]},
   "2.4":{sub:"Remoção de Materiais de Qualquer Natureza",linhas:[]},
-  "2.5":{sub:"Banqueta",linhas:[]},
+  "2.5":{sub:"Banqueta | 12 a 15 tf",linhas:[]},
   "2.7":{sub:"Transporte e Depósito Tetrápodes Recuperados e não Utilizados",linhas:[]},
-  "2.9":{sub:"Submanto",linhas:[]},
-  "2.10":{sub:"Talude Norte \u2192 Cabeça",linhas:[]},
+  "2.9":{sub:"Submanto | 1 a 4 tf",linhas:[]},
+  "2.10":{sub:"Talude Norte \u2192 Cabeça | 12 a 15 tf",linhas:[]},
   "2.11":{sub:"Fornecimento, Transporte e Colocação de Betão",linhas:[]}
 };
 let curEnroc="2.2";
 const PROJ_REMOCAO={"P1": 19, "P2": 8, "P3": 8, "P4": 5, "P5": 7, "P6": 6, "P7": 7, "P8": 5, "P9": 8, "P10": 37, "P11 N": 58, "P11 S": 50, "P12": 55, "P13": 52, "P14": 59};
 const PROJ_COL_NOV={"P10": 44, "P11 N": 60, "P11 S": 36, "P12": 72, "P13": 72, "P14": 76};
 const PROJ_COL_REC={"P1": 40, "P2": 22, "P3": 16, "P4": 10, "P5": 10, "P6": 9, "P7": 9, "P8": 8, "P9": 11, "P10": 26};
-const AUTOS_DATA=[{"Id": "2.1", "Descricao": "Remoção de Tetrápodes (Inteiros e Partidos)", "PopUP": "Remoção de tetrápodes e de tetrápodes partidos do manto do talude sul e cabeça", "Un": "un", "Quant": 384, "AM": [null, null, null, null, null, 9, 150, 185], "Total": 344, "Saldo": 40}, {"Id": "2.2", "Descricao": "Enrocamento (Coroamente do Manto)", "PopUP": "Remoção e posterior reposição de enrocamento de 12 a 15 tf do remate do coroamento do manto de tetrápodes", "Un": "m3", "Quant": 800, "AM": [null, null, null, null, null, 400, null, null], "Total": 400, "Saldo": 400}, {"Id": "2.3", "Descricao": "Enrocamento (Cabeça -> Talude Sul)", "PopUP": "Remoção de enrocamento de 12 a 15 tf  do manto para execução da transição da cabeça para o talude norte", "Un": "m3", "Quant": 700, "AM": [null, null, null, null, null, null, null, null], "Total": 0, "Saldo": 700}, {"Id": "2.4", "Descricao": "Remoção de Materiais de Qualquer Natureza", "PopUP": "Remoção de materiais de qualquer natureza (areia, enrocamento, bocados de terápodes) para reconstrução da banqueta de pé de talude", "Un": "m3", "Quant": 3000, "AM": [null, null, null, null, null, null, null, 2087.87], "Total": 2087.87, "Saldo": 912.1300000000001}, {"Id": "2.5", "Descricao": "Enrocamento (Banqueta)", "PopUP": "Reconstrução da banqueta de pé de talude em enrocamento de 12 a 15 tf", "Un": "m3", "Quant": 1900, "AM": [null, null, null, null, null, null, null, 422.43], "Total": 422.43, "Saldo": 1477.57}, {"Id": "2.6", "Descricao": "Colocação de Tetrápodes Recuperados (Cabeça e Talude Sul)", "PopUP": "Colocação de tetrápodes recuperados da cabeça e do talude sul na reconstituição do manto de protecção do talude sul ", "Un": "un", "Quant": 161, "AM": [null, null, null, null, null, null, 13, 148], "Total": 161, "Saldo": 0}, {"Id": "2.7", "Descricao": "Transporte e Depósito Tetrápodes Recuperados e não Utilizados (Cabeça e Sul)", "PopUP": "Transporte a depósito de tetrápodes recuperados da cabeça e do talude sul e não utilizados na reconstituição do manto de protecção do talude sul (depósito localizado num raio de 2,5Km de distância ao local da obra) ", "Un": "un", "Quant": 108, "AM": [null, null, null, null, null, null, null, null], "Total": 0, "Saldo": 108}, {"Id": "2.8", "Descricao": null, "PopUP": "Fornecimento e colocação de tetrápodes de 34,4 tf, em betão NP EN 206-1: C35/45, XA1 (Pt), Cl 1.0, Dmax20, S3, simples", "Un": null, "Quant": null, "AM": [null, null, null, null, null, null, null, null], "Total": null, "Saldo": null}, {"Id": "2.8.1", "Descricao": "Produção de Tetrápodes Novos", "PopUP": "Fabrico e colocação em depósito dos tetrápodes", "Un": "un", "Quant": 360, "AM": [14.4, null, null, 52.6, 73, 85, 68, 7], "Total": 300, "Saldo": 60}, {"Id": "2.8.2", "Descricao": "Transporte e Colocação de Tetrápodes Novos", "PopUP": "Transporte e colocação de tetrápodes", "Un": "un", "Quant": 360, "AM": [null, null, null, null, null, null, null, null], "Total": null, "Saldo": null}, {"Id": "2.9", "Descricao": "Enrocamento (Submanto)", "PopUP": "Fornecimento e colocação de enrocamento de 1 a 4 tf no submanto na transição entre o talude sul e a cabeça ", "Un": "m3", "Quant": 500, "AM": [null, null, null, null, null, null, null, 500], "Total": 500, "Saldo": 0}, {"Id": "2.10", "Descricao": "Enrocamento (Talude Norte -> Cabeça)", "PopUP": "Fornecimento e colocação de enrocamento de 12 a 15 tf no manto da transição entre o talude norte e a cabeça ", "Un": "m3", "Quant": 1200, "AM": [null, null, null, null, null, null, null, null], "Total": 0, "Saldo": 1200}, {"Id": "2.11", "Descricao": "Fornecimento, Transporte e Colocação de Betão", "PopUP": "Fornecimento, transporte e colocação de betão simples C30/37, XA1, Dmax=25mm, para rematar o capeamento da superestrutura junto dos blocos no coroamento", "Un": "m3", "Quant": 50, "AM": [null, null, null, null, null, null, null, null], "Total": 0, "Saldo": 50}];
+const AUTOS_DATA=[{"Id": "2.1", "Descricao": "Remoção de Tetrápodes (Inteiros e Partidos | 30 tf)", "PopUP": "Remoção de tetrápodes e de tetrápodes partidos do manto do talude sul e cabeça", "Un": "un", "Quant": 384, "AM": [null, null, null, null, null, 9, 150, 185], "Total": 344, "Saldo": 40}, {"Id": "2.2", "Descricao": "Enrocamento (Coroamente do Manto | 12 a 15 tf)", "PopUP": "Remoção e posterior reposição de enrocamento de 12 a 15 tf do remate do coroamento do manto de tetrápodes", "Un": "m3", "Quant": 800, "AM": [null, null, null, null, null, 400, null, null], "Total": 400, "Saldo": 400}, {"Id": "2.3", "Descricao": "Enrocamento (Cabeça -> Talude Sul | 12 a 15 tf)", "PopUP": "Remoção de enrocamento de 12 a 15 tf  do manto para execução da transição da cabeça para o talude norte", "Un": "m3", "Quant": 700, "AM": [null, null, null, null, null, null, null, null], "Total": 0, "Saldo": 700}, {"Id": "2.4", "Descricao": "Remoção de Materiais de Qualquer Natureza", "PopUP": "Remoção de materiais de qualquer natureza (areia, enrocamento, bocados de terápodes) para reconstrução da banqueta de pé de talude", "Un": "m3", "Quant": 3000, "AM": [null, null, null, null, null, null, null, 2087.87], "Total": 2087.87, "Saldo": 912.1300000000001}, {"Id": "2.5", "Descricao": "Enrocamento (Banqueta | 12 a 15 tf)", "PopUP": "Reconstrução da banqueta de pé de talude em enrocamento de 12 a 15 tf", "Un": "m3", "Quant": 1900, "AM": [null, null, null, null, null, null, null, 422.43], "Total": 422.43, "Saldo": 1477.57}, {"Id": "2.6", "Descricao": "Colocação de Tetrápodes Recuperados (Cabeça e Talude Sul)", "PopUP": "Colocação de tetrápodes recuperados da cabeça e do talude sul na reconstituição do manto de protecção do talude sul ", "Un": "un", "Quant": 161, "AM": [null, null, null, null, null, null, 13, 148], "Total": 161, "Saldo": 0}, {"Id": "2.7", "Descricao": "Transporte e Depósito Tetrápodes Recuperados e não Utilizados (Cabeça e Sul)", "PopUP": "Transporte a depósito de tetrápodes recuperados da cabeça e do talude sul e não utilizados na reconstituição do manto de protecção do talude sul (depósito localizado num raio de 2,5Km de distância ao local da obra) ", "Un": "un", "Quant": 108, "AM": [null, null, null, null, null, null, null, null], "Total": 0, "Saldo": 108}, {"Id": "2.8", "Descricao": null, "PopUP": "Fornecimento e colocação de tetrápodes de 34,4 tf, em betão NP EN 206-1: C35/45, XA1 (Pt), Cl 1.0, Dmax20, S3, simples", "Un": null, "Quant": null, "AM": [null, null, null, null, null, null, null, null], "Total": null, "Saldo": null}, {"Id": "2.8.1", "Descricao": "Produção de Tetrápodes Novos", "PopUP": "Fabrico e colocação em depósito dos tetrápodes", "Un": "un", "Quant": 360, "AM": [14.4, null, null, 52.6, 73, 85, 68, 7], "Total": 300, "Saldo": 60}, {"Id": "2.8.2", "Descricao": "Transporte e Colocação de Tetrápodes Novos", "PopUP": "Transporte e colocação de tetrápodes", "Un": "un", "Quant": 360, "AM": [null, null, null, null, null, null, null, null], "Total": null, "Saldo": null}, {"Id": "2.9", "Descricao": "Enrocamento (Submanto | 1 a 4 tf)", "PopUP": "Fornecimento e colocação de enrocamento de 1 a 4 tf no submanto na transição entre o talude sul e a cabeça ", "Un": "m3", "Quant": 500, "AM": [null, null, null, null, null, null, null, 500], "Total": 500, "Saldo": 0}, {"Id": "2.10", "Descricao": "Enrocamento (Talude Norte -> Cabeça | 12 a 15 tf)", "PopUP": "Fornecimento e colocação de enrocamento de 12 a 15 tf no manto da transição entre o talude norte e a cabeça ", "Un": "m3", "Quant": 1200, "AM": [null, null, null, null, null, null, null, null], "Total": 0, "Saldo": 1200}, {"Id": "2.11", "Descricao": "Fornecimento, Transporte e Colocação de Betão", "PopUP": "Fornecimento, transporte e colocação de betão simples C30/37, XA1, Dmax=25mm, para rematar o capeamento da superestrutura junto dos blocos no coroamento", "Un": "m3", "Quant": 50, "AM": [null, null, null, null, null, null, null, null], "Total": 0, "Saldo": 50}];
 function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
 function renderMQT(){
   let total=0;
@@ -969,6 +1027,175 @@ function renderEnrocRec(){
     return `<tr><td>${fmtD(r.Data)}</td><td>${isoWeek(r.Data)}</td><td>${mesLabel(mesOf(r.Data))}</td><td>${esc(r.Perfil)}</td><td>${fmtE(r.Enroc)}</td><td><span class="${cls}">${fmtE(r.Fisc)}</span></td></tr>`;
   }).join("");
 }
+
+let dashF={mes:"Todos",semana:"Todas",dia:"",perfil:"Todos"};
+function dashRec(tipo){
+  return records.filter(r=>r.Tipo===tipo)
+    .filter(r=>dashF.mes==="Todos"||r.Mes===dashF.mes)
+    .filter(r=>dashF.semana==="Todas"||String(r.Semana)===dashF.semana)
+    .filter(r=>!dashF.dia||r.Data===dashF.dia)
+    .filter(r=>dashF.perfil==="Todos"||r.Perfil===dashF.perfil);
+}
+function dashProd(){
+  return prodRecords
+    .filter(r=>dashF.mes==="Todos"||r.Mes===dashF.mes)
+    .filter(r=>dashF.semana==="Todas"||String(r.Semana)===dashF.semana)
+    .filter(r=>!dashF.dia||r.Data===dashF.dia)
+    .filter(r=>dashF.perfil==="Todos"||r.Perfil===dashF.perfil);
+}
+function dashBuildFilters(){
+  const meses=[...new Set([...records.map(r=>r.Mes),...prodRecords.map(r=>r.Mes)])].filter(Boolean).sort();
+  const semanas=[...new Set([...records.map(r=>r.Semana),...prodRecords.map(r=>r.Semana)])].filter(v=>v!=null).sort((a,b)=>a-b);
+  const perfis=[...new Set([...records.map(r=>r.Perfil),...prodRecords.map(r=>r.Perfil)])].filter(Boolean).sort(pcmp);
+  const set=(id,val,opts)=>{const s=document.getElementById(id);if(!s)return;s.innerHTML=opts;s.value=[...s.options].some(o=>o.value===val)?val:s.options[0].value;};
+  set("dfMes",dashF.mes,'<option value="Todos">Todos</option>'+meses.map(m=>`<option value="${m}">${mesLabel(m)}</option>`).join(""));
+  set("dfSemana",dashF.semana,'<option value="Todas">Todas</option>'+semanas.map(s=>`<option value="${s}">S${s}</option>`).join(""));
+  set("dfPerfil",dashF.perfil,'<option value="Todos">Todos</option>'+perfis.map(p=>`<option value="${esc(p)}">${esc(p)}</option>`).join(""));
+  dashF.mes=document.getElementById("dfMes").value;dashF.semana=document.getElementById("dfSemana").value;dashF.perfil=document.getElementById("dfPerfil").value;
+  const d=document.getElementById("dfDia");if(d)d.value=dashF.dia;
+}
+function dbar(label,val,max,color,suffix){
+  const w=max>0?Math.max(2,Math.round(val/max*100)):0;
+  return `<div class="dbar"><span class="dbl">${esc(label)}</span><div class="dtrack"><div class="dfill" style="width:${w}%;background:${color}"></div></div><span class="dbv">${fmtN(val)}${suffix||""}</span></div>`;
+}
+function dashKpiCard(nome,art,obraLbl,obra,proj,fisc){
+  const dv=obra-proj,pct=proj?dv/proj*100:null,cor=dv<0?"#e76f51":dv>0?"#4caf72":"inherit";
+  return `<div class="kcard">
+    <div class="kcap"><span>${nome}</span><span class="kart">${art}</span></div>
+    <div class="krow"><span class="klbl">${obraLbl}</span><span class="kval">${fmtN(obra)}</span></div>
+    <div class="krow"><span class="klbl">Projeto</span><span class="kval sm">${fmtN(proj)}</span></div>
+    <div class="krow"><span class="klbl">Fiscalização</span><span class="kval sm">${fmtN(fisc)}</span></div>
+    <div class="krow"><span class="klbl">Desvio</span><span class="kval sm" style="color:${cor}">${dv>0?"+":""}${fmtN(dv)}${pct==null?"":" · "+(pct>0?"+":"")+fmtN(pct,1)+"%"}</span></div>
+  </div>`;
+}
+function renderDash(){
+  const perfilAtivo=dashF.perfil!=="Todos";
+  // KPIs
+  const rem=dashRec("Remoção"),col=dashRec("Colocação"),prod=dashProd();
+  const sum=(a,k)=>a.reduce((s,r)=>s+(r[k]||0),0);
+  const projRem=perfilAtivo?(PROJ_REMOCAO[dashF.perfil]||0):Object.values(PROJ_REMOCAO).reduce((a,b)=>a+b,0);
+  const projCol=perfilAtivo?(PROJ_COL_REC[dashF.perfil]||0):Object.values(PROJ_COL_REC).reduce((a,b)=>a+b,0);
+  const projProd=360;
+  const k=document.getElementById("dashKpis");
+  if(k)k.innerHTML=
+    dashKpiCard("Remoção","2.1","Removidos",sum(rem,"Quant"),projRem,sum(rem,"Fisc"))+
+    dashKpiCard("Colocação","2.6","Colocados",sum(col,"Quant"),projCol,sum(col,"Fisc"))+
+    dashKpiCard("Produção","2.8.1","Produzidos",sum(prod,"Prod"),projProd,sum(prod,"Fisc"));
+  // Inteiros vs Partidos
+  const inteiros=sum(rem.filter(r=>r.SubTipo==="Inteiros"),"Quant"),partidos=sum(rem.filter(r=>r.SubTipo==="Partidos"),"Quant"),totIP=inteiros+partidos;
+  const ip=document.getElementById("dashIP");
+  if(ip)ip.innerHTML=dbar("Inteiros",inteiros,totIP||1,"var(--accent)")+dbar("Partidos",partidos,totIP||1,"#f2b177")+`<div class="dsep"></div>`+dbar("Total",totIP,totIP||1,"var(--panel2)");
+  // Projeto vs Obra
+  const po=document.getElementById("dashPO");
+  const mObra=Math.max(sum(rem,"Quant"),sum(col,"Quant"),sum(prod,"Prod"),projRem,projCol,projProd,1);
+  if(po)po.innerHTML=
+    dbar("Remoção proj",projRem,mObra,"var(--faint)")+dbar("Remoção obra",sum(rem,"Quant"),mObra,"var(--accent)")+`<div class="dsep"></div>`+
+    dbar("Coloc. proj",projCol,mObra,"var(--faint)")+dbar("Coloc. obra",sum(col,"Quant"),mObra,"var(--accent)")+`<div class="dsep"></div>`+
+    dbar("Prod. proj",projProd,mObra,"var(--faint)")+dbar("Prod. obra",sum(prod,"Prod"),mObra,"var(--accent)");
+  // Distribuição por perfil (Remoção) — top ou filtrado
+  const dist=document.getElementById("dashDist"),tit=document.getElementById("dashDistTit");
+  const porPerfil={};dashRec("Remoção").forEach(r=>porPerfil[r.Perfil]=(porPerfil[r.Perfil]||0)+r.Quant);
+  let arr=Object.entries(porPerfil).sort((a,b)=>b[1]-a[1]);
+  const denso=arr.length>8&&!perfilAtivo;
+  const arrShow=denso?arr.slice(0,8):arr;
+  if(tit)tit.textContent="Remoção — Distribuição por Perfil"+(denso?" (top 8 — filtra para ver todos)":perfilAtivo?" ("+dashF.perfil+")":"");
+  const mD=Math.max(...arrShow.map(x=>x[1]),1);
+  if(dist)dist.innerHTML=arrShow.length?arrShow.map(([p,v])=>dbar(p,v,mD,PC[p]||"var(--accent)")).join(""):'<div class="empty" style="padding:16px">Sem dados para este filtro.</div>';
+  // Enrocamentos: fiscalizado vs projeto por capítulo
+  const en=document.getElementById("dashEnroc");
+  const caps=Object.keys(ENROC_DATA);
+  const rows=caps.map(cap=>{
+    const proj=(ENROC_DATA[cap].linhas||[]).reduce((s,l)=>s+(l.proj||0),0);
+    const fisc=ENROC_RECORDS.filter(r=>r.cap===cap).reduce((s,r)=>s+(r.Fisc||0),0);
+    return {cap,proj,fisc};
+  }).filter(x=>x.proj>0||x.fisc>0);
+  const mE=Math.max(...rows.map(x=>Math.max(x.proj,x.fisc)),1);
+  if(en)en.innerHTML=rows.length?rows.map(x=>
+    dbar(x.cap+" proj",x.proj,mE,"var(--faint)")+dbar(x.cap+" fisc",x.fisc,mE,"var(--accent2)")+'<div class="dsep"></div>'
+  ).join(""):'<div class="empty" style="padding:16px">Sem enrocamentos com dados.</div>';
+}
+let pesqF={perfil:"Todos",dia:"",semana:"Todas"};
+const PESQ_CAPS=[
+  {id:"2.1",nome:"Remoção",src:"rem"},
+  {id:"2.2",nome:"Enrocamento — Coroamento do Manto",src:"enr"},
+  {id:"2.3",nome:"Enrocamento — Cabeça \u2192 Talude Sul",src:"enr"},
+  {id:"2.4",nome:"Remoção de Materiais",src:"enr"},
+  {id:"2.5",nome:"Enrocamento — Banqueta",src:"enr"},
+  {id:"2.6",nome:"Colocação",src:"col"},
+  {id:"2.7",nome:"Transporte e Depósito",src:"enr"},
+  {id:"2.8.1",nome:"Produção",src:"prod"},
+  {id:"2.8.2",nome:"Colocação (Novos)",src:"vazio"},
+  {id:"2.9",nome:"Enrocamento — Submanto",src:"enr"},
+  {id:"2.10",nome:"Enrocamento — Talude Norte \u2192 Cabeça",src:"enr"},
+  {id:"2.11",nome:"Betão",src:"enr"}
+];
+function pesqNum(p){const m=String(p).match(/\d+/);return m?+m[0]:null;}
+function trocoInclui(troco,perfil){
+  const pn=pesqNum(perfil);if(pn==null)return false;
+  const nums=(String(troco).match(/\d+/g)||[]).map(Number);if(!nums.length)return false;
+  if(/\ba\b/.test(troco)){return pn>=Math.min(...nums)&&pn<=Math.max(...nums);}
+  return nums.includes(pn);
+}
+function pesqBuildFilters(){
+  const perfis=[...new Set([...records.map(r=>r.Perfil),...prodRecords.map(r=>r.Perfil)])].filter(Boolean).sort(pcmp);
+  const semanas=[...new Set([...records.map(r=>r.Semana),...prodRecords.map(r=>r.Semana),...ENROC_RECORDS.map(r=>isoWeek(r.Data))])].filter(v=>v!=null).sort((a,b)=>a-b);
+  const set=(id,val,opts)=>{const s=document.getElementById(id);if(!s)return;s.innerHTML=opts;s.value=[...s.options].some(o=>o.value===val)?val:s.options[0].value;};
+  set("pqPerfil",pesqF.perfil,'<option value="Todos">Todos</option>'+perfis.map(p=>`<option value="${esc(p)}">${esc(p)}</option>`).join(""));
+  set("pqSemana",pesqF.semana,'<option value="Todas">Todas</option>'+semanas.map(s=>`<option value="${s}">S${s}</option>`).join(""));
+  pesqF.perfil=document.getElementById("pqPerfil").value;pesqF.semana=document.getElementById("pqSemana").value;
+  const d=document.getElementById("pqDia");if(d)d.value=pesqF.dia;
+}
+function pesqMatch(data,perfilOk){
+  if(pesqF.dia&&data!==pesqF.dia)return false;
+  if(pesqF.semana!=="Todas"&&String(isoWeek(data))!==pesqF.semana)return false;
+  if(pesqF.perfil!=="Todos"&&!perfilOk)return false;
+  return true;
+}
+function pesqTot(n){return n?`<span class="cnt">${n} reg.</span>`:'<span class="cnt">sem registos</span>';}
+function pesqSem(){return '<div class="none">Sem registos para este critério.</div>';}
+function pesqTbl(cols,rows,tot){
+  const th=cols.map(c=>`<th>${c}</th>`).join("");
+  const body=rows.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join("")}</tr>`).join("");
+  const totr=tot?`<tr class="tot">${tot.map(c=>`<td>${c}</td>`).join("")}</tr>`:"";
+  return `<div class="pqbody"><table class="pqtable">${cols.length?`<thead><tr>${th}</tr></thead>`:""}<tbody>${body}${totr}</tbody></table></div>`;
+}
+function pesqFiscCell(fisc,base){const cls=fisc===base?"fisc-ok":"fisc-alt";return `<span class="${cls}">${fmtN(fisc)}</span>`;}
+function renderPesq(){
+  const cont=document.getElementById("pesqBlocks");if(!cont)return;
+  const hint=document.getElementById("pqHint");
+  const hasCrit=pesqF.perfil!=="Todos"||pesqF.dia||pesqF.semana!=="Todas";
+  if(hint){
+    const parts=[];if(pesqF.perfil!=="Todos")parts.push("Perfil "+pesqF.perfil);if(pesqF.dia)parts.push("Dia "+fmtD(pesqF.dia));if(pesqF.semana!=="Todas")parts.push("Semana "+pesqF.semana);
+    hint.innerHTML=hasCrit?`A mostrar tudo o que se relaciona com <b>${parts.join(" · ")}</b> em cada capítulo.`:"Escolhe um perfil, uma data ou uma semana para ver, capítulo a capítulo, tudo o que lhe está associado.";
+  }
+  const sum=(a,k)=>a.reduce((s,r)=>s+(r[k]||0),0);
+  cont.innerHTML=PESQ_CAPS.map(cap=>{
+    let recs=[],inner="";
+    if(cap.src==="rem"||cap.src==="col"){
+      const tipo=cap.src==="rem"?"Remoção":"Colocação";
+      recs=records.filter(r=>r.Tipo===tipo&&pesqMatch(r.Data,r.Perfil===pesqF.perfil)).sort((a,b)=>a.Data<b.Data?1:-1);
+      if(recs.length){
+        const cols=cap.src==="rem"?["Dia","Semana","Sub Tipo","Perfil","Removidos","Fisc."]:["Dia","Semana","Perfil","Colocados","Fisc."];
+        const rows=recs.map(r=>cap.src==="rem"?[fmtD(r.Data),r.Semana,r.SubTipo,r.Perfil,r.Quant,pesqFiscCell(r.Fisc,r.Quant)]:[fmtD(r.Data),r.Semana,r.Perfil,r.Quant,pesqFiscCell(r.Fisc,r.Quant)]);
+        const tot=cap.src==="rem"?["TOTAL","","","",sum(recs,"Quant"),fmtN(sum(recs,"Fisc"))]:["TOTAL","","",sum(recs,"Quant"),fmtN(sum(recs,"Fisc"))];
+        inner=pesqTbl(cols,rows,tot);
+      }else inner=pesqSem();
+    }else if(cap.src==="prod"){
+      recs=prodRecords.filter(r=>pesqMatch(r.Data,r.Perfil===pesqF.perfil)).sort((a,b)=>a.Data<b.Data?1:-1);
+      if(recs.length){
+        inner=pesqTbl(["Dia","Semana","Perfil","Produzidos","Fisc."],recs.map(r=>[fmtD(r.Data),r.Semana,r.Perfil,r.Prod,pesqFiscCell(r.Fisc,r.Prod)]),["TOTAL","","",sum(recs,"Prod"),fmtN(sum(recs,"Fisc"))]);
+      }else inner=pesqSem();
+    }else if(cap.src==="enr"){
+      recs=ENROC_RECORDS.filter(r=>r.cap===cap.id&&pesqMatch(r.Data,trocoInclui(r.Perfil,pesqF.perfil))).sort((a,b)=>a.Data<b.Data?1:-1);
+      if(recs.length){
+        inner=pesqTbl(["Dia","Semana","Troço","Enroc. (m³)","Fisc."],recs.map(r=>[fmtD(r.Data),isoWeek(r.Data),r.Perfil,fmtE(r.Enroc),pesqFiscCell(r.Fisc,r.Enroc)]),["TOTAL","","",fmtE(sum(recs,"Enroc")),fmtE(sum(recs,"Fisc"))]);
+      }else inner=pesqSem();
+    }else{inner=pesqSem();}
+    const open=hasCrit&&recs.length>0?" open":"";
+    return `<details class="sec"${open}><summary><b>${cap.id}</b>${esc(cap.nome)} ${pesqTot(recs.length)}</summary>${inner}</details>`;
+  }).join("");
+}
+
 function renderEnroc(){
   const el=document.getElementById("enrocBody");if(!el)return;
   const e=ENROC_DATA[curEnroc];
@@ -1585,18 +1812,20 @@ function init(){
   // Navegação entre secções
   const EB="Empreitada de Reabilitação do Esporão Sul de Espinho";
   const TEMAS={
+    dash:{tema:"temaDash",title:"Dashboard",sub:"Visão consolidada — Remoção · Colocação · Produção · Enrocamentos"},
+    pesq:{tema:"temaPesq",title:"Pesquisa",sub:"Vista transversal — tudo por perfil, data ou semana em cada capítulo"},
     mqt:{tema:"temaMQT",title:"MQT",sub:"Mapa de Quantidades e Trabalhos"},
-    remocao:{tema:"temaRC",rcMode:"Remoção",title:"2.1 Remoção",sub:"Remoção de Tetrápodes (Inteiros e Partidos)"},
+    remocao:{tema:"temaRC",rcMode:"Remoção",title:"2.1 Remoção",sub:"Remoção de Tetrápodes (Inteiros e Partidos | 30 tf)"},
     colocacao:{tema:"temaRC",rcMode:"Colocação",title:"2.6 Colocação | Recuperados",sub:"Colocação de Tetrápodes Recuperados"},
     prod:{tema:"temaProd",title:"2.8.1 Produção | Novos",sub:"Produção de Tetrápodes Novos"},
     colocnovo:{tema:"temaColocNovo",title:"2.8.2 Colocação | Novos",sub:"Colocação de Tetrápodes Novos"},
-    enroc22:{tema:"temaEnroc",enrocId:"2.2",title:"2.2 Enrocamento",sub:"Coroamento do Manto"},
-    enroc23:{tema:"temaEnroc",enrocId:"2.3",title:"2.3 Enrocamento",sub:"Cabeça \u2192 Talude Sul"},
+    enroc22:{tema:"temaEnroc",enrocId:"2.2",title:"2.2 Enrocamento",sub:"Coroamento do Manto | 12 a 15 tf"},
+    enroc23:{tema:"temaEnroc",enrocId:"2.3",title:"2.3 Enrocamento",sub:"Cabeça \u2192 Talude Sul | 12 a 15 tf"},
     cap24:{tema:"temaEnroc",enrocId:"2.4",title:"2.4 Remoção de Materiais",sub:"Remoção de Materiais de Qualquer Natureza"},
-    enroc25:{tema:"temaEnroc",enrocId:"2.5",title:"2.5 Enrocamento",sub:"Banqueta"},
+    enroc25:{tema:"temaEnroc",enrocId:"2.5",title:"2.5 Enrocamento",sub:"Banqueta | 12 a 15 tf"},
     cap27:{tema:"temaEnroc",enrocId:"2.7",title:"2.7 Transporte e Depósito",sub:"Transporte e Depósito Tetrápodes Recuperados e não Utilizados"},
-    enroc29:{tema:"temaEnroc",enrocId:"2.9",title:"2.9 Enrocamento",sub:"Submanto"},
-    enroc210:{tema:"temaEnroc",enrocId:"2.10",title:"2.10 Enrocamento",sub:"Talude Norte \u2192 Cabeça"},
+    enroc29:{tema:"temaEnroc",enrocId:"2.9",title:"2.9 Enrocamento",sub:"Submanto | 1 a 4 tf"},
+    enroc210:{tema:"temaEnroc",enrocId:"2.10",title:"2.10 Enrocamento",sub:"Talude Norte \u2192 Cabeça | 12 a 15 tf"},
     cap211:{tema:"temaEnroc",enrocId:"2.11",title:"2.11 Betão",sub:"Fornecimento, Transporte e Colocação de Betão"},
     autos:{tema:"temaAutos",title:"Autos",sub:"Autos de Medição"},
     resumo:{tema:"temaResumo",title:"Resumo",sub:"Realidade de Obra"},
@@ -1605,7 +1834,7 @@ function init(){
   document.querySelectorAll("[data-tema]").forEach(b=>b.onclick=()=>{
     const t=b.dataset.tema,cfg=TEMAS[t];
     document.querySelectorAll("[data-tema]").forEach(x=>x.classList.toggle("active",x===b));
-    ["temaMQT","temaRC","temaProd","temaColocNovo","temaEnroc","temaAutos","temaResumo","temaTotais"].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display="none";});
+    ["temaDash","temaPesq","temaMQT","temaRC","temaProd","temaColocNovo","temaEnroc","temaAutos","temaResumo","temaTotais"].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display="none";});
     document.getElementById(cfg.tema).style.display="block";
     if(cfg.rcMode){
       state.rcMode=cfg.rcMode;
@@ -1623,6 +1852,8 @@ function init(){
     if(t==="autos")renderAutos();
     if(t==="resumo")renderResumo();
     if(t==="totais")renderTotais();
+    if(t==="dash"){dashBuildFilters();renderDash();}
+    if(t==="pesq"){pesqBuildFilters();renderPesq();}
     if(cfg.enrocId){curEnroc=cfg.enrocId;enrocF={mes:"Todos",semana:"Todas",dia:"",perfil:"Todos"};enrocBuildFilters();renderEnrocRec();renderEnroc();}
     document.getElementById("hdEyebrow").textContent=EB;
     document.getElementById("hdTitle").textContent=cfg.title;
@@ -1680,6 +1911,10 @@ function init(){
 
   render();prodRender();renderMQT();
   document.getElementById("adminBtn").onclick=toggleAdmin;
+  ["dfMes","dfSemana","dfDia","dfPerfil"].forEach(id=>{const el=document.getElementById(id);if(el)el.onchange=e=>{const k={dfMes:"mes",dfSemana:"semana",dfDia:"dia",dfPerfil:"perfil"}[id];dashF[k]=e.target.value;renderDash();};});
+  const dfR=document.getElementById("dfReset");if(dfR)dfR.onclick=()=>{dashF={mes:"Todos",semana:"Todas",dia:"",perfil:"Todos"};dashBuildFilters();renderDash();};
+  ["pqPerfil","pqDia","pqSemana"].forEach(id=>{const el=document.getElementById(id);if(el)el.onchange=e=>{const k={pqPerfil:"perfil",pqDia:"dia",pqSemana:"semana"}[id];pesqF[k]=e.target.value;renderPesq();};});
+  const pqR=document.getElementById("pqReset");if(pqR)pqR.onclick=()=>{pesqF={perfil:"Todos",dia:"",semana:"Todas"};pesqBuildFilters();renderPesq();};
   const efOpen=()=>["secEnrocRec","secEnroc"].forEach(id=>{const s=document.getElementById(id);if(s)s.open=true;});
   document.getElementById("efMes").onchange=e=>{enrocF.mes=e.target.value;efOpen();renderEnrocRec();};
   document.getElementById("efSemana").onchange=e=>{enrocF.semana=e.target.value;efOpen();renderEnrocRec();};
@@ -1690,13 +1925,14 @@ function init(){
   window.addEventListener("resize",()=>{uniformizarCapitulos();alinharTopo();});
 }
 function alinharTopo(){
-  const a=[...document.querySelectorAll("#barAnalise button")];if(a.length<4)return;
+  const a=[...document.querySelectorAll("#barAnalise button")];if(a.length<2)return;
   const w=i=>Math.ceil(a[i].getBoundingClientRect().width);
-  const gap=6;
+  const gap=6,n=a.length;
   const lock=document.getElementById("adminBtn"),theme=document.querySelector(".theme"),ver=document.getElementById("verBtn");
   if(lock)lock.style.width=w(0)+"px";
-  if(ver)ver.style.width=w(3)+"px";
-  if(theme)theme.style.width=(w(1)+gap+w(2))+"px";
+  if(ver)ver.style.width=w(n-1)+"px";
+  let mid=0;for(let i=1;i<n-1;i++)mid+=w(i);mid+=gap*Math.max(0,n-3);
+  if(theme)theme.style.width=mid+"px";
 }
 function uniformizarCapitulos(){
   const bar=document.getElementById("barCapitulos");if(!bar)return;
