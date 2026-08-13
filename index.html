@@ -213,7 +213,7 @@
         <button data-th="dark">Escuro</button>
         <button data-th="system">Sistema</button>
       </div>
-      <div class="badge">v26.08.10.2700</div>
+      <div class="badge">v26.08.10.2715</div>
     </div>
   </header>
 
@@ -760,10 +760,20 @@ const LOTE_20260810=[
 ];
 
 let records=[],seq=0;
+const LOTE_20260812=[
+  {Semana:33,Mes:"2026-08",Data:"2026-08-12",Tipo:"Remoção",SubTipo:"Partidos",Quant:1,Fisc:1,Perfil:"P13"},
+  {Semana:33,Mes:"2026-08",Data:"2026-08-11",Tipo:"Remoção",SubTipo:"Partidos",Quant:6,Fisc:6,Perfil:"P13"},
+  {Semana:33,Mes:"2026-08",Data:"2026-08-11",Tipo:"Remoção",SubTipo:"Partidos",Quant:6,Fisc:6,Perfil:"P14"},
+  {Semana:33,Mes:"2026-08",Data:"2026-08-12",Tipo:"Remoção",SubTipo:"Inteiros",Quant:4,Fisc:4,Perfil:"P13"},
+  {Semana:33,Mes:"2026-08",Data:"2026-08-11",Tipo:"Remoção",SubTipo:"Inteiros",Quant:2,Fisc:2,Perfil:"P13"},
+  {Semana:33,Mes:"2026-08",Data:"2026-08-11",Tipo:"Remoção",SubTipo:"Inteiros",Quant:5,Fisc:5,Perfil:"P14"},
+  {Semana:33,Mes:"2026-08",Data:"2026-08-11",Tipo:"Colocação",SubTipo:"-",Quant:2,Fisc:2,Perfil:"P7"}
+];
 const IMPORTS=[
   {id:"base", recs:SEED_DATA},
   {id:"2026-07-31", recs:LOTE_20260731},
-  {id:"2026-08-10", recs:LOTE_20260810}
+  {id:"2026-08-10", recs:LOTE_20260810},
+  {id:"2026-08-12", recs:LOTE_20260812}
 ];
 const keyOf=r=>r.Data+"|"+r.Tipo+"|"+r.SubTipo+"|"+r.Perfil+"|"+r.Quant;
 /* Correções a registos já existentes (aplicadas uma vez em browsers com dados guardados).
