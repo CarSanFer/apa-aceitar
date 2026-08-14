@@ -245,7 +245,7 @@
           <button class="iconbtn" data-th="dark" title="Escuro"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
           <button class="iconbtn" data-th="system" title="Sistema"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></button>
         </div>
-        <button class="iconbtn" id="verBtn" title="v26.08.10.3000"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></button>
+        <button class="iconbtn" id="verBtn" title="v26.08.10.3045"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></button>
       </div>
     </div>
     <div class="titlerow">
@@ -529,7 +529,7 @@
           <table id="enrocRecTable">
             <thead><tr>
               <th>Dia</th><th>Semana</th><th>Mês</th><th>Perfil</th>
-              <th>Enrocamento (m³)</th><th>Fiscalização</th>
+              <th>Empreiteiro (m³)</th><th>Fiscalização (m³)</th>
             </tr></thead>
             <tbody id="enrocRecBody"></tbody>
           </table>
@@ -545,8 +545,8 @@
           <thead><tr>
             <th>Perfis</th>
             <th>Projeto</th>
-            <th>Ent Exec</th>
-            <th>Fiscaliz</th>
+            <th>MTQ</th>
+            <th>Por Fat</th>
             <th>Desvio</th>
             <th>Desvio %</th>
           </tr></thead>
@@ -929,13 +929,13 @@ const ENROC_RECORDS=[
 ];
 const ENROC_DATA={
   "2.2":{sub:"Coroamento do Manto | 12 a 15 tf",linhas:[
-    {perfis:"P1 a P9",proj:380},
-    {perfis:"P10 e P11",proj:140},
-    {perfis:"P11 a P11",proj:155},
-    {perfis:"P11 a P9",proj:125}
+    {perfis:"P1 a P9",mtq:380,projeto:376.75},
+    {perfis:"P10 e P11",mtq:140,projeto:137},
+    {perfis:"P11 a P11",mtq:155,projeto:150.80},
+    {perfis:"P11 a P9",mtq:125,projeto:120}
   ]},
   "2.3":{sub:"Cabeça \u2192 Talude Sul | 12 a 15 tf",linhas:[
-    {perfis:"P10",proj:700}
+    {perfis:"P10",mtq:700}
   ]},
   "2.4":{sub:"Remoção de Materiais de Qualquer Natureza",linhas:[]},
   "2.5":{sub:"Banqueta | 12 a 15 tf",linhas:[]},
@@ -1021,7 +1021,9 @@ function renderEnrocRec(){
   const recs=enrocFiltered();
   const cnt=document.getElementById("enrocRegCount");if(cnt)cnt.textContent=recs.length?`(${recs.length})`:"";
   if(!recs.length){el.innerHTML='<tr><td colspan="6" class="empty" style="padding:20px">Sem registos.</td></tr>';return;}
-  el.innerHTML=recs.slice().sort((a,b)=>a.Data<b.Data?1:-1).map(r=>{
+  const ordem=(ENROC_DATA[curEnroc]&&ENROC_DATA[curEnroc].linhas?ENROC_DATA[curEnroc].linhas.map(l=>l.perfis):[]);
+  const oidx=p=>{const i=ordem.indexOf(p);return i<0?999:i;};
+  el.innerHTML=recs.slice().sort((a,b)=>oidx(a.Perfil)-oidx(b.Perfil)||(a.Data<b.Data?1:-1)).map(r=>{
     const cls=r.Fisc===r.Enroc?"fisc-ok":"fisc-alt";
     return `<tr><td>${fmtD(r.Data)}</td><td>${isoWeek(r.Data)}</td><td>${mesLabel(mesOf(r.Data))}</td><td>${esc(r.Perfil)}</td><td>${fmtE(r.Enroc)}</td><td><span class="${cls}">${fmtE(r.Fisc)}</span></td></tr>`;
   }).join("");
@@ -1200,22 +1202,22 @@ function renderEnroc(){
   const e=ENROC_DATA[curEnroc];
   if(!e||!e.linhas.length){el.innerHTML='<tr><td colspan="6" class="empty" style="padding:20px">Sem dados.</td></tr>';return;}
   const recs=ENROC_RECORDS.filter(r=>r.cap===curEnroc);
-  const sumBy=(perfil,campo)=>recs.filter(r=>r.Perfil===perfil).reduce((s,r)=>s+(r[campo]||0),0);
-  const hasRec=recs.length>0;
-  let sP=0,sE=0,sF=0;
+  const temReg=recs.length>0;
+  const empBy=p=>recs.filter(r=>r.Perfil===p).reduce((s,r)=>s+(r.Enroc||0),0);
+  const fiscBy=p=>recs.filter(r=>r.Perfil===p).reduce((s,r)=>s+(r.Fisc||0),0);
   const cor=v=>v<0?"#e76f51":v>0?"#4caf72":"inherit";
+  const sp=(v,suf)=>v==null?"&mdash;":`<span style="color:${cor(v)}">${v>0?"+":""}${suf==="%"?fmtN(v,1)+"%":fmtE(v)}</span>`;
+  let sPrj=0,sMtq=0,sEmp=0,sFisc=0,hasPrj=false;
   const rows=e.linhas.map(l=>{
-    const proj=l.proj||0,ent=sumBy(l.perfis,"Enroc"),fisc=sumBy(l.perfis,"Fisc");
-    sP+=proj;sE+=ent;sF+=fisc;
-    const dv=hasRec?fisc-proj:null,pct=(dv!=null&&proj)?dv/proj*100:null;
-    return `<tr><td>${esc(l.perfis)}</td><td >${fmtE(proj)}</td><td >${hasRec?fmtE(ent):"&mdash;"}</td><td >${hasRec?fmtE(fisc):"&mdash;"}</td>`+
-      `<td >${dv==null?"&mdash;":`<span style="color:${cor(dv)}">${dv>0?"+":""}${fmtE(dv)}</span>`}</td>`+
-      `<td >${pct==null?"&mdash;":`<span style="color:${cor(pct)}">${pct>0?"+":""}${fmtN(pct,1)}%</span>`}</td></tr>`;
+    const projeto=l.projeto,mtq=l.mtq||0,emp=empBy(l.perfis),fisc=fiscBy(l.perfis);
+    if(projeto!=null){sPrj+=projeto;hasPrj=true;}sMtq+=mtq;sEmp+=emp;sFisc+=fisc;
+    const saldo=mtq-emp;
+    const desv=temReg?emp-fisc:null;
+    const pct=(desv!=null&&emp)?desv/emp*100:null;
+    return `<tr><td>${esc(l.perfis)}</td><td>${projeto!=null?fmtE(projeto):"&mdash;"}</td><td>${fmtE(mtq)}</td><td>${fmtE(saldo)}</td><td>${sp(desv)}</td><td>${sp(pct,"%")}</td></tr>`;
   }).join("");
-  const dvT=hasRec?sF-sP:null,pctT=(dvT!=null&&sP)?dvT/sP*100:null;
-  el.innerHTML=rows+`<tr class="total"><td>TOTAL</td><td >${fmtE(sP)}</td><td >${hasRec?fmtE(sE):"&mdash;"}</td><td >${hasRec?fmtE(sF):"&mdash;"}</td>`+
-    `<td >${dvT==null?"&mdash;":`<span style="color:${cor(dvT)}">${dvT>0?"+":""}${fmtE(dvT)}</span>`}</td>`+
-    `<td >${pctT==null?"&mdash;":`<span style="color:${cor(pctT)}">${pctT>0?"+":""}${fmtN(pctT,1)}%</span>`}</td></tr>`;
+  const saldoT=sMtq-sEmp,desvT=temReg?sEmp-sFisc:null,pctT=(desvT!=null&&sEmp)?desvT/sEmp*100:null;
+  el.innerHTML=rows+`<tr class="total"><td>TOTAL</td><td>${hasPrj?fmtE(sPrj):"&mdash;"}</td><td>${fmtE(sMtq)}</td><td>${fmtE(saldoT)}</td><td>${sp(desvT)}</td><td>${sp(pctT,"%")}</td></tr>`;
 }
 function renderResumo(){
   const rows=MQT_DATA.filter(a=>!((a.Descricao==="nan"||!a.Descricao)&&a.Total==null)).map(a=>{
