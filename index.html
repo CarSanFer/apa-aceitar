@@ -18,6 +18,7 @@
     --accent:#e08a3c; --accent2:#2f74d0; --field:#ffffff; --fieldtx:#1a2530;
   }
   *{box-sizing:border-box;margin:0;padding:0}
+  html{scrollbar-gutter:stable;overflow-y:scroll}
   body{font-family:var(--font);background:var(--bg);color:var(--txt);line-height:1.45;padding:22px;font-size:14px}
   .wrap{max-width:1240px;margin:0 auto}
   :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
@@ -201,6 +202,8 @@
   .temalabel{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1.2px;font-weight:700;margin-right:2px;min-width:70px}
   .temabar{display:flex;gap:8px;align-items:center;margin:0 0 16px;flex-wrap:wrap}
   .navbtns{display:flex;gap:6px;flex-wrap:wrap;background:none;border:none;padding:0}
+  #barCapitulos .navbtns{flex-wrap:nowrap;gap:5px;overflow-x:auto}
+  #barCapitulos button{font-size:9.5px;padding:4px 7px}
   .temabar button,.navbtns button{background:var(--panel);border:1px solid var(--line);color:var(--txt);font-size:11.5px;font-weight:500;padding:6px 11px;border-radius:7px;cursor:pointer;font-family:inherit;white-space:nowrap}
   .temabar button:hover,.navbtns button:hover{border-color:var(--accent)}
   .temabar button.active,.navbtns button.active{background:var(--accent);border-color:var(--accent);color:#1a1207;font-weight:600}
@@ -242,7 +245,7 @@
           <button class="iconbtn" data-th="dark" title="Escuro"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
           <button class="iconbtn" data-th="system" title="Sistema"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></button>
         </div>
-        <button class="iconbtn" id="verBtn" title="v26.08.10.2915"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></button>
+        <button class="iconbtn" id="verBtn" title="v26.08.10.3000"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></button>
       </div>
     </div>
     <div class="titlerow">
@@ -326,8 +329,6 @@
 
   <!-- ============ BLOCO 1: REMOÇÃO E COLOCAÇÃO ============ -->
   <div id="temaRC" class="tema" style="display:none">
-
-  <div class="kpis" id="kpis"></div>
 
   <div class="filters">
     <div class="fgroup"><span class="flabel">Mês</span><select id="fMes"></select></div>
@@ -416,8 +417,6 @@
 
   <!-- ============ BLOCO 2: PRODUÇÃO DE TETRÁPODES ============ -->
   <div id="temaProd" class="tema" style="display:none">
-
-    <div class="kpis" id="pKpis"></div>
 
     <div class="filters">
       <div class="fgroup"><span class="flabel">Mês</span><select id="pFMes"></select></div>
@@ -1796,11 +1795,11 @@ function prodResumo(){
 }
 
 function prodRender(){
-  prodBuildFilters();prodRenderKPIs();prodRenderTime();prodRenderSemana();prodRenderRecTable();renderCmpProd();
+  prodBuildFilters();prodRenderTime();prodRenderSemana();prodRenderRecTable();renderCmpProd();
 }
 
 function render(){
-  buildPC();buildFilters();renderKPIs();renderRecTable();renderPerfis();renderTime();renderPerfil();renderPerfilSub();renderCmpProjeto();
+  buildPC();buildFilters();renderRecTable();renderPerfis();renderTime();renderPerfil();renderPerfilSub();renderCmpProjeto();
   const fg=document.getElementById("fgRSub");if(fg)fg.style.display=state.rcMode==="Remoção"?"":"none";
   const fn=document.getElementById("fnote");if(fn)fn.textContent="";
 }
