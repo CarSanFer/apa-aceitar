@@ -245,7 +245,7 @@
           <button class="iconbtn" data-th="dark" title="Escuro"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
           <button class="iconbtn" data-th="system" title="Sistema"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></button>
         </div>
-        <button class="iconbtn" id="verBtn" title="v26.08.10.3045"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></button>
+        <button class="iconbtn" id="verBtn" title="v26.08.10.3245"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></button>
       </div>
     </div>
     <div class="titlerow">
@@ -922,10 +922,12 @@ const fmtN=(x,d=0)=>x==null?"":Number(x).toLocaleString("pt-PT",{minimumFraction
 const fmtE=x=>x==null?"":Number(x).toLocaleString("pt-PT",{minimumFractionDigits:2,maximumFractionDigits:2,useGrouping:"always"});
 const fmtA=x=>x==null?"":Number(x).toLocaleString("pt-PT",{maximumFractionDigits:2,useGrouping:"always"});
 const ENROC_RECORDS=[
-  {cap:"2.2",Data:"2026-05-29",Perfil:"P1 a P9",Enroc:190,Fisc:190},
-  {cap:"2.2",Data:"2026-05-29",Perfil:"P10 e P11",Enroc:70,Fisc:70},
-  {cap:"2.2",Data:"2026-05-29",Perfil:"P11 a P11",Enroc:80,Fisc:80},
-  {cap:"2.2",Data:"2026-05-29",Perfil:"P11 a P9",Enroc:60,Fisc:60}
+  {cap:"2.2",Data:"2026-05-29",Perfil:"P1 a P9",Enroc:190,Fisc:376.754},
+  {cap:"2.2",Data:"2026-05-29",Perfil:"P10 e P11",Enroc:70,Fisc:137},
+  {cap:"2.2",Data:"2026-05-29",Perfil:"P11 a P11",Enroc:80,Fisc:150.8},
+  {cap:"2.2",Data:"2026-05-29",Perfil:"P11 a P9",Enroc:60,Fisc:120},
+  {cap:"2.5",Data:"2026-07-27",Perfil:"Total",Enroc:422.43,Fisc:422.43},
+  {cap:"2.9",Data:"2026-07-27",Perfil:"P10",Enroc:500,Fisc:390.4}
 ];
 const ENROC_DATA={
   "2.2":{sub:"Coroamento do Manto | 12 a 15 tf",linhas:[
@@ -935,14 +937,29 @@ const ENROC_DATA={
     {perfis:"P11 a P9",mtq:125,projeto:120}
   ]},
   "2.3":{sub:"Cabeça \u2192 Talude Sul | 12 a 15 tf",linhas:[
-    {perfis:"P10",mtq:700}
+    {perfis:"P10",mtq:700,projeto:617.20}
   ]},
-  "2.4":{sub:"Remoção de Materiais de Qualquer Natureza",linhas:[]},
-  "2.5":{sub:"Banqueta | 12 a 15 tf",linhas:[]},
-  "2.7":{sub:"Transporte e Depósito Tetrápodes Recuperados e não Utilizados",linhas:[]},
-  "2.9":{sub:"Submanto | 1 a 4 tf",linhas:[]},
-  "2.10":{sub:"Talude Norte \u2192 Cabeça | 12 a 15 tf",linhas:[]},
-  "2.11":{sub:"Fornecimento, Transporte e Colocação de Betão",linhas:[]}
+  "2.4":{sub:"Remoção de Materiais de Qualquer Natureza",linhas:[
+    {perfis:"P2 a P8",mtq:770,projeto:751.25},
+    {perfis:"P10",mtq:800,projeto:797},
+    {perfis:"P13",mtq:1430,projeto:1418.53}
+  ]},
+  "2.5":{sub:"Banqueta | 12 a 15 tf",linhas:[
+    {perfis:"Total",mtq:1900,projeto:1807.70}
+  ]},
+  "2.7":{sub:"Transporte e Depósito Tetrápodes Recuperados e não Utilizados",linhas:[
+    {perfis:"Tetrápodes Inteiros",mtq:68,projeto:268.42},
+    {perfis:"Tetrápodes Utilizados na Reconstituição",mtq:40,projeto:160.64}
+  ]},
+  "2.9":{sub:"Submanto | 1 a 4 tf",linhas:[
+    {perfis:"P10",mtq:500,projeto:390.40}
+  ]},
+  "2.10":{sub:"Talude Norte \u2192 Cabeça | 12 a 15 tf",linhas:[
+    {perfis:"Total",mtq:1200,projeto:1042.60}
+  ]},
+  "2.11":{sub:"Fornecimento, Transporte e Colocação de Betão",linhas:[
+    {perfis:"Total",mtq:50,projeto:48}
+  ]}
 };
 let curEnroc="2.2";
 const PROJ_REMOCAO={"P1": 19, "P2": 8, "P3": 8, "P4": 5, "P5": 7, "P6": 6, "P7": 7, "P8": 5, "P9": 8, "P10": 37, "P11 N": 58, "P11 S": 50, "P12": 55, "P13": 52, "P14": 59};
@@ -1212,12 +1229,13 @@ function renderEnroc(){
     const projeto=l.projeto,mtq=l.mtq||0,emp=empBy(l.perfis),fisc=fiscBy(l.perfis);
     if(projeto!=null){sPrj+=projeto;hasPrj=true;}sMtq+=mtq;sEmp+=emp;sFisc+=fisc;
     const saldo=mtq-emp;
-    const desv=temReg?emp-fisc:null;
-    const pct=(desv!=null&&emp)?desv/emp*100:null;
+    const desv=temReg?fisc-emp:null;
+    const pct=(desv!=null&&fisc)?desv/fisc*100:null;
     return `<tr><td>${esc(l.perfis)}</td><td>${projeto!=null?fmtE(projeto):"&mdash;"}</td><td>${fmtE(mtq)}</td><td>${fmtE(saldo)}</td><td>${sp(desv)}</td><td>${sp(pct,"%")}</td></tr>`;
   }).join("");
-  const saldoT=sMtq-sEmp,desvT=temReg?sEmp-sFisc:null,pctT=(desvT!=null&&sEmp)?desvT/sEmp*100:null;
-  el.innerHTML=rows+`<tr class="total"><td>TOTAL</td><td>${hasPrj?fmtE(sPrj):"&mdash;"}</td><td>${fmtE(sMtq)}</td><td>${fmtE(saldoT)}</td><td>${sp(desvT)}</td><td>${sp(pctT,"%")}</td></tr>`;
+  const saldoT=sMtq-sEmp,desvT=temReg?sFisc-sEmp:null,pctT=(desvT!=null&&sFisc)?desvT/sFisc*100:null;
+  const totalRow=e.linhas.length>1?`<tr class="total"><td>TOTAL</td><td>${hasPrj?fmtE(sPrj):"&mdash;"}</td><td>${fmtE(sMtq)}</td><td>${fmtE(saldoT)}</td><td>${sp(desvT)}</td><td>${sp(pctT,"%")}</td></tr>`:"";
+  el.innerHTML=rows+totalRow;
 }
 function renderResumo(){
   const rows=MQT_DATA.filter(a=>!((a.Descricao==="nan"||!a.Descricao)&&a.Total==null)).map(a=>{
