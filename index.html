@@ -147,7 +147,7 @@
   .pqtable th{font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);font-weight:700}
   .pqtable tr.tot td{border-bottom:none;border-top:2px solid var(--accent);font-weight:800}
   #fatTable th,#fatTable td{text-align:center;padding:7px 10px;font-variant-numeric:tabular-nums}
-  #fatTable td .rn{display:inline-block;text-align:right;min-width:5.2em}
+  #fatTable td .rn{display:inline-block;text-align:right}
   #fatTable tr.total td{border-top:2px solid var(--accent);font-weight:800}
   .obsbody p{margin:0 0 10px;font-size:13px;line-height:1.55;color:var(--txt)}
   .obsbody p:last-child{margin-bottom:0}
@@ -172,7 +172,7 @@
   #cmpTable td,#cmp282Table td,#cmpProdTable td{padding:7px 10px}
   #cmpTable td.id,#cmp282Table td.id,#cmpProdTable td.id{font-weight:700;white-space:nowrap}
   #cmpTable td.num,#cmp282Table td.num,#cmpProdTable td.num,#enrocTable td.num,#autosTable td.num,#totaisTable td.num,#mqtTable td.num,#resumoTable td.num{text-align:center;font-variant-numeric:tabular-nums;white-space:nowrap}
-  .mqtwrap td.num .rn{display:inline-block;text-align:right;min-width:4.2em}
+  .mqtwrap td.num .rn{display:inline-block;text-align:right}
   #cmpTable tr.total td,#cmp282Table tr.total td,#cmpProdTable tr.total td{border-top:2px solid var(--accent);font-weight:800}
   #cmpTable td:first-child,#cmp282Table td:first-child,#cmpProdTable td:first-child{text-align:left}
   .autoswrap{overflow-x:auto;overflow-y:hidden}
@@ -249,7 +249,7 @@
           <button class="iconbtn" data-th="dark" title="Escuro"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
           <button class="iconbtn" data-th="system" title="Sistema"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></button>
         </div>
-        <button class="iconbtn" id="verBtn" title="v26.08.10.3645"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></button>
+        <button class="iconbtn" id="verBtn" title="v26.08.10.3715"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></button>
       </div>
     </div>
     <div class="titlerow">
@@ -1549,14 +1549,20 @@ function renderFaturacao(){
   rows.push(`<tr class="total"><td>TOTAL</td><td></td><td>${rn(fmtN(mtq))}</td><td>${rn(fmtN(exec))}</td><td>${rn(fmtN(fat))}</td><td>${desvCell(exec,fat,true)}</td><td>${rn(fmtN(mtq-fat))}</td></tr>`);
   el.innerHTML=rows.join("");
 }
+function alignRn(root){
+  if(!root)return;
+  const rows=[...root.querySelectorAll("tr")],colMax={};
+  rows.forEach(tr=>[...tr.children].forEach((td,i)=>{const rn=td.querySelector?td.querySelector(".rn"):null;if(rn){const len=(rn.textContent||"").trim().length;if(len>(colMax[i]||0))colMax[i]=len;}}));
+  rows.forEach(tr=>[...tr.children].forEach((td,i)=>{const rn=td.querySelector?td.querySelector(".rn"):null;if(rn&&colMax[i])rn.style.width=colMax[i]+"ch";}));
+}
 function wrapNums(root){
   if(!root)return;
   root.querySelectorAll("td.num").forEach(td=>{
-    if(td.querySelector(".rn"))return; // já processada nesta renderização
+    if(td.querySelector(".rn"))return;
     const inner=td.innerHTML.trim();
-    if(inner==="")return;
-    td.innerHTML=`<span class="rn">${inner}</span>`;
+    if(inner!=="")td.innerHTML=`<span class="rn">${inner}</span>`;
   });
+  alignRn(root);
 }
 function renderCmpProjeto(){
   const rem=state.rcMode==="Remoção";
