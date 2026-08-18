@@ -250,7 +250,7 @@
           <button class="iconbtn" data-th="dark" title="Escuro"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
           <button class="iconbtn" data-th="system" title="Sistema"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></button>
         </div>
-        <button class="iconbtn" id="verBtn" title="v26.08.10.3445"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></button>
+        <button class="iconbtn" id="verBtn" title="v26.08.10.3515"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></button>
       </div>
     </div>
     <div class="titlerow">
@@ -303,6 +303,10 @@
     </div>
     <div class="card"><h2 id="dashDistTit">Distribuição por Perfil</h2><div id="dashDist"></div></div>
     <div class="card"><h2>Enrocamentos — Fiscalizado vs Projeto</h2><div id="dashEnroc"></div></div>
+    <div class="card"><h2>Remoção — Evolução Acumulada</h2><div class="chartbox" id="dashChartTime"></div></div>
+    <div class="card"><h2>Remoção — Inteiros e Partidos por Perfil</h2><div class="chartbox" id="dashChartPerfilSub"></div></div>
+    <div class="card"><h2>Produção — Evolução Acumulada</h2><div class="chartbox" id="dashPChartTime"></div></div>
+    <div class="card"><h2>Produção por Semana</h2><div id="dashPChartSemana"></div></div>
   </div>
 
   <!-- ============ SECÇÃO: 2. MQT / PROJ ============ -->
@@ -381,29 +385,6 @@
     <div class="secbody"><div class="perfis" id="perfis"></div></div>
   </details>
 
-  <details class="sec" id="secEvol">
-    <summary>Evolução Temporal</summary>
-    <div class="secbody">
-      <div class="toggle">
-        <button class="btn" data-mode="month">Mês</button>
-        <button class="btn" data-mode="week">Semana</button>
-        <button class="btn" data-mode="day">Dia</button>
-        <button class="btn active" data-mode="cum">Acumulado</button>
-      </div>
-      <div class="chartbox" id="chartTime"></div>
-    </div>
-  </details>
-
-  <details class="sec" id="secDistTotal">
-    <summary>Distribuição por Perfil - Total</summary>
-    <div class="secbody"><div class="chartbox" id="chartPerfil"></div></div>
-  </details>
-
-  <details class="sec" id="cardPerfilSub">
-    <summary>Distribuição por Perfil - Inteiros e Partidos</summary>
-    <div class="secbody"><div class="chartbox" id="chartPerfilSub"></div></div>
-  </details>
-
   <details class="sec" id="cmpProjeto">
     <summary>Comparação Projeto</summary>
     <div class="secbody">
@@ -432,7 +413,8 @@
             <th>Mês</th>
             <th>MTQ</th>
             <th>Executado</th>
-            <th>Desvio</th>
+            <th>Faturado</th>
+            <th>Por faturar</th>
           </tr></thead>
           <tbody id="fatBody"></tbody>
         </table>
@@ -477,24 +459,6 @@
           </table>
         </div>
       </div>
-    </details>
-
-    <details class="sec" id="secEvolProd">
-      <summary>Evolução da Produção</summary>
-      <div class="secbody">
-        <div class="toggle">
-          <button class="btn" data-pmode="month">Mês</button>
-          <button class="btn" data-pmode="week">Semana</button>
-          <button class="btn" data-pmode="day">Dia</button>
-          <button class="btn active" data-pmode="cum">Acumulado</button>
-        </div>
-        <div class="chartbox" id="pChartTime"></div>
-      </div>
-    </details>
-
-    <details class="sec" id="secProdSemana">
-      <summary>Produção por Semana</summary>
-      <div class="secbody"><div id="pChartSemana"></div></div>
     </details>
 
     <details class="sec" id="cmpProd">
@@ -1220,6 +1184,10 @@ function renderDash(){
   if(en)en.innerHTML=rows.length?rows.map(x=>
     dbar(x.cap+" proj",x.proj,mE,"var(--faint)")+dbar(x.cap+" fisc",x.fisc,mE,"var(--accent2)")+'<div class="dsep"></div>'
   ).join(""):'<div class="empty" style="padding:16px">Sem enrocamentos com dados.</div>';
+  renderTime(dashRec("Remoção"),"dashChartTime","cum");
+  renderPerfilSub(dashRec("Remoção"),"dashChartPerfilSub");
+  prodRenderTime(dashProd(),"dashPChartTime","cum");
+  prodRenderSemana(dashProd(),"dashPChartSemana");
 }
 let pesqF={mes:"Todos",semana:"Todas",dia:"",perfil:"Todos",zona:"Todas"};
 const PESQ_CAPS=[
@@ -1498,14 +1466,13 @@ function saveEdit(id){
 function validar(id){const r=records.find(x=>x.id===id);if(!r)return;r.Fisc=r.Quant;saveRecords();render();}
 function removeRec(id){if(!confirm("Eliminar este registo?"))return;records=records.filter(r=>r.id!==id);saveRecords();render();}
 
-function renderTime(){
-  const d=filtered();
+function renderTime(d,elId,mode){
   let labels,vals;
-  if(state.timeMode==="month"){
+  if(mode==="month"){
     const meses=[...new Set(d.map(r=>r.Mes))].sort();
     labels=meses.map(mesLabel);
     vals=meses.map(m=>sum(d.filter(r=>r.Mes===m).map(r=>r.Quant)));
-  }else if(state.timeMode==="week"){
+  }else if(mode==="week"){
     const sems=[...new Set(d.map(r=>r.Semana))].sort((a,b)=>a-b);
     labels=sems.map(s=>"S"+s);
     vals=sems.map(s=>sum(d.filter(r=>r.Semana===s).map(r=>r.Quant)));
@@ -1513,7 +1480,7 @@ function renderTime(){
     const dias=[...new Set(d.map(r=>r.Data))].sort();
     labels=dias.map(fmtD);
     vals=dias.map(dt=>sum(d.filter(r=>r.Data===dt).map(r=>r.Quant)));
-    if(state.timeMode==="cum"){let c=0;vals=vals.map(v=>c+=v);}
+    if(mode==="cum"){let c=0;vals=vals.map(v=>c+=v);}
   }
   const n=labels.length;
   const W=1400,H=460,pl=54,pr=28,pt=30,pb=54,iw=W-pl-pr,ih=H-pt-pb,max=Math.max(...vals,1);
@@ -1529,7 +1496,7 @@ function renderTime(){
     labels.forEach((lb,i)=>{if(i%lstep===0||i===n-1)g+=`<text x="${x(i)}" y="${H-18}" text-anchor="middle" class="glabel">${lb}</text>`;});
   }
   g+=`</svg>`;
-  document.getElementById("chartTime").innerHTML=n?g:`<div class="empty">Sem dados.</div>`;
+  document.getElementById(elId).innerHTML=n?g:`<div class="empty">Sem dados.</div>`;
 }
 function renderCmpProd(){
   const el=document.getElementById("cmpProdBody");if(!el)return;
@@ -1562,13 +1529,13 @@ function renderFaturacao(){
   const a=AUTOS_DATA.find(x=>x.Id==="2.1");
   const mtq=a&&a.Quant!=null?a.Quant:0;
   const fmtDataAM=iso=>{const p=iso.split("-");return p[2]+"/"+p[1]+"/"+p[0];};
-  let total=0;const rows=[];
+  let exec=0,fat=0;const rows=[];
   (a?a.AM:[]).forEach((v,i)=>{
     if(v==null)return;
-    total+=v;
-    rows.push(`<tr><td>AM ${String(i+1).padStart(2,"0")}</td><td>${fmtDataAM(AM_DATAS[i])}</td><td></td><td>${fmtN(v)}</td><td></td></tr>`);
+    exec+=v;fat+=v;
+    rows.push(`<tr><td>AM ${String(i+1).padStart(2,"0")}</td><td>${fmtDataAM(AM_DATAS[i])}</td><td></td><td>${fmtN(v)}</td><td>${fmtN(fat)}</td><td>${fmtN(mtq-fat)}</td></tr>`);
   });
-  rows.push(`<tr class="total"><td>TOTAL</td><td></td><td>${fmtN(mtq)}</td><td>${fmtN(total)}</td><td>${fmtN(mtq-total)}</td></tr>`);
+  rows.push(`<tr class="total"><td>TOTAL</td><td></td><td>${fmtN(mtq)}</td><td>${fmtN(exec)}</td><td>${fmtN(fat)}</td><td>${fmtN(mtq-fat)}</td></tr>`);
   el.innerHTML=rows.join("");
 }
 function renderCmpProjeto(){
@@ -1628,9 +1595,9 @@ function renderSemana(){
   ps.forEach((p,i)=>{const lx=pl+i*120;g+=`<rect x="${lx}" y="${H-18}" width="12" height="12" rx="2" fill="${PC[p]}"/><text x="${lx+17}" y="${H-8}" class="glabel">${p}</text>`;});
   g+=`</svg>`;document.getElementById("chartSemana").innerHTML=sems.length?g:`<div class="empty">Sem dados.</div>`;
 }
-function renderPerfilSub(){
-  const el=document.getElementById("chartPerfilSub");if(!el)return;
-  const d=filtered(),ps=[...new Set(d.map(r=>r.Perfil))].sort(pcmp);
+function renderPerfilSub(d,elId){
+  const el=document.getElementById(elId);if(!el)return;
+  const ps=[...new Set(d.map(r=>r.Perfil))].sort(pcmp);
   const CI="#4895ef",CP="#f07b3f"; // Inteiros / Partidos
   const data=ps.map(p=>({p,
     int:sum(d.filter(r=>r.Perfil===p&&r.SubTipo==="Inteiros").map(r=>r.Quant)),
@@ -1670,7 +1637,7 @@ function renderPerfis(){
       <table><thead>${head}</thead><tbody>${body}</tbody></table></div>`;
   }).join("");
 }
-function toggleHL(p){state.perfil=state.perfil===p?"Todos":p;if(state.perfil!=="Todos")["secRec","secEvol","secDistTotal","cardPerfilSub"].forEach(id=>{const s=document.getElementById(id);if(s)s.open=true;});render();}
+function toggleHL(p){state.perfil=state.perfil===p?"Todos":p;if(state.perfil!=="Todos")["secRec"].forEach(id=>{const s=document.getElementById(id);if(s)s.open=true;});render();}
 
 /* ================= BLOCO 2: PRODUÇÃO ================= */
 const SEED_PROD=[
@@ -1802,18 +1769,17 @@ function prodRenderKPIs(){
 }
 
 /* Evolução (dia/acumulado/semana) */
-function prodRenderTime(){
-  const d=prodFiltered();
+function prodRenderTime(d,elId,mode){
   let labels,vals;
-  if(pstate.timeMode==="month"){
+  if(mode==="month"){
     const meses=[...new Set(d.map(r=>r.Mes))].sort();
     labels=meses.map(mesLabel);vals=meses.map(m=>sum(d.filter(r=>r.Mes===m).map(r=>r.Prod)));
-  }else if(pstate.timeMode==="week"){
+  }else if(mode==="week"){
     const sems=[...new Set(d.map(r=>r.Semana))].sort((a,b)=>a-b);
     labels=sems.map(s=>"S"+s);vals=sems.map(s=>sum(d.filter(r=>r.Semana===s).map(r=>r.Prod)));
   }else{
     labels=d.map(r=>fmtD(r.Data));vals=d.map(r=>r.Prod);
-    if(pstate.timeMode==="cum"){let c=0;vals=vals.map(v=>c+=v);}
+    if(mode==="cum"){let c=0;vals=vals.map(v=>c+=v);}
   }
   const n=labels.length,W=1400,H=460,pl=54,pr=28,pt=30,pb=54,iw=W-pl-pr,ih=H-pt-pb,max=Math.max(...vals,1);
   const x=i=>n<2?pl+iw/2:pl+(i/(n-1))*iw,y=v=>pt+ih-(v/max)*ih;
@@ -1828,7 +1794,7 @@ function prodRenderTime(){
     labels.forEach((lb,i)=>{if(i%lstep===0||i===n-1)g+=`<text x="${x(i)}" y="${H-18}" text-anchor="middle" class="glabel">${lb}</text>`;});
   }
   g+=`</svg>`;
-  document.getElementById("pChartTime").innerHTML=n?g:`<div class="empty">Sem dados.</div>`;
+  document.getElementById(elId).innerHTML=n?g:`<div class="empty">Sem dados.</div>`;
 }
 
 /* Produção vs Meta acumulado (2 linhas) */
@@ -1856,8 +1822,8 @@ function prodRenderMeta(){
 }
 
 /* Produção por semana (barras) */
-function prodRenderSemana(){
-  const d=prodFiltered(),sems=[...new Set(d.map(r=>r.Semana))].sort((a,b)=>a-b);
+function prodRenderSemana(d,elId){
+  const sems=[...new Set(d.map(r=>r.Semana))].sort((a,b)=>a-b);
   const tot=sems.map(s=>sum(d.filter(r=>r.Semana===s).map(r=>r.Prod)));
   const metaSem=sems.map(s=>sum(d.filter(r=>r.Semana===s).map(r=>r.Rend)));
   const metaMedia=metaSem.length?metaSem.reduce((a,b)=>a+b,0)/metaSem.length:0;
@@ -1875,7 +1841,7 @@ function prodRenderSemana(){
     g+=`<line x1="${pl}" y1="${my}" x2="${W-pr}" y2="${my}" stroke="#e76f51" stroke-width="2.5" stroke-dasharray="8 5"/>`;
     g+=`<text x="${W-pr}" y="${my-7}" text-anchor="end" class="glabel" style="fill:#e76f51;font-weight:700">Meta ${metaMedia.toFixed(1).replace(".",",")}/sem.</text>`;}
   g+=`</svg>`;
-  document.getElementById("pChartSemana").innerHTML=sems.length?g:`<div class="empty">Sem dados.</div>`;
+  document.getElementById(elId).innerHTML=sems.length?g:`<div class="empty">Sem dados.</div>`;
 }
 
 /* Tabela de registos (com Desvio calculado) */
@@ -1951,11 +1917,11 @@ function prodResumo(){
 }
 
 function prodRender(){
-  prodBuildFilters();prodRenderTime();prodRenderSemana();prodRenderRecTable();renderCmpProd();
+  prodBuildFilters();prodRenderRecTable();renderCmpProd();
 }
 
 function render(){
-  buildPC();buildFilters();renderRecTable();renderPerfis();renderTime();renderPerfil();renderPerfilSub();renderCmpProjeto();renderFaturacao();
+  buildPC();buildFilters();renderRecTable();renderPerfis();renderCmpProjeto();renderFaturacao();
   const fg=document.getElementById("fgRSub");if(fg)fg.style.display=state.rcMode==="Remoção"?"":"none";
   const fn=document.getElementById("fnote");if(fn)fn.textContent="";
 }
@@ -2014,16 +1980,15 @@ function init(){
     document.getElementById("hdTitle").textContent=cfg.title;
     document.getElementById("hdSub").textContent=cfg.sub;
   });
-  const openRec=()=>{["secRec","secEvol","secDistTotal","cardPerfilSub"].forEach(id=>{const s=document.getElementById(id);if(s)s.open=true;});};
+  const openRec=()=>{["secRec"].forEach(id=>{const s=document.getElementById(id);if(s)s.open=true;});};
   document.getElementById("fMes").onchange=e=>{state.mes=e.target.value;openRec();render();};
   document.getElementById("fSemana").onchange=e=>{state.semana=e.target.value;openRec();render();};
   document.getElementById("fSub").onchange=e=>{state.sub=e.target.value;openRec();render();};
   document.getElementById("fPerfil").onchange=e=>{state.perfil=e.target.value;openRec();render();};
   document.getElementById("fZona").onchange=e=>{state.zona=e.target.value;openRec();render();};
   document.getElementById("fDia").onchange=e=>{state.dia=e.target.value;openRec();render();};
-  document.querySelectorAll("[data-mode]").forEach(b=>b.onclick=()=>{state.timeMode=b.dataset.mode;document.querySelectorAll("[data-mode]").forEach(x=>x.classList.toggle("active",x===b));renderTime();});
   document.querySelectorAll("#recTable th[data-k]").forEach(th=>th.onclick=()=>{const k=th.dataset.k;if(state.sortK===k)state.sortDir*=-1;else{state.sortK=k;state.sortDir=1;}renderRecTable();});
-  document.getElementById("reset").onclick=()=>{state=Object.assign({},state,{mes:"Todos",semana:"Todas",dia:"",sub:"Todos",perfil:"Todos",zona:"Todas",highlight:null,sortK:null,editId:null});["secRec","secEvol","secDistTotal","cardPerfilSub"].forEach(id=>{const s=document.getElementById(id);if(s)s.open=false;});render();};
+  document.getElementById("reset").onclick=()=>{state=Object.assign({},state,{mes:"Todos",semana:"Todas",dia:"",sub:"Todos",perfil:"Todos",zona:"Todas",highlight:null,sortK:null,editId:null});["secRec"].forEach(id=>{const s=document.getElementById(id);if(s)s.open=false;});render();};
   document.getElementById("csv").onclick=()=>{
     const d=filtered(),head="Data,Semana,Mes,Sub Tipo,Perfil,Quant,Fisc";
     const body=d.map(r=>`${r.Data},${r.Semana},${r.Mes},${r.SubTipo},${r.Perfil},${r.Quant},${r.Fisc==null?"":r.Fisc}`).join("\n");
@@ -2042,14 +2007,13 @@ function init(){
   };
 
   /* ===== Handlers Bloco 2: Produção ===== */
-  const pOpenRec=()=>{["pSecRec","secEvolProd","secProdSemana"].forEach(id=>{const s=document.getElementById(id);if(s)s.open=true;});};
+  const pOpenRec=()=>{["pSecRec"].forEach(id=>{const s=document.getElementById(id);if(s)s.open=true;});};
   document.getElementById("pFMes").onchange=e=>{pstate.mes=e.target.value;pOpenRec();prodRender();};
   document.getElementById("pFSemana").onchange=e=>{pstate.semana=e.target.value;pOpenRec();prodRender();};
   document.getElementById("pFDia").onchange=e=>{pstate.dia=e.target.value;pOpenRec();prodRender();};
   {const pz=document.getElementById("pFZona");if(pz)pz.onchange=e=>{pstate.zona=e.target.value;pOpenRec();prodRender();};}
-  document.querySelectorAll("[data-pmode]").forEach(b=>b.onclick=()=>{pstate.timeMode=b.dataset.pmode;document.querySelectorAll("[data-pmode]").forEach(x=>x.classList.toggle("active",x===b));prodRenderTime();});
   document.querySelectorAll("#pRecTable th[data-k]").forEach(th=>th.onclick=()=>{const k=th.dataset.k;if(pstate.sortK===k)pstate.sortDir*=-1;else{pstate.sortK=k;pstate.sortDir=1;}prodRenderRecTable();});
-  document.getElementById("pReset").onclick=()=>{pstate=Object.assign({},pstate,{mes:"Todos",semana:"Todas",dia:"",zona:"Todas",sortK:null,editId:null});["pSecRec","secEvolProd","secProdSemana"].forEach(id=>{const s=document.getElementById(id);if(s)s.open=false;});prodRender();};
+  document.getElementById("pReset").onclick=()=>{pstate=Object.assign({},pstate,{mes:"Todos",semana:"Todas",dia:"",zona:"Todas",sortK:null,editId:null});["pSecRec"].forEach(id=>{const s=document.getElementById(id);if(s)s.open=false;});prodRender();};
   const totC=document.getElementById("totCutoff");
   if(totC){totC.onchange=e=>{cutoff=e.target.value||null;renderTotais();};}
   document.getElementById("pCsv").onclick=()=>{
