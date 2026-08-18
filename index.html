@@ -151,6 +151,9 @@
   #enrocFatTable th,#enrocFatTable td{text-align:center;padding:7px 10px;font-variant-numeric:tabular-nums}
   #enrocFatTable tr.total td{border-top:2px solid var(--accent);font-weight:800}
   #enrocFatTable td .rn{display:inline-block;text-align:right}
+  #fatProdTable th,#fatProdTable td,#fat282Table th,#fat282Table td{text-align:center;padding:7px 10px;font-variant-numeric:tabular-nums}
+  #fatProdTable tr.total td,#fat282Table tr.total td{border-top:2px solid var(--accent);font-weight:800}
+  #fatProdTable td .rn,#fat282Table td .rn{display:inline-block;text-align:right}
   #fatTable tr.total td{border-top:2px solid var(--accent);font-weight:800}
   .obsbody p{margin:0 0 10px;font-size:13px;line-height:1.55;color:var(--txt)}
   .obsbody p:last-child{margin-bottom:0}
@@ -252,7 +255,7 @@
           <button class="iconbtn" data-th="dark" title="Escuro"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
           <button class="iconbtn" data-th="system" title="Sistema"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></button>
         </div>
-        <button class="iconbtn" id="verBtn" title="v26.08.10.3730"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></button>
+        <button class="iconbtn" id="verBtn" title="v26.08.10.3745"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></button>
       </div>
     </div>
     <div class="titlerow">
@@ -483,6 +486,13 @@
       </div>
     </details>
 
+    <details class="sec" id="secFatProd">
+      <summary>Faturação (Autos de Medição)</summary>
+      <div class="secbody"><div class="mqtwrap">
+        <table id="fatProdTable"><thead><tr><th>AM</th><th>Mês</th><th>MTQ</th><th>Executado</th><th>Faturado</th><th>Desvio</th><th>Por faturar</th></tr></thead><tbody id="fatProdBody"></tbody></table>
+      </div></div>
+    </details>
+
   </div><!-- /temaProd -->
 
   <!-- ============ 2.8.2 COLOCAÇÃO DE TETRÁPODES NOVOS ============ -->
@@ -504,6 +514,13 @@
         </table>
       </div>
       </div>
+    </details>
+
+    <details class="sec" id="secFat282">
+      <summary>Faturação (Autos de Medição)</summary>
+      <div class="secbody"><div class="mqtwrap">
+        <table id="fat282Table"><thead><tr><th>AM</th><th>Mês</th><th>MTQ</th><th>Executado</th><th>Faturado</th><th>Desvio</th><th>Por faturar</th></tr></thead><tbody id="fat282Body"></tbody></table>
+      </div></div>
     </details>
   </div><!-- /temaColocNovo -->
 
@@ -1095,29 +1112,9 @@ function renderEnrocFat(){
   const a=AUTOS_DATA.find(x=>x.Id===curEnroc);
   const recs=ENROC_RECORDS.filter(r=>r.cap===curEnroc);
   const temAutos=a&&a.AM&&a.AM.some(v=>v!=null);
-  if(!temAutos||!recs.length){det.style.display="none";return;}
+  if(!temAutos&&!recs.length){det.style.display="none";return;}
   det.style.display="";
-  const el=document.getElementById("enrocFatBody");if(!el)return;
-  const mtq=a.Quant!=null?a.Quant:0;
-  const fmtDataAM=iso=>{const p=iso.split("-");return p[2]+"/"+p[1]+"/"+p[0];};
-  const rn=v=>`<span class="rn">${v}</span>`;
-  const cor=v=>v<0?"#e76f51":v>0?"#4caf72":"inherit";
-  const desvCell=(e,f)=>{const d=f-e;return `<span class="rn" style="color:${cor(d)}">${d>0?"+":""}${fmtE(d)}</span>`;};
-  const fatByMes={};
-  a.AM.forEach((v,i)=>{if(v==null)return;fatByMes[mesOf(AM_DATAS[i])]={am:i+1,data:AM_DATAS[i],val:v};});
-  const execByMes={};
-  recs.forEach(r=>{const m=mesOf(r.Data);execByMes[m]=(execByMes[m]||0)+(r.Fisc||0);});
-  const meses=[...new Set([...Object.keys(fatByMes),...Object.keys(execByMes)])].sort();
-  let exec=0,fat=0;const rows=[];
-  meses.forEach(mes=>{
-    const fF=fatByMes[mes],e=execByMes[mes]||0;
-    exec+=e;fat+=(fF?fF.val:0);
-    const amLbl=fF?`AM ${String(fF.am).padStart(2,"0")}`:"&mdash;";
-    const mesLbl=fF?fmtDataAM(fF.data):mesLabel(mes);
-    rows.push(`<tr><td>${amLbl}</td><td>${mesLbl}</td><td></td><td>${e?rn(fmtE(e)):"&mdash;"}</td><td>${fF?rn(fmtE(fF.val)):"&mdash;"}</td><td>${desvCell(e,fF?fF.val:0)}</td><td>${rn(fmtE(mtq-fat))}</td></tr>`);
-  });
-  rows.push(`<tr class="total"><td>TOTAL</td><td></td><td>${rn(fmtE(mtq))}</td><td>${rn(fmtE(exec))}</td><td>${rn(fmtE(fat))}</td><td>${desvCell(exec,fat)}</td><td>${rn(fmtE(mtq-fat))}</td></tr>`);
-  el.innerHTML=rows.join("");
+  document.getElementById("enrocFatBody").innerHTML=fatTableRows(a,fatExecByMes(recs,"Fisc"),fmtE);
   alignRn(document.getElementById("enrocFatTable"));
 }
 function renderEnrocObs(){
@@ -1565,33 +1562,6 @@ function renderCmp282(){
   el.innerHTML=rows+`<tr class="total"><td>TOTAL</td><td class="num">${fmtN(sP)}</td><td class="num">${sC?fmtN(sC):"&mdash;"}</td><td class="num"><span style="color:${cor(dvT)}">${dvT>0?"+":""}${fmtN(dvT)}</span></td><td class="num">${pctT==null?"&mdash;":`<span style="color:${cor(pctT)}">${pctT>0?"+":""}${fmtN(pctT,1)}%</span>`}</td></tr>`;
 }
 const AM_DATAS=["2025-12-30","2026-01-30","2026-02-27","2026-03-30","2026-04-29","2026-05-29","2026-06-30","2026-07-27"];
-function renderFaturacao(){
-  const det=document.getElementById("secFaturacao");if(!det)return;
-  if(state.rcMode!=="Remoção"){det.style.display="none";return;}
-  det.style.display="";
-  const el=document.getElementById("fatBody");if(!el)return;
-  const a=AUTOS_DATA.find(x=>x.Id==="2.1");
-  const mtq=a&&a.Quant!=null?a.Quant:0;
-  const fmtDataAM=iso=>{const p=iso.split("-");return p[2]+"/"+p[1]+"/"+p[0];};
-  const rn=v=>`<span class="rn">${v}</span>`;
-  const cor=v=>v<0?"#e76f51":v>0?"#4caf72":"inherit";
-  const desvCell=(e,f,has)=>{const d=(f||0)-e;return `<span class="rn" style="color:${has||e?cor(d):'inherit'}">${d>0?"+":""}${fmtN(d)}</span>`;};
-  const fatByMes={};
-  (a?a.AM:[]).forEach((v,i)=>{if(v==null)return;fatByMes[mesOf(AM_DATAS[i])]={am:i+1,data:AM_DATAS[i],val:v};});
-  const execByMes={};
-  records.filter(r=>r.Tipo==="Remoção").forEach(r=>{execByMes[r.Mes]=(execByMes[r.Mes]||0)+r.Quant;});
-  const meses=[...new Set([...Object.keys(fatByMes),...Object.keys(execByMes)])].sort();
-  let exec=0,fat=0;const rows=[];
-  meses.forEach(mes=>{
-    const f=fatByMes[mes],e=execByMes[mes]||0;
-    exec+=e;fat+=(f?f.val:0);
-    const amLbl=f?`AM ${String(f.am).padStart(2,"0")}`:"&mdash;";
-    const mesLbl=f?fmtDataAM(f.data):mesLabel(mes);
-    rows.push(`<tr><td>${amLbl}</td><td>${mesLbl}</td><td></td><td>${e?rn(fmtN(e)):"&mdash;"}</td><td>${f?rn(fmtN(f.val)):"&mdash;"}</td><td>${desvCell(e,f?f.val:0,!!f)}</td><td>${rn(fmtN(mtq-fat))}</td></tr>`);
-  });
-  rows.push(`<tr class="total"><td>TOTAL</td><td></td><td>${rn(fmtN(mtq))}</td><td>${rn(fmtN(exec))}</td><td>${rn(fmtN(fat))}</td><td>${desvCell(exec,fat,true)}</td><td>${rn(fmtN(mtq-fat))}</td></tr>`);
-  el.innerHTML=rows.join("");
-}
 function alignRn(root){
   if(!root)return;
   const rows=[...root.querySelectorAll("tr")],colMax={};
@@ -1606,6 +1576,56 @@ function wrapNums(root){
     if(inner!=="")td.innerHTML=`<span class="rn">${inner}</span>`;
   });
   alignRn(root);
+}
+function renderFatProd(){
+  const det=document.getElementById("secFatProd");if(!det)return;
+  const a=AUTOS_DATA.find(x=>x.Id==="2.8.1");
+  const temAutos=a&&a.AM&&a.AM.some(v=>v!=null);
+  if(!temAutos&&!prodRecords.length){det.style.display="none";return;}
+  det.style.display="";
+  document.getElementById("fatProdBody").innerHTML=fatTableRows(a,fatExecByMes(prodRecords,"Prod"),fmtN);
+  alignRn(document.getElementById("fatProdTable"));
+}
+function renderFat282(){
+  const det=document.getElementById("secFat282");if(!det)return;
+  const a=AUTOS_DATA.find(x=>x.Id==="2.8.2");
+  const temAutos=a&&a.AM&&a.AM.some(v=>v!=null);
+  if(!temAutos&&!COLNOV_RECORDS.length){det.style.display="none";return;}
+  det.style.display="";
+  document.getElementById("fat282Body").innerHTML=fatTableRows(a,fatExecByMes(COLNOV_RECORDS,"Quant"),fmtN);
+  alignRn(document.getElementById("fat282Table"));
+}
+function fatTableRows(a,execByMes,fmt){
+  const mtq=a&&a.Quant!=null?a.Quant:0;
+  const fmtDataAM=iso=>{const p=iso.split("-");return p[2]+"/"+p[1]+"/"+p[0];};
+  const rn=v=>`<span class="rn">${v}</span>`;
+  const cor=v=>v<0?"#e76f51":v>0?"#4caf72":"inherit";
+  const desvCell=(e,f)=>{const d=f-e;return `<span class="rn" style="color:${cor(d)}">${d>0?"+":""}${fmt(d)}</span>`;};
+  const fatByMes={};
+  (a&&a.AM?a.AM:[]).forEach((v,i)=>{if(v==null)return;fatByMes[mesOf(AM_DATAS[i])]={am:i+1,data:AM_DATAS[i],val:v};});
+  const meses=[...new Set([...Object.keys(fatByMes),...Object.keys(execByMes)])].sort();
+  let exec=0,fat=0;const rows=[];
+  meses.forEach(mes=>{
+    const fF=fatByMes[mes],e=execByMes[mes]||0;
+    exec+=e;fat+=(fF?fF.val:0);
+    const amLbl=fF?`AM ${String(fF.am).padStart(2,"0")}`:"&mdash;";
+    const mesLbl=fF?fmtDataAM(fF.data):mesLabel(mes);
+    rows.push(`<tr><td>${amLbl}</td><td>${mesLbl}</td><td></td><td>${e?rn(fmt(e)):"&mdash;"}</td><td>${fF?rn(fmt(fF.val)):"&mdash;"}</td><td>${desvCell(e,fF?fF.val:0)}</td><td>${rn(fmt(mtq-fat))}</td></tr>`);
+  });
+  rows.push(`<tr class="total"><td>TOTAL</td><td></td><td>${rn(fmt(mtq))}</td><td>${rn(fmt(exec))}</td><td>${rn(fmt(fat))}</td><td>${desvCell(exec,fat)}</td><td>${rn(fmt(mtq-fat))}</td></tr>`);
+  return rows.join("");
+}
+function fatExecByMes(recs,key){const m={};recs.forEach(r=>{m[r.Mes||mesOf(r.Data)]=(m[r.Mes||mesOf(r.Data)]||0)+(r[key]||0);});return m;}
+function renderFaturacao(){
+  const det=document.getElementById("secFaturacao");if(!det)return;
+  const id=state.rcMode==="Colocação"?"2.6":"2.1";
+  const a=AUTOS_DATA.find(x=>x.Id===id);
+  const recs=records.filter(r=>r.Tipo===state.rcMode);
+  const temAutos=a&&a.AM&&a.AM.some(v=>v!=null);
+  if(!temAutos&&!recs.length){det.style.display="none";return;}
+  det.style.display="";
+  document.getElementById("fatBody").innerHTML=fatTableRows(a,fatExecByMes(recs,"Quant"),fmtN);
+  alignRn(document.getElementById("fatTable"));
 }
 function renderCmpProjeto(){
   const rem=state.rcMode==="Remoção";
@@ -1988,7 +2008,7 @@ function prodResumo(){
 }
 
 function prodRender(){
-  prodBuildFilters();prodRenderRecTable();renderCmpProd();
+  prodBuildFilters();prodRenderRecTable();renderCmpProd();renderFatProd();
 }
 
 function render(){
@@ -2040,7 +2060,7 @@ function init(){
     }
     if(t==="mqt")renderMQT();
     if(t==="prod")prodRender();
-    if(t==="colocnovo")renderCmp282();
+    if(t==="colocnovo"){renderCmp282();renderFat282();}
     if(t==="autos")renderAutos();
     if(t==="resumo")renderResumo();
     if(t==="totais")renderTotais();
