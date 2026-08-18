@@ -248,7 +248,7 @@
           <button class="iconbtn" data-th="dark" title="Escuro"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
           <button class="iconbtn" data-th="system" title="Sistema"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></button>
         </div>
-        <button class="iconbtn" id="verBtn" title="v26.08.10.3345"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></button>
+        <button class="iconbtn" id="verBtn" title="v26.08.10.3430"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></button>
       </div>
     </div>
     <div class="titlerow">
@@ -291,6 +291,7 @@
       <div class="fgroup"><span class="flabel">Semana</span><select id="dfSemana"></select></div>
       <div class="fgroup"><span class="flabel">Dia</span><input type="date" id="dfDia"></div>
       <div class="fgroup"><span class="flabel">Perfil</span><select id="dfPerfil"></select></div>
+      <div class="fgroup"><span class="flabel">Zona</span><select id="dfZona"></select></div>
       <button class="btn" id="dfReset">Limpar</button>
     </div>
     <div class="kgrid" id="dashKpis"></div>
@@ -306,9 +307,11 @@
   <!-- ============ PESQUISA TRANSVERSAL ============ -->
   <div id="temaPesq" class="tema" style="display:none">
     <div class="filters">
-      <div class="fgroup"><span class="flabel">Perfil</span><select id="pqPerfil"></select></div>
-      <div class="fgroup"><span class="flabel">Data</span><input type="date" id="pqDia"></div>
+      <div class="fgroup"><span class="flabel">Mês</span><select id="pqMes"></select></div>
       <div class="fgroup"><span class="flabel">Semana</span><select id="pqSemana"></select></div>
+      <div class="fgroup"><span class="flabel">Dia</span><input type="date" id="pqDia"></div>
+      <div class="fgroup"><span class="flabel">Perfil</span><select id="pqPerfil"></select></div>
+      <div class="fgroup"><span class="flabel">Zona</span><select id="pqZona"></select></div>
       <button class="btn" id="pqReset">Limpar</button>
     </div>
     <p class="hint" id="pqHint"></p>
@@ -339,6 +342,7 @@
     <div class="fgroup"><span class="flabel">Dia</span><input type="date" id="fDia"></div>
     <div class="fgroup" id="fgSub"><span class="flabel">Sub Tipo</span><select id="fSub"></select></div>
     <div class="fgroup"><span class="flabel">Perfil</span><select id="fPerfil"></select></div>
+    <div class="fgroup"><span class="flabel">Zona</span><select id="fZona"></select></div>
     <button class="btn" id="reset">Limpar</button>
     <button class="btn spacer" id="csv">Exportar CSV</button>
   </div>
@@ -407,10 +411,27 @@
             <th style="text-align:left">Perfil</th>
             <th style="text-align:right">Projeto</th>
             <th style="text-align:right" id="cmpObraLbl">Obra</th>
-            <th style="text-align:right">Desvio</th>
-            <th style="text-align:right">Desvio %</th>
+            <th style="text-align:right">Diferença</th>
+            <th style="text-align:right">Diferença %</th>
           </tr></thead>
           <tbody id="cmpBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </details>
+
+  <details class="sec" id="secFaturacao">
+    <summary>Faturação (Autos de Medição)</summary>
+    <div class="secbody">
+      <div class="mqtwrap">
+        <table id="fatTable">
+          <thead><tr>
+            <th style="text-align:left">Mês</th>
+            <th style="text-align:right">MTQ</th>
+            <th style="text-align:right">Executado</th>
+            <th style="text-align:right">Desvio</th>
+          </tr></thead>
+          <tbody id="fatBody"></tbody>
         </table>
       </div>
     </div>
@@ -425,6 +446,7 @@
       <div class="fgroup"><span class="flabel">Mês</span><select id="pFMes"></select></div>
       <div class="fgroup"><span class="flabel">Semana</span><select id="pFSemana"></select></div>
       <div class="fgroup"><span class="flabel">Dia</span><input type="date" id="pFDia"></div>
+      <div class="fgroup"><span class="flabel">Zona</span><select id="pFZona"></select></div>
       <button class="btn" id="pReset">Limpar</button>
       <button class="btn spacer" id="pCsv">Exportar CSV</button>
     </div>
@@ -522,6 +544,7 @@
       <div class="fgroup"><span class="flabel">Semana</span><select id="efSemana"></select></div>
       <div class="fgroup"><span class="flabel">Dia</span><input type="date" id="efDia"></div>
       <div class="fgroup"><span class="flabel">Perfil</span><select id="efPerfil"></select></div>
+      <div class="fgroup"><span class="flabel">Zona</span><select id="efZona"></select></div>
       <button class="btn" id="efReset">Limpar</button>
     </div>
 
@@ -926,7 +949,7 @@ const mesLabel=m=>{const p=m.split("-");return MESNOMES[+p[1]]+"/"+p[0].slice(2)
 const fimMes=m=>{const[y,mo]=m.split("-").map(Number);return m+"-"+String(new Date(y,mo,0).getDate()).padStart(2,"0");};
 function isoWeek(s){const d=new Date(s+"T00:00:00");const t=new Date(d);t.setHours(0,0,0,0);t.setDate(t.getDate()+3-((t.getDay()+6)%7));const w1=new Date(t.getFullYear(),0,4);return 1+Math.round(((t-w1)/86400000-3+((w1.getDay()+6)%7))/7);}
 
-let state={rcMode:"Remoção",mes:"Todos",semana:"Todas",dia:"",sub:"Todos",perfil:"Todos",timeMode:"cum",sortK:null,sortDir:1,highlight:null,editId:null};
+let state={rcMode:"Remoção",mes:"Todos",semana:"Todas",dia:"",sub:"Todos",perfil:"Todos",zona:"Todas",timeMode:"cum",sortK:null,sortDir:1,highlight:null,editId:null};
 
 /* ===== MQT / PROJ ===== */
 const MQT_DATA=[{"Id": "2.1", "Descricao": "Remoção de Tetrápodes (Inteiros e Partidos)", "PopUP": "Remoção de tetrápodes e de tetrápodes partidos do manto do talude sul e cabeça", "Un": "un", "Quant": 384.0, "PrUnit": 218.51, "Total": 83907.84}, {"Id": "2.2", "Descricao": "Enrocamento (Coroamente do Manto)", "PopUP": "Remoção e posterior reposição de enrocamento de 12 a 15 tf do remate do coroamento do manto de tetrápodes", "Un": "m3", "Quant": 800.0, "PrUnit": 39.42, "Total": 31536.0}, {"Id": "2.3", "Descricao": "Enrocamento (Cabeça -> Talude Sul)", "PopUP": "Remoção de enrocamento de 12 a 15 tf  do manto para execução da transição da cabeça para o talude norte", "Un": "m3", "Quant": 700.0, "PrUnit": 40.82, "Total": 28574.0}, {"Id": "2.4", "Descricao": "Remoção de Materiais de Qualquer Natureza", "PopUP": "Remoção de materiais de qualquer natureza (areia, enrocamento, bocados de terápodes) para reconstrução da banqueta de pé de talude", "Un": "m3", "Quant": 3000.0, "PrUnit": 46.1, "Total": 138300.0}, {"Id": "2.5", "Descricao": "Enrocamento (Banqueta)", "PopUP": "Reconstrução da banqueta de pé de talude em enrocamento de 12 a 15 tf", "Un": "m3", "Quant": 1900.0, "PrUnit": 55.85, "Total": 106115.0}, {"Id": "2.6", "Descricao": "Colocação de Tetrápodes Recuperados (Cabeça e Talude Sul)", "PopUP": "Colocação de tetrápodes recuperados da cabeça e do talude sul na reconstituição do manto de protecção do talude sul", "Un": "un", "Quant": 161.0, "PrUnit": 411.04, "Total": 66177.44}, {"Id": "2.7", "Descricao": "Transporte e Depósito Tetrápodes Recuperados e não Utilizados (Cabeça e Sul)", "PopUP": "Transporte a depósito de tetrápodes recuperados da cabeça e do talude sul e não utilizados na reconstituição do manto de protecção do talude sul (depósito localizado num raio de 2,5Km de distância ao local da obra)", "Un": "un", "Quant": 108.0, "PrUnit": 313.84, "Total": 33894.719999999994}, {"Id": "2.8", "Descricao": "nan", "PopUP": "Fornecimento e colocação de tetrápodes de 34,4 tf, em betão NP EN 206-1: C35/45, XA1 (Pt), Cl 1.0, Dmax20, S3, simples", "Un": "", "Quant": null, "PrUnit": null, "Total": null}, {"Id": "2.8.1", "Descricao": "Produção de Tetrápodes Novos", "PopUP": "Fabrico e colocação em depósito dos tetrápodes", "Un": "un", "Quant": 360.0, "PrUnit": 2534.16, "Total": 912297.6}, {"Id": "2.8.2", "Descricao": "Transporte e Colocação de Tetrápodes Novos", "PopUP": "Transporte e colocação de tetrápodes", "Un": "un", "Quant": 360.0, "PrUnit": 539.93, "Total": 194374.8}, {"Id": "2.9", "Descricao": "Enrocamento (Submanto)", "PopUP": "Fornecimento e colocação de enrocamento de 1 a 4 tf no submanto na transição entre o talude sul e a cabeça", "Un": "m3", "Quant": 500.0, "PrUnit": 41.0, "Total": 20500.0}, {"Id": "2.10", "Descricao": "Enrocamento (Talude Norte -> Cabeça)", "PopUP": "Fornecimento e colocação de enrocamento de 12 a 15 tf no manto da transição entre o talude norte e a cabeça", "Un": "m3", "Quant": 1200.0, "PrUnit": 51.69, "Total": 62028.0}, {"Id": "2.11", "Descricao": "Fornecimento, Transporte e Colocação de Betão", "PopUP": "Fornecimento, transporte e colocação de betão simples C30/37, XA1, Dmax=25mm, para rematar o capeamento da superestrutura junto dos blocos no coroamento", "Un": "m3", "Quant": 50.0, "PrUnit": 196.26, "Total": 9813.0}];
@@ -949,6 +972,26 @@ const ENROC_RECORDS=[
   {cap:"2.4",Data:"2026-07-27",Perfil:"P9",Enroc:372.65,Fisc:373.00},
   {cap:"2.4",Data:"2026-07-27",Perfil:"P10",Enroc:181.27,Fisc:183.00}
 ];
+const PERFIL_ZONA={
+  "P1":"Talude Sul","P2":"Talude Sul","P3":"Talude Sul","P4":"Talude Sul","P5":"Talude Sul","P6":"Talude Sul","P7":"Talude Sul","P8":"Talude Sul",
+  "P9":"Transição","P10":"Transição",
+  "P11 S":"Cabeça","P12":"Cabeça","P13":"Cabeça","P14":"Cabeça","P11 N":"Cabeça"
+};
+const ZONAS=["Talude Sul","Transição","Cabeça"];
+function zonaDoPerfil(p){
+  if(PERFIL_ZONA[p]!=null)return PERFIL_ZONA[p];
+  const alt=Object.keys(PERFIL_ZONA).filter(k=>k===p||k.startsWith(p+" "));
+  return alt.length?PERFIL_ZONA[alt[0]]:null;
+}
+function perfilNaZona(perfilOuTroco,zona){
+  if(PERFIL_ZONA[perfilOuTroco]!=null)return PERFIL_ZONA[perfilOuTroco]===zona;
+  const nums=(String(perfilOuTroco).match(/\d+/g)||[]).map(Number);
+  if(!nums.length)return false;
+  let lista=[];
+  if(/\ba\b/.test(perfilOuTroco)){for(let i=Math.min(...nums);i<=Math.max(...nums);i++)lista.push("P"+i);}
+  else lista=nums.map(n=>"P"+n);
+  return lista.some(p=>zonaDoPerfil(p)===zona);
+}
 const ENROC_OBS={
   "2.2":[
     "A quantidade executada, medida pela Fiscalização, corresponde à quantidade medida pelo projetista e desconsidera o arredondamento efetuado para o MQT.",
@@ -1045,14 +1088,14 @@ function execAte(id,corte){
   return null;
 }
 const autoDe=id=>AUTOS_DATA.find(a=>a.Id===id)||null;
-let enrocF={mes:"Todos",semana:"Todas",dia:"",perfil:"Todos"};
+let enrocF={mes:"Todos",semana:"Todas",dia:"",perfil:"Todos",zona:"Todas"};
 function enrocRecsAll(){return ENROC_RECORDS.filter(r=>r.cap===curEnroc);}
 function enrocFiltered(){
   return enrocRecsAll()
     .filter(r=>enrocF.mes==="Todos"||mesOf(r.Data)===enrocF.mes)
     .filter(r=>enrocF.semana==="Todas"||String(isoWeek(r.Data))===enrocF.semana)
     .filter(r=>!enrocF.dia||r.Data===enrocF.dia)
-    .filter(r=>enrocF.perfil==="Todos"||r.Perfil===enrocF.perfil);
+    .filter(r=>(enrocF.perfil==="Todos"||r.Perfil===enrocF.perfil)&&(enrocF.zona==="Todas"||perfilNaZona(r.Perfil,enrocF.zona)));
 }
 function enrocBuildFilters(){
   const recs=enrocRecsAll();
@@ -1063,7 +1106,8 @@ function enrocBuildFilters(){
   setSel("efMes",enrocF.mes,'<option value="Todos">Todos</option>'+meses.map(m=>`<option value="${m}">${mesLabel(m)}</option>`).join(""));
   setSel("efSemana",enrocF.semana,'<option value="Todas">Todas</option>'+semanas.map(s=>`<option value="${s}">S${s}</option>`).join(""));
   setSel("efPerfil",enrocF.perfil,'<option value="Todos">Todos</option>'+perfis.map(p=>`<option value="${esc(p)}">${esc(p)}</option>`).join(""));
-  enrocF.mes=document.getElementById("efMes").value;enrocF.semana=document.getElementById("efSemana").value;enrocF.perfil=document.getElementById("efPerfil").value;
+  setSel("efZona",enrocF.zona,'<option value="Todas">Todas</option>'+ZONAS.map(z=>`<option value="${esc(z)}">${esc(z)}</option>`).join(""));
+  enrocF.mes=document.getElementById("efMes").value;enrocF.semana=document.getElementById("efSemana").value;enrocF.perfil=document.getElementById("efPerfil").value;enrocF.zona=document.getElementById("efZona").value;
   const d=document.getElementById("efDia");if(d)d.value=enrocF.dia;
 }
 function renderEnrocObs(){
@@ -1087,20 +1131,20 @@ function renderEnrocRec(){
   }).join("");
 }
 
-let dashF={mes:"Todos",semana:"Todas",dia:"",perfil:"Todos"};
+let dashF={mes:"Todos",semana:"Todas",dia:"",perfil:"Todos",zona:"Todas"};
 function dashRec(tipo){
   return records.filter(r=>r.Tipo===tipo)
     .filter(r=>dashF.mes==="Todos"||r.Mes===dashF.mes)
     .filter(r=>dashF.semana==="Todas"||String(r.Semana)===dashF.semana)
     .filter(r=>!dashF.dia||r.Data===dashF.dia)
-    .filter(r=>dashF.perfil==="Todos"||r.Perfil===dashF.perfil);
+    .filter(r=>(dashF.perfil==="Todos"||r.Perfil===dashF.perfil)&&(dashF.zona==="Todas"||perfilNaZona(r.Perfil,dashF.zona)));
 }
 function dashProd(){
   return prodRecords
     .filter(r=>dashF.mes==="Todos"||r.Mes===dashF.mes)
     .filter(r=>dashF.semana==="Todas"||String(r.Semana)===dashF.semana)
     .filter(r=>!dashF.dia||r.Data===dashF.dia)
-    .filter(r=>dashF.perfil==="Todos"||r.Perfil===dashF.perfil);
+    .filter(r=>(dashF.perfil==="Todos"||r.Perfil===dashF.perfil)&&(dashF.zona==="Todas"||perfilNaZona(r.Perfil,dashF.zona)));
 }
 function dashBuildFilters(){
   const meses=[...new Set([...records.map(r=>r.Mes),...prodRecords.map(r=>r.Mes)])].filter(Boolean).sort();
@@ -1110,6 +1154,7 @@ function dashBuildFilters(){
   set("dfMes",dashF.mes,'<option value="Todos">Todos</option>'+meses.map(m=>`<option value="${m}">${mesLabel(m)}</option>`).join(""));
   set("dfSemana",dashF.semana,'<option value="Todas">Todas</option>'+semanas.map(s=>`<option value="${s}">S${s}</option>`).join(""));
   set("dfPerfil",dashF.perfil,'<option value="Todos">Todos</option>'+perfis.map(p=>`<option value="${esc(p)}">${esc(p)}</option>`).join(""));
+  set("dfZona",dashF.zona,'<option value="Todas">Todas</option>'+ZONAS.map(z=>`<option value="${esc(z)}">${esc(z)}</option>`).join(""));
   dashF.mes=document.getElementById("dfMes").value;dashF.semana=document.getElementById("dfSemana").value;dashF.perfil=document.getElementById("dfPerfil").value;
   const d=document.getElementById("dfDia");if(d)d.value=dashF.dia;
 }
@@ -1173,7 +1218,7 @@ function renderDash(){
     dbar(x.cap+" proj",x.proj,mE,"var(--faint)")+dbar(x.cap+" fisc",x.fisc,mE,"var(--accent2)")+'<div class="dsep"></div>'
   ).join(""):'<div class="empty" style="padding:16px">Sem enrocamentos com dados.</div>';
 }
-let pesqF={perfil:"Todos",dia:"",semana:"Todas"};
+let pesqF={mes:"Todos",semana:"Todas",dia:"",perfil:"Todos",zona:"Todas"};
 const PESQ_CAPS=[
   {id:"2.1",nome:"Remoção",src:"rem"},
   {id:"2.2",nome:"Enrocamento — Coroamento do Manto",src:"enr"},
@@ -1198,16 +1243,21 @@ function trocoInclui(troco,perfil){
 function pesqBuildFilters(){
   const perfis=[...new Set([...records.map(r=>r.Perfil),...prodRecords.map(r=>r.Perfil)])].filter(Boolean).sort(pcmp);
   const semanas=[...new Set([...records.map(r=>r.Semana),...prodRecords.map(r=>r.Semana),...ENROC_RECORDS.map(r=>isoWeek(r.Data))])].filter(v=>v!=null).sort((a,b)=>a-b);
+  const meses=[...new Set([...records.map(r=>r.Mes),...prodRecords.map(r=>r.Mes),...ENROC_RECORDS.map(r=>mesOf(r.Data))])].filter(Boolean).sort();
   const set=(id,val,opts)=>{const s=document.getElementById(id);if(!s)return;s.innerHTML=opts;s.value=[...s.options].some(o=>o.value===val)?val:s.options[0].value;};
-  set("pqPerfil",pesqF.perfil,'<option value="Todos">Todos</option>'+perfis.map(p=>`<option value="${esc(p)}">${esc(p)}</option>`).join(""));
+  set("pqMes",pesqF.mes,'<option value="Todos">Todos</option>'+meses.map(m=>`<option value="${m}">${mesLabel(m)}</option>`).join(""));
   set("pqSemana",pesqF.semana,'<option value="Todas">Todas</option>'+semanas.map(s=>`<option value="${s}">S${s}</option>`).join(""));
-  pesqF.perfil=document.getElementById("pqPerfil").value;pesqF.semana=document.getElementById("pqSemana").value;
+  set("pqPerfil",pesqF.perfil,'<option value="Todos">Todos</option>'+perfis.map(p=>`<option value="${esc(p)}">${esc(p)}</option>`).join(""));
+  set("pqZona",pesqF.zona,'<option value="Todas">Todas</option>'+ZONAS.map(z=>`<option value="${esc(z)}">${esc(z)}</option>`).join(""));
+  pesqF.mes=document.getElementById("pqMes").value;pesqF.semana=document.getElementById("pqSemana").value;pesqF.perfil=document.getElementById("pqPerfil").value;pesqF.zona=document.getElementById("pqZona").value;
   const d=document.getElementById("pqDia");if(d)d.value=pesqF.dia;
 }
-function pesqMatch(data,perfilOk){
+function pesqMatch(data,perfilOk,zonaOk){
+  if(pesqF.mes!=="Todos"&&mesOf(data)!==pesqF.mes)return false;
   if(pesqF.dia&&data!==pesqF.dia)return false;
   if(pesqF.semana!=="Todas"&&String(isoWeek(data))!==pesqF.semana)return false;
   if(pesqF.perfil!=="Todos"&&!perfilOk)return false;
+  if(pesqF.zona!=="Todas"&&!zonaOk)return false;
   return true;
 }
 function pesqTot(n){return n?`<span class="cnt">${n} reg.</span>`:'<span class="cnt">sem registos</span>';}
@@ -1222,39 +1272,44 @@ function pesqFiscCell(fisc,base){const cls=fisc===base?"fisc-ok":"fisc-alt";retu
 function renderPesq(){
   const cont=document.getElementById("pesqBlocks");if(!cont)return;
   const hint=document.getElementById("pqHint");
-  const hasCrit=pesqF.perfil!=="Todos"||pesqF.dia||pesqF.semana!=="Todas";
+  const hasCrit=pesqF.mes!=="Todos"||pesqF.perfil!=="Todos"||pesqF.dia||pesqF.semana!=="Todas"||pesqF.zona!=="Todas";
   if(hint){
-    const parts=[];if(pesqF.perfil!=="Todos")parts.push("Perfil "+pesqF.perfil);if(pesqF.dia)parts.push("Dia "+fmtD(pesqF.dia));if(pesqF.semana!=="Todas")parts.push("Semana "+pesqF.semana);
-    hint.innerHTML=hasCrit?`A mostrar tudo o que se relaciona com <b>${parts.join(" · ")}</b> em cada capítulo.`:"Escolhe um perfil, uma data ou uma semana para ver, capítulo a capítulo, tudo o que lhe está associado.";
+    const parts=[];
+    if(pesqF.mes!=="Todos")parts.push("Mês "+mesLabel(pesqF.mes));
+    if(pesqF.semana!=="Todas")parts.push("Semana "+pesqF.semana);
+    if(pesqF.dia)parts.push("Dia "+fmtD(pesqF.dia));
+    if(pesqF.perfil!=="Todos")parts.push("Perfil "+pesqF.perfil);
+    if(pesqF.zona!=="Todas")parts.push("Zona "+pesqF.zona);
+    hint.innerHTML=hasCrit?`A mostrar tudo o que se relaciona com <b>${parts.join(" · ")}</b> em cada capítulo.`:"Escolhe um mês, semana, dia, perfil ou zona para ver, capítulo a capítulo, tudo o que lhe está associado.";
   }
   const sum=(a,k)=>a.reduce((s,r)=>s+(r[k]||0),0);
+  const zOk=p=>perfilNaZona(p,pesqF.zona);
   cont.innerHTML=PESQ_CAPS.map(cap=>{
     let recs=[],inner="";
     if(cap.src==="rem"||cap.src==="col"){
       const tipo=cap.src==="rem"?"Remoção":"Colocação";
-      recs=records.filter(r=>r.Tipo===tipo&&pesqMatch(r.Data,r.Perfil===pesqF.perfil)).sort((a,b)=>a.Data<b.Data?1:-1);
+      recs=records.filter(r=>r.Tipo===tipo&&pesqMatch(r.Data,r.Perfil===pesqF.perfil,zOk(r.Perfil))).sort((a,b)=>a.Data<b.Data?1:-1);
       if(recs.length){
         const cols=cap.src==="rem"?["Dia","Semana","Sub Tipo","Perfil","Removidos","Fisc."]:["Dia","Semana","Perfil","Colocados","Fisc."];
-        const rows=recs.map(r=>cap.src==="rem"?[fmtD(r.Data),r.Semana,r.SubTipo,r.Perfil,r.Quant,pesqFiscCell(r.Fisc,r.Quant)]:[fmtD(r.Data),r.Semana,r.Perfil,r.Quant,pesqFiscCell(r.Fisc,r.Quant)]);
-        const tot=cap.src==="rem"?["TOTAL","","","",sum(recs,"Quant"),fmtN(sum(recs,"Fisc"))]:["TOTAL","","",sum(recs,"Quant"),fmtN(sum(recs,"Fisc"))];
+        const rows=recs.map(r=>cap.src==="rem"?[fmtD(r.Data),r.Semana,r.SubTipo,r.Perfil,fmtN(r.Quant),pesqFiscCell(r.Fisc,r.Quant)]:[fmtD(r.Data),r.Semana,r.Perfil,fmtN(r.Quant),pesqFiscCell(r.Fisc,r.Quant)]);
+        const tot=cap.src==="rem"?["TOTAL","","","",fmtN(sum(recs,"Quant")),fmtN(sum(recs,"Fisc"))]:["TOTAL","","",fmtN(sum(recs,"Quant")),fmtN(sum(recs,"Fisc"))];
         inner=pesqTbl(cols,rows,tot);
       }else inner=pesqSem();
     }else if(cap.src==="prod"){
-      recs=prodRecords.filter(r=>pesqMatch(r.Data,r.Perfil===pesqF.perfil)).sort((a,b)=>a.Data<b.Data?1:-1);
+      recs=prodRecords.filter(r=>pesqMatch(r.Data,r.Perfil===pesqF.perfil,zOk(r.Perfil))).sort((a,b)=>a.Data<b.Data?1:-1);
       if(recs.length){
-        inner=pesqTbl(["Dia","Semana","Perfil","Produzidos","Fisc."],recs.map(r=>[fmtD(r.Data),r.Semana,r.Perfil,r.Prod,pesqFiscCell(r.Fisc,r.Prod)]),["TOTAL","","",sum(recs,"Prod"),fmtN(sum(recs,"Fisc"))]);
+        inner=pesqTbl(["Dia","Semana","Perfil","Produzidos","Fisc."],recs.map(r=>[fmtD(r.Data),r.Semana,r.Perfil,fmtN(r.Prod),pesqFiscCell(r.Fisc,r.Prod)]),["TOTAL","","",fmtN(sum(recs,"Prod")),fmtN(sum(recs,"Fisc"))]);
       }else inner=pesqSem();
     }else if(cap.src==="enr"){
-      recs=ENROC_RECORDS.filter(r=>r.cap===cap.id&&pesqMatch(r.Data,trocoInclui(r.Perfil,pesqF.perfil))).sort((a,b)=>a.Data<b.Data?1:-1);
+      recs=ENROC_RECORDS.filter(r=>r.cap===cap.id&&pesqMatch(r.Data,trocoInclui(r.Perfil,pesqF.perfil),zOk(r.Perfil))).sort((a,b)=>(pesqNum(a.Perfil)||0)-(pesqNum(b.Perfil)||0)||(a.Data<b.Data?1:-1));
       if(recs.length){
-        inner=pesqTbl(["Dia","Semana","Troço","Enroc. (m³)","Fisc."],recs.map(r=>[fmtD(r.Data),isoWeek(r.Data),r.Perfil,fmtE(r.Enroc),pesqFiscCell(r.Fisc,r.Enroc)]),["TOTAL","","",fmtE(sum(recs,"Enroc")),fmtE(sum(recs,"Fisc"))]);
+        inner=pesqTbl(["Dia","Semana","Troço","Empreiteiro (m³)","Fisc."],recs.map(r=>[fmtD(r.Data),isoWeek(r.Data),r.Perfil,fmtE(r.Enroc),pesqFiscCell(r.Fisc,r.Enroc)]),["TOTAL","","",fmtE(sum(recs,"Enroc")),fmtE(sum(recs,"Fisc"))]);
       }else inner=pesqSem();
     }else{inner=pesqSem();}
     const open=hasCrit&&recs.length>0?" open":"";
     return `<details class="sec"${open}><summary><b>${cap.id}</b>${esc(cap.nome)} ${pesqTot(recs.length)}</summary>${inner}</details>`;
   }).join("");
 }
-
 function renderEnroc(){
   const el=document.getElementById("enrocBody");if(!el)return;
   const e=ENROC_DATA[curEnroc];
@@ -1344,6 +1399,7 @@ function filtered(){
     (state.semana==="Todas"||r.Semana==+state.semana)&&
     (state.dia===""||r.Data===state.dia)&&
     (state.perfil==="Todos"||r.Perfil===state.perfil)&&
+    (state.zona==="Todas"||perfilNaZona(r.Perfil,state.zona))&&
     (state.sub==="Todos"||r.SubTipo===state.sub));
 }
 
@@ -1356,6 +1412,7 @@ function buildFilters(){
   document.getElementById("fMes").innerHTML=meses.map(v=>`<option value="${v}" ${v===state.mes?"selected":""}>${v==="Todos"?"Todos":mesLabel(v)}</option>`).join("");
   const fill=(id,arr,cur)=>document.getElementById(id).innerHTML=arr.map(v=>`<option ${v==cur?"selected":""}>${v}</option>`).join("");
   fill("fSemana",sem,state.semana);fill("fSub",sub,state.sub);fill("fPerfil",perfis,state.perfil);
+  document.getElementById("fZona").innerHTML='<option value="Todas">Todas</option>'+ZONAS.map(z=>`<option value="${esc(z)}">${esc(z)}</option>`).join("");document.getElementById("fZona").value=[...document.getElementById("fZona").options].some(o=>o.value===state.zona)?state.zona:"Todas";
   document.getElementById("fDia").value=state.dia;
   const rem=state.rcMode==="Remoção";
   document.getElementById("fgSub").style.display=rem?"":"none";
@@ -1492,6 +1549,22 @@ function renderCmp282(){
     return `<tr><td class="id" style="color:${PC[p]||'var(--accent)'}">${esc(p)}</td><td class="num">${pr?fmtN(pr):"&mdash;"}</td><td class="num">${co?fmtN(co):"&mdash;"}</td><td class="num">${(pr||co)?`<span style="color:${cor(dv)}">${dv>0?"+":""}${fmtN(dv)}</span>`:"&mdash;"}</td><td class="num">${pct==null?"&mdash;":`<span style="color:${cor(pct)}">${pct>0?"+":""}${fmtN(pct,1)}%</span>`}</td></tr>`;}).join("");
   const dvT=sC-sP,pctT=sP>0?dvT/sP*100:null;
   el.innerHTML=rows+`<tr class="total"><td>TOTAL</td><td class="num">${fmtN(sP)}</td><td class="num">${sC?fmtN(sC):"&mdash;"}</td><td class="num"><span style="color:${cor(dvT)}">${dvT>0?"+":""}${fmtN(dvT)}</span></td><td class="num">${pctT==null?"&mdash;":`<span style="color:${cor(pctT)}">${pctT>0?"+":""}${fmtN(pctT,1)}%</span>`}</td></tr>`;
+}
+const AM_DATAS=["2025-12-30","2026-01-30","2026-02-27","2026-03-30","2026-04-29","2026-05-29","2026-06-30","2026-07-27"];
+function renderFaturacao(){
+  const det=document.getElementById("secFaturacao");if(!det)return;
+  if(state.rcMode!=="Remoção"){det.style.display="none";return;}
+  det.style.display="";
+  const el=document.getElementById("fatBody");if(!el)return;
+  const a=AUTOS_DATA.find(x=>x.Id==="2.1");
+  const mtq=a&&a.Quant!=null?a.Quant:0;
+  let acum=0;const rows=[];
+  (a?a.AM:[]).forEach((v,i)=>{
+    if(v==null)return;
+    acum+=v;
+    rows.push(`<tr><td>${mesLabel(mesOf(AM_DATAS[i]))}</td><td class="num">${fmtN(mtq)}</td><td class="num">${fmtN(acum)}</td><td class="num">${fmtN(mtq-acum)}</td></tr>`);
+  });
+  el.innerHTML=rows.join("")||'<tr><td colspan="4" class="empty" style="padding:16px">Sem autos de medição.</td></tr>';
 }
 function renderCmpProjeto(){
   const rem=state.rcMode==="Remoção";
@@ -1691,12 +1764,13 @@ function prodLoad(){
 function prodSave(){store.set("esporao_prod_records",JSON.stringify(prodRecords))}
 function pNewId(){return "p"+Date.now()+"_"+(pseq++)}
 
-let pstate={mes:"Todos",semana:"Todas",dia:"",timeMode:"cum",sortK:null,sortDir:1,editId:null};
+let pstate={mes:"Todos",semana:"Todas",dia:"",zona:"Todas",timeMode:"cum",sortK:null,sortDir:1,editId:null};
 function prodFiltered(){
   return prodRecords.filter(r=>
     (pstate.mes==="Todos"||r.Mes===pstate.mes)&&
     (pstate.semana==="Todas"||r.Semana==+pstate.semana)&&
-    (pstate.dia===""||r.Data===pstate.dia)
+    (pstate.dia===""||r.Data===pstate.dia)&&
+    (pstate.zona==="Todas"||perfilNaZona(r.Perfil,pstate.zona))
   ).slice().sort((a,b)=>a.Data<b.Data?-1:a.Data>b.Data?1:0);
 }
 
@@ -1704,6 +1778,7 @@ function prodBuildFilters(){
   const meses=["Todos"].concat([...new Set(prodRecords.map(r=>r.Mes))].sort());
   const sem=["Todas"].concat([...new Set(prodRecords.map(r=>r.Semana))].sort((a,b)=>a-b));
   document.getElementById("pFMes").innerHTML=meses.map(v=>`<option value="${v}" ${v===pstate.mes?"selected":""}>${v==="Todos"?"Todos":mesLabel(v)}</option>`).join("");
+  const pz=document.getElementById("pFZona");if(pz){pz.innerHTML='<option value="Todas">Todas</option>'+ZONAS.map(z=>`<option value="${esc(z)}">${esc(z)}</option>`).join("");pz.value=[...pz.options].some(o=>o.value===pstate.zona)?pstate.zona:"Todas";}
   document.getElementById("pFSemana").innerHTML=sem.map(v=>`<option ${v==pstate.semana?"selected":""}>${v}</option>`).join("");
   document.getElementById("pFDia").value=pstate.dia;
 }
@@ -1875,7 +1950,7 @@ function prodRender(){
 }
 
 function render(){
-  buildPC();buildFilters();renderRecTable();renderPerfis();renderTime();renderPerfil();renderPerfilSub();renderCmpProjeto();
+  buildPC();buildFilters();renderRecTable();renderPerfis();renderTime();renderPerfil();renderPerfilSub();renderCmpProjeto();renderFaturacao();
   const fg=document.getElementById("fgRSub");if(fg)fg.style.display=state.rcMode==="Remoção"?"":"none";
   const fn=document.getElementById("fnote");if(fn)fn.textContent="";
 }
@@ -1929,7 +2004,7 @@ function init(){
     if(t==="totais")renderTotais();
     if(t==="dash"){dashBuildFilters();renderDash();}
     if(t==="pesq"){pesqBuildFilters();renderPesq();}
-    if(cfg.enrocId){curEnroc=cfg.enrocId;enrocF={mes:"Todos",semana:"Todas",dia:"",perfil:"Todos"};enrocBuildFilters();renderEnrocRec();renderEnroc();renderEnrocObs();}
+    if(cfg.enrocId){curEnroc=cfg.enrocId;enrocF={mes:"Todos",semana:"Todas",dia:"",perfil:"Todos",zona:"Todas"};enrocBuildFilters();renderEnrocRec();renderEnroc();renderEnrocObs();}
     document.getElementById("hdEyebrow").textContent=EB;
     document.getElementById("hdTitle").textContent=cfg.title;
     document.getElementById("hdSub").textContent=cfg.sub;
@@ -1939,10 +2014,11 @@ function init(){
   document.getElementById("fSemana").onchange=e=>{state.semana=e.target.value;openRec();render();};
   document.getElementById("fSub").onchange=e=>{state.sub=e.target.value;openRec();render();};
   document.getElementById("fPerfil").onchange=e=>{state.perfil=e.target.value;openRec();render();};
+  document.getElementById("fZona").onchange=e=>{state.zona=e.target.value;openRec();render();};
   document.getElementById("fDia").onchange=e=>{state.dia=e.target.value;openRec();render();};
   document.querySelectorAll("[data-mode]").forEach(b=>b.onclick=()=>{state.timeMode=b.dataset.mode;document.querySelectorAll("[data-mode]").forEach(x=>x.classList.toggle("active",x===b));renderTime();});
   document.querySelectorAll("#recTable th[data-k]").forEach(th=>th.onclick=()=>{const k=th.dataset.k;if(state.sortK===k)state.sortDir*=-1;else{state.sortK=k;state.sortDir=1;}renderRecTable();});
-  document.getElementById("reset").onclick=()=>{state=Object.assign({},state,{mes:"Todos",semana:"Todas",dia:"",sub:"Todos",perfil:"Todos",highlight:null,sortK:null,editId:null});["secRec","secEvol","secDistTotal","cardPerfilSub"].forEach(id=>{const s=document.getElementById(id);if(s)s.open=false;});render();};
+  document.getElementById("reset").onclick=()=>{state=Object.assign({},state,{mes:"Todos",semana:"Todas",dia:"",sub:"Todos",perfil:"Todos",zona:"Todas",highlight:null,sortK:null,editId:null});["secRec","secEvol","secDistTotal","cardPerfilSub"].forEach(id=>{const s=document.getElementById(id);if(s)s.open=false;});render();};
   document.getElementById("csv").onclick=()=>{
     const d=filtered(),head="Data,Semana,Mes,Sub Tipo,Perfil,Quant,Fisc";
     const body=d.map(r=>`${r.Data},${r.Semana},${r.Mes},${r.SubTipo},${r.Perfil},${r.Quant},${r.Fisc==null?"":r.Fisc}`).join("\n");
@@ -1965,9 +2041,10 @@ function init(){
   document.getElementById("pFMes").onchange=e=>{pstate.mes=e.target.value;pOpenRec();prodRender();};
   document.getElementById("pFSemana").onchange=e=>{pstate.semana=e.target.value;pOpenRec();prodRender();};
   document.getElementById("pFDia").onchange=e=>{pstate.dia=e.target.value;pOpenRec();prodRender();};
+  {const pz=document.getElementById("pFZona");if(pz)pz.onchange=e=>{pstate.zona=e.target.value;pOpenRec();prodRender();};}
   document.querySelectorAll("[data-pmode]").forEach(b=>b.onclick=()=>{pstate.timeMode=b.dataset.pmode;document.querySelectorAll("[data-pmode]").forEach(x=>x.classList.toggle("active",x===b));prodRenderTime();});
   document.querySelectorAll("#pRecTable th[data-k]").forEach(th=>th.onclick=()=>{const k=th.dataset.k;if(pstate.sortK===k)pstate.sortDir*=-1;else{pstate.sortK=k;pstate.sortDir=1;}prodRenderRecTable();});
-  document.getElementById("pReset").onclick=()=>{pstate=Object.assign({},pstate,{mes:"Todos",semana:"Todas",dia:"",sortK:null,editId:null});["pSecRec","secEvolProd","secProdSemana"].forEach(id=>{const s=document.getElementById(id);if(s)s.open=false;});prodRender();};
+  document.getElementById("pReset").onclick=()=>{pstate=Object.assign({},pstate,{mes:"Todos",semana:"Todas",dia:"",zona:"Todas",sortK:null,editId:null});["pSecRec","secEvolProd","secProdSemana"].forEach(id=>{const s=document.getElementById(id);if(s)s.open=false;});prodRender();};
   const totC=document.getElementById("totCutoff");
   if(totC){totC.onchange=e=>{cutoff=e.target.value||null;renderTotais();};}
   document.getElementById("pCsv").onclick=()=>{
@@ -1986,16 +2063,17 @@ function init(){
 
   render();prodRender();renderMQT();
   document.getElementById("adminBtn").onclick=toggleAdmin;
-  ["dfMes","dfSemana","dfDia","dfPerfil"].forEach(id=>{const el=document.getElementById(id);if(el)el.onchange=e=>{const k={dfMes:"mes",dfSemana:"semana",dfDia:"dia",dfPerfil:"perfil"}[id];dashF[k]=e.target.value;renderDash();};});
-  const dfR=document.getElementById("dfReset");if(dfR)dfR.onclick=()=>{dashF={mes:"Todos",semana:"Todas",dia:"",perfil:"Todos"};dashBuildFilters();renderDash();};
-  ["pqPerfil","pqDia","pqSemana"].forEach(id=>{const el=document.getElementById(id);if(el)el.onchange=e=>{const k={pqPerfil:"perfil",pqDia:"dia",pqSemana:"semana"}[id];pesqF[k]=e.target.value;renderPesq();};});
-  const pqR=document.getElementById("pqReset");if(pqR)pqR.onclick=()=>{pesqF={perfil:"Todos",dia:"",semana:"Todas"};pesqBuildFilters();renderPesq();};
+  ["dfMes","dfSemana","dfDia","dfPerfil","dfZona"].forEach(id=>{const el=document.getElementById(id);if(el)el.onchange=e=>{const k={dfMes:"mes",dfSemana:"semana",dfDia:"dia",dfPerfil:"perfil",dfZona:"zona"}[id];dashF[k]=e.target.value;renderDash();};});
+  const dfR=document.getElementById("dfReset");if(dfR)dfR.onclick=()=>{dashF={mes:"Todos",semana:"Todas",dia:"",perfil:"Todos",zona:"Todas"};dashBuildFilters();renderDash();};
+  ["pqMes","pqPerfil","pqDia","pqSemana","pqZona"].forEach(id=>{const el=document.getElementById(id);if(el)el.onchange=e=>{const k={pqMes:"mes",pqPerfil:"perfil",pqDia:"dia",pqSemana:"semana",pqZona:"zona"}[id];pesqF[k]=e.target.value;renderPesq();};});
+  const pqR=document.getElementById("pqReset");if(pqR)pqR.onclick=()=>{pesqF={mes:"Todos",semana:"Todas",dia:"",perfil:"Todos",zona:"Todas"};pesqBuildFilters();renderPesq();};
   const efOpen=()=>["secEnrocRec","secEnroc"].forEach(id=>{const s=document.getElementById(id);if(s)s.open=true;});
   document.getElementById("efMes").onchange=e=>{enrocF.mes=e.target.value;efOpen();renderEnrocRec();};
   document.getElementById("efSemana").onchange=e=>{enrocF.semana=e.target.value;efOpen();renderEnrocRec();};
   document.getElementById("efDia").onchange=e=>{enrocF.dia=e.target.value;efOpen();renderEnrocRec();};
   document.getElementById("efPerfil").onchange=e=>{enrocF.perfil=e.target.value;efOpen();renderEnrocRec();};
-  document.getElementById("efReset").onclick=()=>{enrocF={mes:"Todos",semana:"Todas",dia:"",perfil:"Todos"};["secEnrocRec","secEnroc"].forEach(id=>{const s=document.getElementById(id);if(s)s.open=false;});enrocBuildFilters();renderEnrocRec();};
+  document.getElementById("efZona").onchange=e=>{enrocF.zona=e.target.value;efOpen();renderEnrocRec();};
+  document.getElementById("efReset").onclick=()=>{enrocF={mes:"Todos",semana:"Todas",dia:"",perfil:"Todos",zona:"Todas"};["secEnrocRec","secEnroc"].forEach(id=>{const s=document.getElementById(id);if(s)s.open=false;});enrocBuildFilters();renderEnrocRec();};
   uniformizarCapitulos();alinharTopo();
   window.addEventListener("resize",()=>{uniformizarCapitulos();alinharTopo();});
 }
