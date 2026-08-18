@@ -147,6 +147,8 @@
   .pqtable th,.pqtable td{padding:7px 10px;text-align:center;font-size:12px;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
   .pqtable th{font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);font-weight:700}
   .pqtable tr.tot td{border-bottom:none;border-top:2px solid var(--accent);font-weight:800}
+  .obsbody p{margin:0 0 10px;font-size:13px;line-height:1.55;color:var(--txt)}
+  .obsbody p:last-child{margin-bottom:0}
   .amdate{display:block;font-size:9px;font-weight:400;color:var(--faint);margin-top:2px;white-space:nowrap}
   .kgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:16px}
   .kcard{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px}
@@ -246,7 +248,7 @@
           <button class="iconbtn" data-th="dark" title="Escuro"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
           <button class="iconbtn" data-th="system" title="Sistema"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></button>
         </div>
-        <button class="iconbtn" id="verBtn" title="v26.08.10.3315"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></button>
+        <button class="iconbtn" id="verBtn" title="v26.08.10.3330"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></button>
       </div>
     </div>
     <div class="titlerow">
@@ -555,6 +557,11 @@
         </table>
       </div>
       </div>
+    </details>
+
+    <details class="sec" id="secEnrocObs">
+      <summary>Observações</summary>
+      <div class="secbody"><div id="enrocObsBody" class="obsbody"></div></div>
     </details>
   </div><!-- /temaEnroc -->
 
@@ -934,6 +941,16 @@ const ENROC_RECORDS=[
   {cap:"2.5",Data:"2026-07-27",Perfil:"Total",Enroc:422.43,Fisc:422.43},
   {cap:"2.9",Data:"2026-07-27",Perfil:"P10",Enroc:500,Fisc:390.4}
 ];
+const ENROC_OBS={
+  "2.2":[
+    "A quantidade executada, medida pela Fiscalização, corresponde à quantidade medida pelo projetista e desconsidera o arredondamento efetuado para o MQT.",
+    "A quantidade indicada pelo Empreiteiro corresponde, por opção, a metade do trabalho executado.",
+    "A opção tem a ver com o fato de, em sede de orçamentação, não terem reparado que existia \"remoção e reposição\" e preferirem, agora, faturar metade do que, posteriormente, não faturar a reposição."
+  ],
+  "2.3":[
+    "Este trabalho ainda não foi efetuado."
+  ]
+};
 const ENROC_DATA={
   "2.2":{sub:"Coroamento do Manto | 12 a 15 tf",linhas:[
     {perfis:"P1 a P9",mtq:380,projeto:376.75},
@@ -1040,6 +1057,14 @@ function enrocBuildFilters(){
   setSel("efPerfil",enrocF.perfil,'<option value="Todos">Todos</option>'+perfis.map(p=>`<option value="${esc(p)}">${esc(p)}</option>`).join(""));
   enrocF.mes=document.getElementById("efMes").value;enrocF.semana=document.getElementById("efSemana").value;enrocF.perfil=document.getElementById("efPerfil").value;
   const d=document.getElementById("efDia");if(d)d.value=enrocF.dia;
+}
+function renderEnrocObs(){
+  const det=document.getElementById("secEnrocObs"),el=document.getElementById("enrocObsBody");
+  if(!det||!el)return;
+  const obs=ENROC_OBS[curEnroc];
+  if(!obs||!obs.length){det.style.display="none";return;}
+  det.style.display="";
+  el.innerHTML=obs.map(p=>`<p>${esc(p)}</p>`).join("");
 }
 function renderEnrocRec(){
   const el=document.getElementById("enrocRecBody");if(!el)return;
@@ -1886,7 +1911,7 @@ function init(){
     if(t==="totais")renderTotais();
     if(t==="dash"){dashBuildFilters();renderDash();}
     if(t==="pesq"){pesqBuildFilters();renderPesq();}
-    if(cfg.enrocId){curEnroc=cfg.enrocId;enrocF={mes:"Todos",semana:"Todas",dia:"",perfil:"Todos"};enrocBuildFilters();renderEnrocRec();renderEnroc();}
+    if(cfg.enrocId){curEnroc=cfg.enrocId;enrocF={mes:"Todos",semana:"Todas",dia:"",perfil:"Todos"};enrocBuildFilters();renderEnrocRec();renderEnroc();renderEnrocObs();}
     document.getElementById("hdEyebrow").textContent=EB;
     document.getElementById("hdTitle").textContent=cfg.title;
     document.getElementById("hdSub").textContent=cfg.sub;
