@@ -248,7 +248,7 @@
           <button class="iconbtn" data-th="dark" title="Escuro"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
           <button class="iconbtn" data-th="system" title="Sistema"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></button>
         </div>
-        <button class="iconbtn" id="verBtn" title="v26.08.10.3330"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></button>
+        <button class="iconbtn" id="verBtn" title="v26.08.10.3345"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></button>
       </div>
     </div>
     <div class="titlerow">
@@ -939,7 +939,15 @@ const ENROC_RECORDS=[
   {cap:"2.2",Data:"2026-05-29",Perfil:"P11 a P11",Enroc:80,Fisc:150.8},
   {cap:"2.2",Data:"2026-05-29",Perfil:"P11 a P9",Enroc:60,Fisc:120},
   {cap:"2.5",Data:"2026-07-27",Perfil:"Total",Enroc:422.43,Fisc:422.43},
-  {cap:"2.9",Data:"2026-07-27",Perfil:"P10",Enroc:500,Fisc:390.4}
+  {cap:"2.9",Data:"2026-07-27",Perfil:"P10",Enroc:500,Fisc:390.4},
+  {cap:"2.4",Data:"2026-07-27",Perfil:"P3",Enroc:127.05,Fisc:127.05},
+  {cap:"2.4",Data:"2026-07-27",Perfil:"P4",Enroc:223.60,Fisc:226.00},
+  {cap:"2.4",Data:"2026-07-27",Perfil:"P5",Enroc:282.75,Fisc:280.00},
+  {cap:"2.4",Data:"2026-07-27",Perfil:"P6",Enroc:302.90,Fisc:301.00},
+  {cap:"2.4",Data:"2026-07-27",Perfil:"P7",Enroc:277.35,Fisc:268.00},
+  {cap:"2.4",Data:"2026-07-27",Perfil:"P8",Enroc:320.30,Fisc:321.00},
+  {cap:"2.4",Data:"2026-07-27",Perfil:"P9",Enroc:372.65,Fisc:373.00},
+  {cap:"2.4",Data:"2026-07-27",Perfil:"P10",Enroc:181.27,Fisc:183.00}
 ];
 const ENROC_OBS={
   "2.2":[
@@ -1072,8 +1080,8 @@ function renderEnrocRec(){
   const cnt=document.getElementById("enrocRegCount");if(cnt)cnt.textContent=recs.length?`(${recs.length})`:"";
   if(!recs.length){el.innerHTML='<tr><td colspan="6" class="empty" style="padding:20px">Sem registos.</td></tr>';return;}
   const ordem=(ENROC_DATA[curEnroc]&&ENROC_DATA[curEnroc].linhas?ENROC_DATA[curEnroc].linhas.map(l=>l.perfis):[]);
-  const oidx=p=>{const i=ordem.indexOf(p);return i<0?999:i;};
-  el.innerHTML=recs.slice().sort((a,b)=>oidx(a.Perfil)-oidx(b.Perfil)||(a.Data<b.Data?1:-1)).map(r=>{
+  const oidx=p=>{const i=ordem.indexOf(p);return i<0?1000+(pesqNum(p)||0):i;};
+  el.innerHTML=recs.slice().sort((a,b)=>{const na=pesqNum(a.Perfil)||0,nb=pesqNum(b.Perfil)||0;return na-nb||oidx(a.Perfil)-oidx(b.Perfil)||(a.Data<b.Data?1:-1);}).map(r=>{
     const cls=r.Fisc===r.Enroc?"fisc-ok":"fisc-alt";
     return `<tr><td>${fmtD(r.Data)}</td><td>${isoWeek(r.Data)}</td><td>${mesLabel(mesOf(r.Data))}</td><td>${esc(r.Perfil)}</td><td>${fmtE(r.Enroc)}</td><td><span class="${cls}">${fmtE(r.Fisc)}</span></td></tr>`;
   }).join("");
@@ -1253,21 +1261,31 @@ function renderEnroc(){
   if(!e||!e.linhas.length){el.innerHTML='<tr><td colspan="6" class="empty" style="padding:20px">Sem dados.</td></tr>';return;}
   const recs=ENROC_RECORDS.filter(r=>r.cap===curEnroc);
   const temReg=recs.length>0;
-  const empBy=p=>recs.filter(r=>r.Perfil===p).reduce((s,r)=>s+(r.Enroc||0),0);
-  const fiscBy=p=>recs.filter(r=>r.Perfil===p).reduce((s,r)=>s+(r.Fisc||0),0);
+  const pertence=(grupo,rp)=>rp===grupo||(!/\b[ae]\b/.test(rp)&&trocoInclui(grupo,rp));
+  const sumG=(grupo,campo)=>recs.filter(r=>pertence(grupo,r.Perfil)).reduce((s,r)=>s+(r[campo]||0),0);
   const cor=v=>v<0?"#e76f51":v>0?"#4caf72":"inherit";
   const sp=(v,suf)=>v==null?"&mdash;":`<span style="color:${cor(v)}">${v>0?"+":""}${suf==="%"?fmtN(v,1)+"%":fmtE(v)}</span>`;
-  let sPrj=0,sMtq=0,sEmp=0,sFisc=0,hasPrj=false;
-  const rows=e.linhas.map(l=>{
-    const projeto=l.projeto,mtq=l.mtq||0,emp=empBy(l.perfis),fisc=fiscBy(l.perfis);
-    if(projeto!=null){sPrj+=projeto;hasPrj=true;}sMtq+=mtq;sEmp+=emp;sFisc+=fisc;
-    const saldo=mtq-emp;
-    const desv=temReg?fisc-emp:null;
+  const mk=(perfis,projeto,mtq,emp,fisc)=>{
+    const saldo=mtq>0?mtq-emp:null;
+    const desv=temReg&&(emp||fisc)?fisc-emp:null;
     const pct=(desv!=null&&fisc)?desv/fisc*100:null;
-    return `<tr><td>${esc(l.perfis)}</td><td>${projeto!=null?fmtE(projeto):"&mdash;"}</td><td>${fmtE(mtq)}</td><td>${fmtE(saldo)}</td><td>${sp(desv)}</td><td>${sp(pct,"%")}</td></tr>`;
+    return {perfis,projeto,mtq,emp,fisc,saldo,desv,pct};
+  };
+  const linhas=e.linhas.map(l=>mk(l.perfis,l.projeto,l.mtq||0,sumG(l.perfis,"Enroc"),sumG(l.perfis,"Fisc")));
+  // órfãos: registos que não pertencem a nenhum grupo do projeto
+  const orfaos=[...new Set(recs.filter(r=>!e.linhas.some(l=>pertence(l.perfis,r.Perfil))).map(r=>r.Perfil))].sort(pcmp);
+  orfaos.forEach(p=>{
+    const emp=recs.filter(r=>r.Perfil===p).reduce((s,r)=>s+(r.Enroc||0),0);
+    const fisc=recs.filter(r=>r.Perfil===p).reduce((s,r)=>s+(r.Fisc||0),0);
+    linhas.push(mk(p,null,0,emp,fisc));
+  });
+  let sPrj=0,sMtq=0,sEmp=0,sFisc=0,hasPrj=false;
+  const rows=linhas.map(L=>{
+    if(L.projeto!=null){sPrj+=L.projeto;hasPrj=true;}sMtq+=L.mtq;sEmp+=L.emp;sFisc+=L.fisc;
+    return `<tr><td>${esc(L.perfis)}</td><td>${L.projeto!=null?fmtE(L.projeto):"&mdash;"}</td><td>${L.mtq>0?fmtE(L.mtq):"&mdash;"}</td><td>${L.saldo==null?"&mdash;":fmtE(L.saldo)}</td><td>${sp(L.desv)}</td><td>${sp(L.pct,"%")}</td></tr>`;
   }).join("");
-  const saldoT=sMtq-sEmp,desvT=temReg?sFisc-sEmp:null,pctT=(desvT!=null&&sFisc)?desvT/sFisc*100:null;
-  const totalRow=e.linhas.length>1?`<tr class="total"><td>TOTAL</td><td>${hasPrj?fmtE(sPrj):"&mdash;"}</td><td>${fmtE(sMtq)}</td><td>${fmtE(saldoT)}</td><td>${sp(desvT)}</td><td>${sp(pctT,"%")}</td></tr>`:"";
+  const saldoT=sMtq>0?sMtq-sEmp:null,desvT=temReg?sFisc-sEmp:null,pctT=(desvT!=null&&sFisc)?desvT/sFisc*100:null;
+  const totalRow=linhas.length>1?`<tr class="total"><td>TOTAL</td><td>${hasPrj?fmtE(sPrj):"&mdash;"}</td><td>${sMtq>0?fmtE(sMtq):"&mdash;"}</td><td>${saldoT==null?"&mdash;":fmtE(saldoT)}</td><td>${sp(desvT)}</td><td>${sp(pctT,"%")}</td></tr>`:"";
   el.innerHTML=rows+totalRow;
 }
 function renderResumo(){
