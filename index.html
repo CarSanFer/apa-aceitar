@@ -246,7 +246,7 @@
           <button class="iconbtn" data-th="dark" title="Escuro"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
           <button class="iconbtn" data-th="system" title="Sistema"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></button>
         </div>
-        <button class="iconbtn" id="verBtn" title="v26.08.10.3300"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></button>
+        <button class="iconbtn" id="verBtn" title="v26.08.10.3315"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></button>
       </div>
     </div>
     <div class="titlerow">
@@ -923,9 +923,9 @@ let state={rcMode:"Remoção",mes:"Todos",semana:"Todas",dia:"",sub:"Todos",perf
 
 /* ===== MQT / PROJ ===== */
 const MQT_DATA=[{"Id": "2.1", "Descricao": "Remoção de Tetrápodes (Inteiros e Partidos)", "PopUP": "Remoção de tetrápodes e de tetrápodes partidos do manto do talude sul e cabeça", "Un": "un", "Quant": 384.0, "PrUnit": 218.51, "Total": 83907.84}, {"Id": "2.2", "Descricao": "Enrocamento (Coroamente do Manto)", "PopUP": "Remoção e posterior reposição de enrocamento de 12 a 15 tf do remate do coroamento do manto de tetrápodes", "Un": "m3", "Quant": 800.0, "PrUnit": 39.42, "Total": 31536.0}, {"Id": "2.3", "Descricao": "Enrocamento (Cabeça -> Talude Sul)", "PopUP": "Remoção de enrocamento de 12 a 15 tf  do manto para execução da transição da cabeça para o talude norte", "Un": "m3", "Quant": 700.0, "PrUnit": 40.82, "Total": 28574.0}, {"Id": "2.4", "Descricao": "Remoção de Materiais de Qualquer Natureza", "PopUP": "Remoção de materiais de qualquer natureza (areia, enrocamento, bocados de terápodes) para reconstrução da banqueta de pé de talude", "Un": "m3", "Quant": 3000.0, "PrUnit": 46.1, "Total": 138300.0}, {"Id": "2.5", "Descricao": "Enrocamento (Banqueta)", "PopUP": "Reconstrução da banqueta de pé de talude em enrocamento de 12 a 15 tf", "Un": "m3", "Quant": 1900.0, "PrUnit": 55.85, "Total": 106115.0}, {"Id": "2.6", "Descricao": "Colocação de Tetrápodes Recuperados (Cabeça e Talude Sul)", "PopUP": "Colocação de tetrápodes recuperados da cabeça e do talude sul na reconstituição do manto de protecção do talude sul", "Un": "un", "Quant": 161.0, "PrUnit": 411.04, "Total": 66177.44}, {"Id": "2.7", "Descricao": "Transporte e Depósito Tetrápodes Recuperados e não Utilizados (Cabeça e Sul)", "PopUP": "Transporte a depósito de tetrápodes recuperados da cabeça e do talude sul e não utilizados na reconstituição do manto de protecção do talude sul (depósito localizado num raio de 2,5Km de distância ao local da obra)", "Un": "un", "Quant": 108.0, "PrUnit": 313.84, "Total": 33894.719999999994}, {"Id": "2.8", "Descricao": "nan", "PopUP": "Fornecimento e colocação de tetrápodes de 34,4 tf, em betão NP EN 206-1: C35/45, XA1 (Pt), Cl 1.0, Dmax20, S3, simples", "Un": "", "Quant": null, "PrUnit": null, "Total": null}, {"Id": "2.8.1", "Descricao": "Produção de Tetrápodes Novos", "PopUP": "Fabrico e colocação em depósito dos tetrápodes", "Un": "un", "Quant": 360.0, "PrUnit": 2534.16, "Total": 912297.6}, {"Id": "2.8.2", "Descricao": "Transporte e Colocação de Tetrápodes Novos", "PopUP": "Transporte e colocação de tetrápodes", "Un": "un", "Quant": 360.0, "PrUnit": 539.93, "Total": 194374.8}, {"Id": "2.9", "Descricao": "Enrocamento (Submanto)", "PopUP": "Fornecimento e colocação de enrocamento de 1 a 4 tf no submanto na transição entre o talude sul e a cabeça", "Un": "m3", "Quant": 500.0, "PrUnit": 41.0, "Total": 20500.0}, {"Id": "2.10", "Descricao": "Enrocamento (Talude Norte -> Cabeça)", "PopUP": "Fornecimento e colocação de enrocamento de 12 a 15 tf no manto da transição entre o talude norte e a cabeça", "Un": "m3", "Quant": 1200.0, "PrUnit": 51.69, "Total": 62028.0}, {"Id": "2.11", "Descricao": "Fornecimento, Transporte e Colocação de Betão", "PopUP": "Fornecimento, transporte e colocação de betão simples C30/37, XA1, Dmax=25mm, para rematar o capeamento da superestrutura junto dos blocos no coroamento", "Un": "m3", "Quant": 50.0, "PrUnit": 196.26, "Total": 9813.0}];
-const fmtN=(x,d=0)=>x==null?"":Number(x).toLocaleString("pt-PT",{minimumFractionDigits:d,maximumFractionDigits:d,useGrouping:"always"});
+const fmtN=(x,d=2)=>x==null?"":Number(x).toLocaleString("pt-PT",{minimumFractionDigits:d,maximumFractionDigits:d,useGrouping:"always"});
 const fmtE=x=>x==null?"":Number(x).toLocaleString("pt-PT",{minimumFractionDigits:2,maximumFractionDigits:2,useGrouping:"always"});
-const fmtA=x=>x==null?"":Number(x).toLocaleString("pt-PT",{maximumFractionDigits:2,useGrouping:"always"});
+const fmtA=x=>x==null?"":Number(x).toLocaleString("pt-PT",{minimumFractionDigits:2,maximumFractionDigits:2,useGrouping:"always"});
 const ENROC_RECORDS=[
   {cap:"2.2",Data:"2026-05-29",Perfil:"P1 a P9",Enroc:190,Fisc:376.754},
   {cap:"2.2",Data:"2026-05-29",Perfil:"P10 e P11",Enroc:70,Fisc:137},
@@ -1340,14 +1340,14 @@ function fiscCell(r){
     return isAdmin?`<td><button class="ibtn ok" title="Validar (=${r.Quant})" onclick="validar('${r.id}')">&#10003;</button></td>`
                   :`<td class="fisc-none">&mdash;</td>`;
   const cls=r.Fisc===r.Quant?"fisc-ok":"fisc-alt";
-  return `<td><span class="${cls}">${r.Fisc}</span></td>`;
+  return `<td><span class="${cls}">${fmtN(r.Fisc)}</span></td>`;
 }
 function rowView(r){
   return `<tr>
     <td class="l">${fmtD(r.Data)}</td><td>${r.Semana}</td><td>${mesLabel(r.Mes)}</td>
     <td class="colSub">${r.SubTipo}</td>
     <td><span class="chip" style="background:${PC[r.Perfil]||"#888"}">${r.Perfil}</span></td>
-    <td><b>${r.Quant}</b></td>
+    <td><b>${fmtN(r.Quant)}</b></td>
     ${fiscCell(r)}
     <td><span class="iact">
       <button class="ibtn ed" title="Editar" onclick="startEdit('${r.id}')">&#9998;</button>
@@ -1435,7 +1435,7 @@ function renderCmpProd(){
   const prod=prodRecords.reduce((s,r)=>s+(r.Prod||0),0);
   const fisc=prodRecords.reduce((s,r)=>s+(r.Fisc!=null?r.Fisc:(r.Prod||0)),0);
   const dv=prod-proj,pct=proj>0?dv/proj*100:null,cor=v=>v<0?"#e76f51":v>0?"#4caf72":"inherit";
-  el.innerHTML=`<tr class="total"><td>Total</td><td class="num">${fmtN(proj)}</td><td class="num">${fmtN(prod)}</td><td class="num">${fmtN(fisc)}</td><td class="num"><span style="color:${cor(dv)}">${dv>0?"+":""}${dv}</span></td><td class="num">${pct==null?"&mdash;":`<span style="color:${cor(pct)}">${pct>0?"+":""}${fmtN(pct,1)}%</span>`}</td></tr>`;
+  el.innerHTML=`<tr class="total"><td>Total</td><td class="num">${fmtN(proj)}</td><td class="num">${fmtN(prod)}</td><td class="num">${fmtN(fisc)}</td><td class="num"><span style="color:${cor(dv)}">${dv>0?"+":""}${fmtN(dv)}</span></td><td class="num">${pct==null?"&mdash;":`<span style="color:${cor(pct)}">${pct>0?"+":""}${fmtN(pct,1)}%</span>`}</td></tr>`;
 }
 function renderCmp282(){
   const el=document.getElementById("cmp282Body");if(!el)return;
@@ -1446,9 +1446,9 @@ function renderCmp282(){
   let sP=0,sC=0;
   const rows=perfis.map(p=>{const pr=proj[p]||0,co=real[p]||0;sP+=pr;sC+=co;
     const dv=co-pr,pct=pr>0?dv/pr*100:null;const temC=real[p]!=null;
-    return `<tr><td class="id" style="color:${PC[p]||'var(--accent)'}">${esc(p)}</td><td class="num">${pr||"&mdash;"}</td><td class="num">${co||"&mdash;"}</td><td class="num">${(pr||co)?`<span style="color:${cor(dv)}">${dv>0?"+":""}${dv}</span>`:"&mdash;"}</td><td class="num">${pct==null?"&mdash;":`<span style="color:${cor(pct)}">${pct>0?"+":""}${fmtN(pct,1)}%</span>`}</td></tr>`;}).join("");
+    return `<tr><td class="id" style="color:${PC[p]||'var(--accent)'}">${esc(p)}</td><td class="num">${pr?fmtN(pr):"&mdash;"}</td><td class="num">${co?fmtN(co):"&mdash;"}</td><td class="num">${(pr||co)?`<span style="color:${cor(dv)}">${dv>0?"+":""}${fmtN(dv)}</span>`:"&mdash;"}</td><td class="num">${pct==null?"&mdash;":`<span style="color:${cor(pct)}">${pct>0?"+":""}${fmtN(pct,1)}%</span>`}</td></tr>`;}).join("");
   const dvT=sC-sP,pctT=sP>0?dvT/sP*100:null;
-  el.innerHTML=rows+`<tr class="total"><td>TOTAL</td><td class="num">${sP}</td><td class="num">${sC||"&mdash;"}</td><td class="num"><span style="color:${cor(dvT)}">${dvT>0?"+":""}${dvT}</span></td><td class="num">${pctT==null?"&mdash;":`<span style="color:${cor(pctT)}">${pctT>0?"+":""}${fmtN(pctT,1)}%</span>`}</td></tr>`;
+  el.innerHTML=rows+`<tr class="total"><td>TOTAL</td><td class="num">${fmtN(sP)}</td><td class="num">${sC?fmtN(sC):"&mdash;"}</td><td class="num"><span style="color:${cor(dvT)}">${dvT>0?"+":""}${fmtN(dvT)}</span></td><td class="num">${pctT==null?"&mdash;":`<span style="color:${cor(pctT)}">${pctT>0?"+":""}${fmtN(pctT,1)}%</span>`}</td></tr>`;
 }
 function renderCmpProjeto(){
   const rem=state.rcMode==="Remoção";
@@ -1465,14 +1465,14 @@ function renderCmpProjeto(){
     const dv=ob-pr,pct=pr>0?dv/pr*100:null;
     return `<tr>
       <td class="id" style="color:${PC[p]||'var(--accent)'}">${esc(p)}</td>
-      <td class="num">${pr||"&mdash;"}</td>
-      <td class="num">${ob||"&mdash;"}</td>
-      <td class="num"><span style="color:${cor(dv)}">${dv>0?"+":""}${dv}</span></td>
+      <td class="num">${pr?fmtN(pr):"&mdash;"}</td>
+      <td class="num">${ob?fmtN(ob):"&mdash;"}</td>
+      <td class="num"><span style="color:${cor(dv)}">${dv>0?"+":""}${fmtN(dv)}</span></td>
       <td class="num">${pct==null?"&mdash;":`<span style="color:${cor(pct)}">${pct>0?"+":""}${fmtN(pct,1)}%</span>`}</td>
     </tr>`;
   }).join("");
   const dvT=sO-sP,pctT=sP>0?dvT/sP*100:null;
-  const totalRow=`<tr class="total"><td>TOTAL</td><td class="num">${sP}</td><td class="num">${sO}</td><td class="num"><span style="color:${cor(dvT)}">${dvT>0?"+":""}${dvT}</span></td><td class="num">${pctT==null?"&mdash;":`<span style="color:${cor(pctT)}">${pctT>0?"+":""}${fmtN(pctT,1)}%</span>`}</td></tr>`;
+  const totalRow=`<tr class="total"><td>TOTAL</td><td class="num">${fmtN(sP)}</td><td class="num">${fmtN(sO)}</td><td class="num"><span style="color:${cor(dvT)}">${dvT>0?"+":""}${fmtN(dvT)}</span></td><td class="num">${pctT==null?"&mdash;":`<span style="color:${cor(pctT)}">${pctT>0?"+":""}${fmtN(pctT,1)}%</span>`}</td></tr>`;
   const lbl=document.getElementById("cmpObraLbl");if(lbl)lbl.textContent=rem?"Removidos":"Colocados";
   document.getElementById("cmpBody").innerHTML=rows+totalRow;
 }
@@ -1540,8 +1540,8 @@ function renderPerfis(){
     const cols=rem?3:2;
     const head=rem?`<tr><th>Data</th><th>Sub Tipo</th><th>Qt</th></tr>`:`<tr><th>Data</th><th>Qt</th></tr>`;
     const body=rows.length?rows.slice().sort((a,b)=>a.Data<b.Data?1:-1).map(r=>
-      rem?`<tr><td class="l">${fmtD(r.Data)}</td><td>${r.SubTipo}</td><td>${r.Quant}</td></tr>`
-         :`<tr><td class="l">${fmtD(r.Data)}</td><td>${r.Quant}</td></tr>`).join("")
+      rem?`<tr><td class="l">${fmtD(r.Data)}</td><td>${r.SubTipo}</td><td>${fmtN(r.Quant)}</td></tr>`
+         :`<tr><td class="l">${fmtD(r.Data)}</td><td>${fmtN(r.Quant)}</td></tr>`).join("")
       :`<tr><td colspan="${cols}" class="empty" style="padding:14px">Sem registos</td></tr>`;
     return `<div class="pcard ${dim}" onclick="toggleHL('${p}')">
       <div class="phead" style="background:${PC[p]}1a"><span class="ptag" style="color:${PC[p]}">${p}</span><span class="ptot">${tot}</span></div>
@@ -1761,13 +1761,13 @@ function pFiscCell(r){
     return isAdmin?`<td><button class="ibtn ok" title="Validar (=${r.Prod})" onclick="pValidar('${r.id}')">&#10003;</button></td>`
                   :`<td class="fisc-none">&mdash;</td>`;
   const cls=r.Fisc===r.Prod?"fisc-ok":"fisc-alt";
-  return `<td><span class="${cls}">${r.Fisc}</span></td>`;
+  return `<td><span class="${cls}">${fmtN(r.Fisc)}</span></td>`;
 }
 function pRowView(r){
   const dv=r.Prod-r.Rend;
   return `<tr>
     <td class="l">${fmtD(r.Data)}</td><td>${r.Semana}</td><td>${mesLabel(r.Mes)}</td>
-    <td><b>${r.Prod}</b></td><td>${r.Rend}</td>
+    <td><b>${fmtN(r.Prod)}</b></td><td>${r.Rend}</td>
     <td style="color:${dv<0?"#e76f51":dv>0?"#4caf72":"var(--muted)"}">${dv>0?"+":""}${dv}</td>
     ${pFiscCell(r)}
     <td><span class="iact">
