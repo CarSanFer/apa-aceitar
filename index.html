@@ -10,7 +10,7 @@
     --txt:#e8edf2; --muted:#8b9aa8; --faint:#5d6c7a; --stripe:#ffffff08;
     --accent:#f4a259; --accent2:#4895ef; --field:#101820; --fieldtx:#e8edf2;
     --radius:10px;
-    --font:'Segoe UI',system-ui,-apple-system,sans-serif;
+    --font:'Calibri','Segoe UI',system-ui,-apple-system,sans-serif;
   }
   html[data-theme="light"]{
     --bg:#eef1f5; --panel:#ffffff; --panel2:#eef2f6; --line:#d8dfe7;
@@ -79,6 +79,13 @@
   #temaRC.mode-col .colSub{display:none}
   #temaRC.mode-col #cardPerfilSub{display:none}
   #temaRC.mode-col #distGrid{grid-template-columns:1fr}
+
+  /* Uniformização de fontes das tabelas (Calibri): células 9pt, cabeçalhos 10pt bold, sem bold nas linhas */
+  .tema table td{font-size:12px;font-weight:400}
+  .tema table th{font-size:13px;font-weight:700}
+  .tema table td b{font-weight:400}
+  .tema table tr.total td,.tema table tr.tot td{font-weight:700}
+  .fisc-ok,.fisc-alt{font-weight:400!important}
   .fisc-ok{color:#4caf72;font-weight:800}
   .fisc-alt{color:#f4a259;font-weight:800}
   .fisc-none{color:var(--faint)}
@@ -258,7 +265,7 @@
           <button class="iconbtn" data-th="dark" title="Escuro"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
           <button class="iconbtn" data-th="system" title="Sistema"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></button>
         </div>
-        <button class="iconbtn" id="verBtn" title="v26.08.10.3915"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></button>
+        <button class="iconbtn" id="verBtn" title="v26.08.10.4000"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></button>
       </div>
     </div>
     <div class="titlerow">
@@ -551,7 +558,7 @@
           <table id="enrocRecTable">
             <thead><tr>
               <th>Dia</th><th>Semana</th><th>Mês</th><th>Perfil</th>
-              <th>Empreiteiro (m³)</th><th>Fiscalização (m³)</th>
+              <th>Enrocamento (EE)</th><th>Enrocamento (Fisc)</th>
             </tr></thead>
             <tbody id="enrocRecBody"></tbody>
           </table>
@@ -568,9 +575,9 @@
             <th>Perfis</th>
             <th>Projeto</th>
             <th>MTQ</th>
-            <th>Por Fat</th>
-            <th>Desvio</th>
-            <th>Desvio %</th>
+            <th>Enrocamento (EE)</th>
+            <th>Diferença</th>
+            <th>Diferença %</th>
           </tr></thead>
           <tbody id="enrocBody"></tbody>
         </table>
@@ -578,19 +585,21 @@
       </div>
     </details>
 
-    <details class="sec" id="secEnrocObs">
-      <summary>Observações</summary>
-      <div class="secbody"><div id="enrocObsBody" class="obsbody"></div></div>
-    </details>
+
 
     <details class="sec" id="secEnrocFat">
       <summary>Faturação</summary>
       <div class="secbody"><div class="mqtwrap">
         <table id="enrocFatTable">
-          <thead><tr><th>AM</th><th>Mês</th><th>MTQ</th><th>Executado</th><th>Faturado</th><th>Desvio</th><th>Por faturar</th></tr></thead>
+          <thead><tr><th>AM</th><th>Mês</th><th>Projeto</th><th>MTQ</th><th>Enrocamento (EE)</th><th>Faturado</th><th>Desvio</th><th>Por faturar</th></tr></thead>
           <tbody id="enrocFatBody"></tbody>
         </table>
       </div></div>
+    </details>
+
+    <details class="sec" id="secEnrocObs">
+      <summary>Observações</summary>
+      <div class="secbody"><div id="enrocObsBody" class="obsbody"></div></div>
     </details>
   </div><!-- /temaEnroc -->
 
@@ -1005,7 +1014,11 @@ const ENROC_OBS={
     "A opção tem a ver com o fato de, em sede de orçamentação, não terem reparado que existia \"remoção e reposição\" e preferirem, agora, faturar metade do que, posteriormente, não faturar a reposição."
   ],
   "2.3":[
-    "Este trabalho ainda não foi efetuado."
+    "Este trabalho ainda não foi efetuado.",
+    "Estão previstos 700 m³ no MTQ (617,20 no Projeto).",
+    "Entretanto, foram medidos 1\u00a0091,87 m³, ou seja, mais 391,87 m³ do que a quantidade do projeto.",
+    "Esta quantidade só agora pôde ser medida dado que só com a remoção do material foi possível aferir, por via de levantamento topo-hidrográfico e superfície do projeto, as quantidades.",
+    {vermelho:true,texto:"Pedro deve medir para confirmar a projeção da Hydrostone."}
   ]
 };
 const ENROC_DATA={
@@ -1123,7 +1136,9 @@ function renderEnrocFat(){
   const temAutos=a&&a.AM&&a.AM.some(v=>v!=null);
   if(!temAutos&&!recs.length){det.style.display="none";return;}
   det.style.display="";
-  document.getElementById("enrocFatBody").innerHTML=fatTableRows(a,fatExecByMes(recs,"Fisc"),fmtE);
+  const ed=ENROC_DATA[curEnroc];
+  let projeto=null;if(ed&&ed.linhas){const s=ed.linhas.reduce((acc,l)=>l.projeto!=null?acc+l.projeto:acc,0);if(ed.linhas.some(l=>l.projeto!=null))projeto=s;}
+  document.getElementById("enrocFatBody").innerHTML=fatTableRows(a,fatExecByMes(recs,"Enroc"),fmtE,projeto);
   alignRn(document.getElementById("enrocFatTable"));
 }
 function renderEnrocObs(){
@@ -1132,7 +1147,7 @@ function renderEnrocObs(){
   const obs=ENROC_OBS[curEnroc];
   if(!obs||!obs.length){det.style.display="none";return;}
   det.style.display="";
-  el.innerHTML=obs.map(p=>`<p>${esc(p)}</p>`).join("");
+  el.innerHTML=obs.map(p=>(p&&p.vermelho)?`<p style="color:var(--bad)">${esc(p.texto)}</p>`:`<p>${esc(p)}</p>`).join("");
 }
 function renderEnrocRec(){
   const el=document.getElementById("enrocRecBody");if(!el)return;
@@ -1342,10 +1357,10 @@ function renderEnroc(){
   const cor=v=>v<0?"#e76f51":v>0?"#4caf72":"inherit";
   const sp=(v,suf)=>v==null?"&mdash;":`<span style="color:${cor(v)}">${v>0?"+":""}${suf==="%"?fmtN(v,1)+"%":fmtE(v)}</span>`;
   const mk=(perfis,projeto,mtq,emp,fisc)=>{
-    const saldo=mtq>0?mtq-emp:null;
-    const desv=temReg&&(emp||fisc)?fisc-emp:null;
-    const pct=(desv!=null&&fisc)?desv/fisc*100:null;
-    return {perfis,projeto,mtq,emp,fisc,saldo,desv,pct};
+    const ee=temReg&&(emp||fisc)?emp:null;
+    const dif=(ee!=null&&mtq>0)?emp-mtq:null;
+    const pct=(dif!=null&&mtq)?dif/mtq*100:null;
+    return {perfis,projeto,mtq,emp,fisc,ee,dif,pct};
   };
   const linhas=e.linhas.map(l=>mk(l.perfis,l.projeto,l.mtq||0,sumG(l.perfis,"Enroc"),sumG(l.perfis,"Fisc")));
   // órfãos: registos que não pertencem a nenhum grupo do projeto
@@ -1358,10 +1373,10 @@ function renderEnroc(){
   let sPrj=0,sMtq=0,sEmp=0,sFisc=0,hasPrj=false;
   const rows=linhas.map(L=>{
     if(L.projeto!=null){sPrj+=L.projeto;hasPrj=true;}sMtq+=L.mtq;sEmp+=L.emp;sFisc+=L.fisc;
-    return `<tr><td>${esc(L.perfis)}</td><td>${L.projeto!=null?fmtE(L.projeto):"&mdash;"}</td><td>${L.mtq>0?fmtE(L.mtq):"&mdash;"}</td><td>${L.saldo==null?"&mdash;":fmtE(L.saldo)}</td><td>${sp(L.desv)}</td><td>${sp(L.pct,"%")}</td></tr>`;
+    return `<tr><td>${esc(L.perfis)}</td><td>${L.projeto!=null?fmtE(L.projeto):"&mdash;"}</td><td>${L.mtq>0?fmtE(L.mtq):"&mdash;"}</td><td>${L.ee==null?"&mdash;":fmtE(L.ee)}</td><td>${sp(L.dif)}</td><td>${sp(L.pct,"%")}</td></tr>`;
   }).join("");
-  const saldoT=sMtq>0?sMtq-sEmp:null,desvT=temReg?sFisc-sEmp:null,pctT=(desvT!=null&&sFisc)?desvT/sFisc*100:null;
-  const totalRow=linhas.length>1?`<tr class="total"><td>TOTAL</td><td>${hasPrj?fmtE(sPrj):"&mdash;"}</td><td>${sMtq>0?fmtE(sMtq):"&mdash;"}</td><td>${saldoT==null?"&mdash;":fmtE(saldoT)}</td><td>${sp(desvT)}</td><td>${sp(pctT,"%")}</td></tr>`:"";
+  const eeT=temReg?sEmp:null,difT=(eeT!=null&&sMtq>0)?sEmp-sMtq:null,pctT=(difT!=null&&sMtq)?difT/sMtq*100:null;
+  const totalRow=linhas.length>1?`<tr class="total"><td>TOTAL</td><td>${hasPrj?fmtE(sPrj):"&mdash;"}</td><td>${sMtq>0?fmtE(sMtq):"&mdash;"}</td><td>${eeT==null?"&mdash;":fmtE(eeT)}</td><td>${sp(difT)}</td><td>${sp(pctT,"%")}</td></tr>`:"";
   el.innerHTML=rows+totalRow;
   wrapNums(document.getElementById("enrocTable"));
 }
@@ -1470,7 +1485,7 @@ function rowView(r){
     <td class="l">${fmtD(r.Data)}</td><td>${r.Semana}</td><td>${mesLabel(r.Mes)}</td>
     <td class="colSub">${r.SubTipo}</td>
     <td><span class="chip" style="background:${PC[r.Perfil]||"#888"}">${r.Perfil}</span></td>
-    <td><b>${fmtN(r.Quant)}</b></td>
+    <td>${fmtN(r.Quant)}</td>
     ${fiscCell(r)}
     <td><span class="iact">
       <button class="ibtn ed" title="Editar" onclick="startEdit('${r.id}')">&#9998;</button>
@@ -1625,8 +1640,9 @@ function renderFat282(){
   document.getElementById("fat282Body").innerHTML=fatTableRows(a,fatExecByMes(COLNOV_RECORDS,"Quant"),fmtN);
   alignRn(document.getElementById("fat282Table"));
 }
-function fatTableRows(a,execByMes,fmt){
+function fatTableRows(a,execByMes,fmt,projeto){
   const mtq=a&&a.Quant!=null?a.Quant:0;
+  const temProj=projeto!=null;
   const fmtDataAM=iso=>{const p=iso.split("-");return p[2]+"/"+p[1]+"/"+p[0];};
   const rn=v=>`<span class="rn">${v}</span>`;
   const cor=v=>v<0?"#e76f51":v>0?"#4caf72":"inherit";
@@ -1636,13 +1652,13 @@ function fatTableRows(a,execByMes,fmt){
   const meses=[...new Set([...Object.keys(fatByMes),...Object.keys(execByMes)])].sort();
   let exec=0,fat=0;const rows=[];
   meses.forEach(mes=>{
-    const am=amByMes[mes],fv=fatByMes[mes],e=execByMes[mes]||0;
-    exec+=e;fat+=(fv!=null?fv:0);
+    const am=amByMes[mes],fv=fatByMes[mes],ex=execByMes[mes]||0;
+    exec+=ex;fat+=(fv!=null?fv:0);
     const amLbl=am?`AM ${String(am.am).padStart(2,"0")}`:"&mdash;";
     const mesLbl=am?fmtDataAM(am.data):mesLabel(mes);
-    rows.push(`<tr><td>${amLbl}</td><td>${mesLbl}</td><td></td><td>${e?rn(fmt(e)):"&mdash;"}</td><td>${fv!=null?rn(fmt(fv)):"&mdash;"}</td><td>${desvCell(e,fv!=null?fv:0)}</td><td>${rn(fmt(mtq-fat))}</td></tr>`);
+    rows.push(`<tr><td>${amLbl}</td><td>${mesLbl}</td>${temProj?"<td></td>":""}<td></td><td>${ex?rn(fmt(ex)):"&mdash;"}</td><td>${fv!=null?rn(fmt(fv)):"&mdash;"}</td><td>${desvCell(ex,fv!=null?fv:0)}</td><td>${rn(fmt(mtq-fat))}</td></tr>`);
   });
-  rows.push(`<tr class="total"><td>TOTAL</td><td></td><td>${rn(fmt(mtq))}</td><td>${rn(fmt(exec))}</td><td>${rn(fmt(fat))}</td><td>${desvCell(exec,fat)}</td><td>${rn(fmt(mtq-fat))}</td></tr>`);
+  rows.push(`<tr class="total"><td>TOTAL</td><td></td>${temProj?`<td>${rn(fmt(projeto))}</td>`:""}<td>${rn(fmt(mtq))}</td><td>${rn(fmt(exec))}</td><td>${rn(fmt(fat))}</td><td>${desvCell(exec,fat)}</td><td>${rn(fmt(mtq-fat))}</td></tr>`);
   return rows.join("");
 }
 function fatExecByMes(recs,key){const m={};recs.forEach(r=>{m[r.Mes||mesOf(r.Data)]=(m[r.Mes||mesOf(r.Data)]||0)+(r[key]||0);});return m;}
@@ -1986,7 +2002,7 @@ function pRowView(r){
   const dv=r.Prod-r.Rend;
   return `<tr>
     <td class="l">${fmtD(r.Data)}</td><td>${r.Semana}</td><td>${mesLabel(r.Mes)}</td>
-    <td><b>${fmtN(r.Prod)}</b></td><td>${r.Rend}</td>
+    <td>${fmtN(r.Prod)}</td><td>${r.Rend}</td>
     <td style="color:${dv<0?"#e76f51":dv>0?"#4caf72":"var(--muted)"}">${dv>0?"+":""}${dv}</td>
     ${pFiscCell(r)}
     <td><span class="iact">
