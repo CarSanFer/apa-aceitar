@@ -250,7 +250,7 @@
           <button class="iconbtn" data-th="dark" title="Escuro"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
           <button class="iconbtn" data-th="system" title="Sistema"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></button>
         </div>
-        <button class="iconbtn" id="verBtn" title="v26.08.10.3545"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></button>
+        <button class="iconbtn" id="verBtn" title="v26.08.10.3615"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></button>
       </div>
     </div>
     <div class="titlerow">
@@ -1529,11 +1529,21 @@ function renderFaturacao(){
   const a=AUTOS_DATA.find(x=>x.Id==="2.1");
   const mtq=a&&a.Quant!=null?a.Quant:0;
   const fmtDataAM=iso=>{const p=iso.split("-");return p[2]+"/"+p[1]+"/"+p[0];};
+  // Faturado = Autos de Medição (AM), por mês
+  const fatByMes={};
+  (a?a.AM:[]).forEach((v,i)=>{if(v==null)return;fatByMes[mesOf(AM_DATAS[i])]={am:i+1,data:AM_DATAS[i],val:v};});
+  // Executado = registos de remoção, por mês
+  const execByMes={};
+  records.filter(r=>r.Tipo==="Remoção").forEach(r=>{execByMes[r.Mes]=(execByMes[r.Mes]||0)+r.Quant;});
+  // União dos meses (cobre meses com execução sem faturação e vice-versa), ordenada
+  const meses=[...new Set([...Object.keys(fatByMes),...Object.keys(execByMes)])].sort();
   let exec=0,fat=0;const rows=[];
-  (a?a.AM:[]).forEach((v,i)=>{
-    if(v==null)return;
-    exec+=v;fat+=v;
-    rows.push(`<tr><td>AM ${String(i+1).padStart(2,"0")}</td><td>${fmtDataAM(AM_DATAS[i])}</td><td></td><td>${fmtN(v)}</td><td>${fmtN(fat)}</td><td>${fmtN(mtq-fat)}</td></tr>`);
+  meses.forEach(mes=>{
+    const f=fatByMes[mes],e=execByMes[mes]||0;
+    exec+=e;fat+=(f?f.val:0);
+    const amLbl=f?`AM ${String(f.am).padStart(2,"0")}`:"&mdash;";
+    const mesLbl=f?fmtDataAM(f.data):mesLabel(mes);
+    rows.push(`<tr><td>${amLbl}</td><td>${mesLbl}</td><td></td><td>${e?fmtN(e):"&mdash;"}</td><td>${f?fmtN(f.val):"&mdash;"}</td><td>${fmtN(mtq-fat)}</td></tr>`);
   });
   rows.push(`<tr class="total"><td>TOTAL</td><td></td><td>${fmtN(mtq)}</td><td>${fmtN(exec)}</td><td>${fmtN(fat)}</td><td>${fmtN(mtq-fat)}</td></tr>`);
   el.innerHTML=rows.join("");
@@ -1639,7 +1649,7 @@ function renderPerfis(){
       <table><thead>${head}</thead><tbody>${body}</tbody></table></div>`;
   }).join("");
 }
-function toggleHL(p){state.perfil=state.perfil===p?"Todos":p;if(state.perfil!=="Todos")["secRec","secPerf"].forEach(id=>{const s=document.getElementById(id);if(s)s.open=true;});render();}
+function toggleHL(p){state.perfil=state.perfil===p?"Todos":p;if(state.perfil!=="Todos")["secRec","secPerf","cmpProjeto"].forEach(id=>{const s=document.getElementById(id);if(s)s.open=true;});render();}
 
 /* ================= BLOCO 2: PRODUÇÃO ================= */
 const SEED_PROD=[
@@ -1982,7 +1992,7 @@ function init(){
     document.getElementById("hdTitle").textContent=cfg.title;
     document.getElementById("hdSub").textContent=cfg.sub;
   });
-  const openRec=()=>{["secRec","secPerf"].forEach(id=>{const s=document.getElementById(id);if(s)s.open=true;});};
+  const openRec=()=>{["secRec","secPerf","cmpProjeto"].forEach(id=>{const s=document.getElementById(id);if(s)s.open=true;});};
   document.getElementById("fMes").onchange=e=>{state.mes=e.target.value;openRec();render();};
   document.getElementById("fSemana").onchange=e=>{state.semana=e.target.value;openRec();render();};
   document.getElementById("fSub").onchange=e=>{state.sub=e.target.value;openRec();render();};
@@ -1990,7 +2000,7 @@ function init(){
   document.getElementById("fZona").onchange=e=>{state.zona=e.target.value;openRec();render();};
   document.getElementById("fDia").onchange=e=>{state.dia=e.target.value;openRec();render();};
   document.querySelectorAll("#recTable th[data-k]").forEach(th=>th.onclick=()=>{const k=th.dataset.k;if(state.sortK===k)state.sortDir*=-1;else{state.sortK=k;state.sortDir=1;}renderRecTable();});
-  document.getElementById("reset").onclick=()=>{state=Object.assign({},state,{mes:"Todos",semana:"Todas",dia:"",sub:"Todos",perfil:"Todos",zona:"Todas",highlight:null,sortK:null,editId:null});["secRec","secPerf"].forEach(id=>{const s=document.getElementById(id);if(s)s.open=false;});render();};
+  document.getElementById("reset").onclick=()=>{state=Object.assign({},state,{mes:"Todos",semana:"Todas",dia:"",sub:"Todos",perfil:"Todos",zona:"Todas",highlight:null,sortK:null,editId:null});["secRec","secPerf","cmpProjeto"].forEach(id=>{const s=document.getElementById(id);if(s)s.open=false;});render();};
   document.getElementById("csv").onclick=()=>{
     const d=filtered(),head="Data,Semana,Mes,Sub Tipo,Perfil,Quant,Fisc";
     const body=d.map(r=>`${r.Data},${r.Semana},${r.Mes},${r.SubTipo},${r.Perfil},${r.Quant},${r.Fisc==null?"":r.Fisc}`).join("\n");
