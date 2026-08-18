@@ -127,7 +127,7 @@
   th{font-size:9.5px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);text-align:center;padding:7px 8px;border-bottom:1px solid var(--line);font-weight:700}
   td{padding:5px 8px;text-align:center;color:var(--txt);font-variant-numeric:tabular-nums}
   tbody tr:nth-child(odd){background:var(--stripe)}
-  td.l{text-align:left;color:var(--muted)}
+  td.l{text-align:center;color:var(--muted)}
   .empty{padding:22px;text-align:center;color:var(--faint);font-size:12px}
   .chip{display:inline-block;padding:2px 9px;border-radius:11px;font-size:11px;font-weight:700;color:#0f151c}
   .rectable{overflow:auto}
@@ -155,8 +155,11 @@
   #fatProdTable tr.total td,#fat282Table tr.total td{border-top:2px solid var(--accent);font-weight:800}
   #fatProdTable td .rn,#fat282Table td .rn{display:inline-block;text-align:right}
   #fatTable tr.total td{border-top:2px solid var(--accent);font-weight:800}
+  .footnote{font-size:11px;color:var(--muted);margin:8px 4px 0;font-style:italic}
   .obsbody p{margin:0 0 10px;font-size:13px;line-height:1.55;color:var(--txt)}
   .obsbody p:last-child{margin-bottom:0}
+  .obsbody ul{margin:0 0 10px;padding-left:22px}
+  .obsbody li{font-size:13px;line-height:1.55;margin-bottom:4px}
   .amdate{display:block;font-size:9px;font-weight:400;color:var(--faint);margin-top:2px;white-space:nowrap}
   .kgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:16px}
   .kcard{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px}
@@ -255,7 +258,7 @@
           <button class="iconbtn" data-th="dark" title="Escuro"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
           <button class="iconbtn" data-th="system" title="Sistema"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></button>
         </div>
-        <button class="iconbtn" id="verBtn" title="v26.08.10.3745"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></button>
+        <button class="iconbtn" id="verBtn" title="v26.08.10.3830"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></button>
       </div>
     </div>
     <div class="titlerow">
@@ -376,7 +379,7 @@
             <th data-k="Data">Dia</th><th data-k="Semana">Semana</th><th data-k="Mes">Mês</th>
             <th data-k="SubTipo" id="thSub" class="colSub">Sub Tipo</th>
             <th data-k="Perfil">Perfil</th><th data-k="Quant" id="thQuant">Quant</th>
-            <th data-k="Fisc">Fisc.</th>
+            <th data-k="Fisc" id="thFisc">Fisc.</th>
             <th>Ações</th>
           </tr></thead>
           <tbody id="recBody"></tbody>
@@ -396,20 +399,21 @@
       <div class="mqtwrap">
         <table id="cmpTable">
           <thead><tr>
-            <th style="text-align:left">Perfil</th>
-            <th style="text-align:right">Projeto</th>
-            <th style="text-align:right" id="cmpObraLbl">Obra</th>
-            <th style="text-align:right">Diferença</th>
-            <th style="text-align:right">Diferença %</th>
+            <th>Perfil</th>
+            <th>MTQ (*)</th>
+            <th id="cmpObraLbl">Obra</th>
+            <th>Diferença</th>
+            <th>Diferença %</th>
           </tr></thead>
           <tbody id="cmpBody"></tbody>
         </table>
+        <p class="footnote">(*) Projeto = MTQ, porque não existiram arredondamentos.</p>
       </div>
     </div>
   </details>
 
   <details class="sec" id="secFaturacao">
-    <summary>Faturação (Autos de Medição)</summary>
+    <summary>Faturação</summary>
     <div class="secbody">
       <div class="mqtwrap">
         <table id="fatTable">
@@ -417,7 +421,7 @@
             <th>AM</th>
             <th>Mês</th>
             <th>MTQ</th>
-            <th>Executado</th>
+            <th id="fatExecLbl">Executado</th>
             <th>Faturado</th>
             <th>Desvio</th>
             <th>Por faturar</th>
@@ -427,6 +431,11 @@
       </div>
     </div>
   </details>
+
+    <details class="sec" id="secObs21">
+      <summary>Observações</summary>
+      <div class="secbody"><div id="obs21Body" class="obsbody"></div></div>
+    </details>
 
   </div><!-- /temaRC -->
 
@@ -458,7 +467,7 @@
             <thead><tr>
               <th data-k="Data">Dia</th><th data-k="Semana">Semana</th><th data-k="Mes">Mês</th>
               <th data-k="Prod">Produzidos</th><th data-k="Rend">Rendimento</th><th data-k="Desvio">Desvio</th>
-              <th data-k="Fisc">Fisc.</th>
+              <th data-k="Fisc" id="thFisc">Fisc.</th>
               <th>Ações</th>
             </tr></thead>
             <tbody id="pRecBody"></tbody>
@@ -473,12 +482,12 @@
         <div class="mqtwrap">
           <table id="cmpProdTable">
             <thead><tr>
-              <th style="text-align:left"></th>
-              <th style="text-align:right">Projeto</th>
-              <th style="text-align:right">Produzidos</th>
-              <th style="text-align:right">Fiscalização</th>
-              <th style="text-align:right">Desvio</th>
-              <th style="text-align:right">Desvio %</th>
+              <th></th>
+              <th>Projeto</th>
+              <th>Produzidos</th>
+              <th>Fiscalização</th>
+              <th>Desvio</th>
+              <th>Desvio %</th>
             </tr></thead>
             <tbody id="cmpProdBody"></tbody>
           </table>
@@ -487,7 +496,7 @@
     </details>
 
     <details class="sec" id="secFatProd">
-      <summary>Faturação (Autos de Medição)</summary>
+      <summary>Faturação</summary>
       <div class="secbody"><div class="mqtwrap">
         <table id="fatProdTable"><thead><tr><th>AM</th><th>Mês</th><th>MTQ</th><th>Executado</th><th>Faturado</th><th>Desvio</th><th>Por faturar</th></tr></thead><tbody id="fatProdBody"></tbody></table>
       </div></div>
@@ -504,11 +513,11 @@
       <div class="mqtwrap">
         <table id="cmp282Table">
           <thead><tr>
-            <th style="text-align:left">Perfil</th>
-            <th style="text-align:right">Projeto</th>
-            <th style="text-align:right">Colocados</th>
-            <th style="text-align:right">Desvio</th>
-            <th style="text-align:right">Desvio %</th>
+            <th>Perfil</th>
+            <th>Projeto</th>
+            <th>Colocados</th>
+            <th>Desvio</th>
+            <th>Desvio %</th>
           </tr></thead>
           <tbody id="cmp282Body"></tbody>
         </table>
@@ -517,7 +526,7 @@
     </details>
 
     <details class="sec" id="secFat282">
-      <summary>Faturação (Autos de Medição)</summary>
+      <summary>Faturação</summary>
       <div class="secbody"><div class="mqtwrap">
         <table id="fat282Table"><thead><tr><th>AM</th><th>Mês</th><th>MTQ</th><th>Executado</th><th>Faturado</th><th>Desvio</th><th>Por faturar</th></tr></thead><tbody id="fat282Body"></tbody></table>
       </div></div>
@@ -575,7 +584,7 @@
     </details>
 
     <details class="sec" id="secEnrocFat">
-      <summary>Faturação (Autos de Medição)</summary>
+      <summary>Faturação</summary>
       <div class="secbody"><div class="mqtwrap">
         <table id="enrocFatTable">
           <thead><tr><th>AM</th><th>Mês</th><th>MTQ</th><th>Executado</th><th>Faturado</th><th>Desvio</th><th>Por faturar</th></tr></thead>
@@ -593,10 +602,10 @@
         <table id="autosTable">
           <thead><tr>
             <th>Id</th><th>Descrição</th><th>Un</th>
-            <th style="text-align:right">MQT</th>
-            <th style="text-align:right">AM 01<br><span class="amdate">30/12/2025</span></th><th style="text-align:right">AM 02<br><span class="amdate">30/01/2026</span></th><th style="text-align:right">AM 03<br><span class="amdate">27/02/2026</span></th><th style="text-align:right">AM 04<br><span class="amdate">30/03/2026</span></th>
-            <th style="text-align:right">AM 05<br><span class="amdate">29/04/2026</span></th><th style="text-align:right">AM 06<br><span class="amdate">29/05/2026</span></th><th style="text-align:right">AM 07<br><span class="amdate">30/06/2026</span></th><th style="text-align:right">AM 08<br><span class="amdate">27/07/2026</span></th>
-            <th style="text-align:right">Total</th><th style="text-align:right">Saldo</th>
+            <th>MQT</th>
+            <th>AM 01<br><span class="amdate">30/12/2025</span></th><th>AM 02<br><span class="amdate">30/01/2026</span></th><th>AM 03<br><span class="amdate">27/02/2026</span></th><th>AM 04<br><span class="amdate">30/03/2026</span></th>
+            <th>AM 05<br><span class="amdate">29/04/2026</span></th><th>AM 06<br><span class="amdate">29/05/2026</span></th><th>AM 07<br><span class="amdate">30/06/2026</span></th><th>AM 08<br><span class="amdate">27/07/2026</span></th>
+            <th>Total</th><th>Saldo</th>
           </tr></thead>
           <tbody id="autosBody"></tbody>
         </table>
@@ -631,11 +640,11 @@
         <table id="totaisTable">
           <thead><tr>
             <th>Id</th><th>Descrição</th><th>Un</th>
-            <th style="text-align:right">MQT</th>
-            <th style="text-align:right">Autos</th>
-            <th style="text-align:right">Saldo</th>
-            <th style="text-align:right">Produzido</th>
-            <th style="text-align:right">Desvio</th>
+            <th>MQT</th>
+            <th>Autos</th>
+            <th>Saldo</th>
+            <th>Produzido</th>
+            <th>Desvio</th>
           </tr></thead>
           <tbody id="totaisBody"></tbody>
         </table>
@@ -1136,6 +1145,7 @@ function renderEnrocRec(){
     const cls=r.Fisc===r.Enroc?"fisc-ok":"fisc-alt";
     return `<tr><td>${fmtD(r.Data)}</td><td>${isoWeek(r.Data)}</td><td>${mesLabel(mesOf(r.Data))}</td><td>${esc(r.Perfil)}</td><td>${fmtE(r.Enroc)}</td><td><span class="${cls}">${fmtE(r.Fisc)}</span></td></tr>`;
   }).join("");
+  wrapNums(document.getElementById("enrocRecTable"));
 }
 
 let dashF={mes:"Todos",semana:"Todas",dia:"",perfil:"Todos",zona:"Todas"};
@@ -1353,6 +1363,7 @@ function renderEnroc(){
   const saldoT=sMtq>0?sMtq-sEmp:null,desvT=temReg?sFisc-sEmp:null,pctT=(desvT!=null&&sFisc)?desvT/sFisc*100:null;
   const totalRow=linhas.length>1?`<tr class="total"><td>TOTAL</td><td>${hasPrj?fmtE(sPrj):"&mdash;"}</td><td>${sMtq>0?fmtE(sMtq):"&mdash;"}</td><td>${saldoT==null?"&mdash;":fmtE(saldoT)}</td><td>${sp(desvT)}</td><td>${sp(pctT,"%")}</td></tr>`:"";
   el.innerHTML=rows+totalRow;
+  wrapNums(document.getElementById("enrocTable"));
 }
 function renderResumo(){
   const rows=MQT_DATA.filter(a=>!((a.Descricao==="nan"||!a.Descricao)&&a.Total==null)).map(a=>{
@@ -1428,8 +1439,9 @@ function buildFilters(){
   const rem=state.rcMode==="Remoção";
   document.getElementById("fgSub").style.display=rem?"":"none";
   document.getElementById("temaRC").classList.toggle("mode-col",!rem);
-  const lbl=rem?"Removidos":"Colocados";
+  const lbl=rem?"Removidos (EE)":"Colocados (EE)";
   document.getElementById("thQuant").textContent=lbl;
+  {const tf=document.getElementById("thFisc");if(tf)tf.textContent=rem?"Removidos (Fisc)":"Colocados (Fisc)";}
   document.getElementById("rQuantLbl").textContent=lbl;
 }
 
@@ -1488,6 +1500,7 @@ function renderRecTable(){
   document.getElementById("recBody").innerHTML=d.length
     ?d.map(r=>r.id===state.editId?rowEdit(r):rowView(r)).join("")
     :`<tr><td colspan="8" class="empty">Sem registos para os filtros aplicados.</td></tr>`;
+  wrapNums(document.getElementById("recTable"));
 }
 function startEdit(id){state.editId=id;renderRecTable();}
 function cancelEdit(){state.editId=null;renderRecTable();}
@@ -1561,7 +1574,20 @@ function renderCmp282(){
   const dvT=sC-sP,pctT=sP>0?dvT/sP*100:null;
   el.innerHTML=rows+`<tr class="total"><td>TOTAL</td><td class="num">${fmtN(sP)}</td><td class="num">${sC?fmtN(sC):"&mdash;"}</td><td class="num"><span style="color:${cor(dvT)}">${dvT>0?"+":""}${fmtN(dvT)}</span></td><td class="num">${pctT==null?"&mdash;":`<span style="color:${cor(pctT)}">${pctT>0?"+":""}${fmtN(pctT,1)}%</span>`}</td></tr>`;
 }
-const AM_DATAS=["2025-12-30","2026-01-30","2026-02-27","2026-03-30","2026-04-29","2026-05-29","2026-06-30","2026-07-27"];
+const OBS_21=[
+  "O MTQ prevê a execução de 384 Tetrápodes.",
+  "Até 10/08, momento da análise, foram removidos 441 Tetrápodes.",
+  "Essa quantidade, desdobra-se da seguinte forma:",
+  {lista:[
+    "No Talude Sul (P1 a P8) foram removidos 236 unidades vs 65 previstos;",
+    "Na Transição (P9 e P10) foram removidos 67 unidades vs 45 previstos;",
+    "Na Cabeça (P11 a P14), foram removidos, até ao momento, 138 unidades vs 274 previstos."
+  ]},
+  "Considerando o Talude Sul e a Transição, foram, portanto, removidos mais 193 unidades do que o previsto.",
+  "Resumindo, devem ser consideradas 193 unidades removidas a mais, sendo certo que a quantidade final será ajustada em função das 136 que ainda faltam retirar, previsivelmente, da cabeça.",
+  "A quantidade retirada a menos que as 136 unidades deve ser subtraída às atuais 193."
+];
+const AM_DATAS=["2025-12-30","2026-01-30","2026-02-27","2026-03-30","2026-04-29","2026-05-29","2026-06-30","2026-07-27","2026-08-31"];
 function alignRn(root){
   if(!root)return;
   const rows=[...root.querySelectorAll("tr")],colMax={};
@@ -1570,10 +1596,11 @@ function alignRn(root){
 }
 function wrapNums(root){
   if(!root)return;
-  root.querySelectorAll("td.num").forEach(td=>{
+  root.querySelectorAll("td").forEach(td=>{
     if(td.querySelector(".rn"))return;
-    const inner=td.innerHTML.trim();
-    if(inner!=="")td.innerHTML=`<span class="rn">${inner}</span>`;
+    const txt=(td.textContent||"").trim();
+    if(txt!==""&&/^[+\-]?\s*€?\s*\d[\d\s.,]*\s*%?\s*€?$/.test(txt))
+      td.innerHTML=`<span class="rn">${td.innerHTML.trim()}</span>`;
   });
   alignRn(root);
 }
@@ -1601,21 +1628,28 @@ function fatTableRows(a,execByMes,fmt){
   const rn=v=>`<span class="rn">${v}</span>`;
   const cor=v=>v<0?"#e76f51":v>0?"#4caf72":"inherit";
   const desvCell=(e,f)=>{const d=f-e;return `<span class="rn" style="color:${cor(d)}">${d>0?"+":""}${fmt(d)}</span>`;};
-  const fatByMes={};
-  (a&&a.AM?a.AM:[]).forEach((v,i)=>{if(v==null)return;fatByMes[mesOf(AM_DATAS[i])]={am:i+1,data:AM_DATAS[i],val:v};});
+  const amByMes={};AM_DATAS.forEach((data,i)=>{amByMes[mesOf(data)]={am:i+1,data};});
+  const fatByMes={};(a&&a.AM?a.AM:[]).forEach((v,i)=>{if(v==null)return;fatByMes[mesOf(AM_DATAS[i])]=v;});
   const meses=[...new Set([...Object.keys(fatByMes),...Object.keys(execByMes)])].sort();
   let exec=0,fat=0;const rows=[];
   meses.forEach(mes=>{
-    const fF=fatByMes[mes],e=execByMes[mes]||0;
-    exec+=e;fat+=(fF?fF.val:0);
-    const amLbl=fF?`AM ${String(fF.am).padStart(2,"0")}`:"&mdash;";
-    const mesLbl=fF?fmtDataAM(fF.data):mesLabel(mes);
-    rows.push(`<tr><td>${amLbl}</td><td>${mesLbl}</td><td></td><td>${e?rn(fmt(e)):"&mdash;"}</td><td>${fF?rn(fmt(fF.val)):"&mdash;"}</td><td>${desvCell(e,fF?fF.val:0)}</td><td>${rn(fmt(mtq-fat))}</td></tr>`);
+    const am=amByMes[mes],fv=fatByMes[mes],e=execByMes[mes]||0;
+    exec+=e;fat+=(fv!=null?fv:0);
+    const amLbl=am?`AM ${String(am.am).padStart(2,"0")}`:"&mdash;";
+    const mesLbl=am?fmtDataAM(am.data):mesLabel(mes);
+    rows.push(`<tr><td>${amLbl}</td><td>${mesLbl}</td><td></td><td>${e?rn(fmt(e)):"&mdash;"}</td><td>${fv!=null?rn(fmt(fv)):"&mdash;"}</td><td>${desvCell(e,fv!=null?fv:0)}</td><td>${rn(fmt(mtq-fat))}</td></tr>`);
   });
   rows.push(`<tr class="total"><td>TOTAL</td><td></td><td>${rn(fmt(mtq))}</td><td>${rn(fmt(exec))}</td><td>${rn(fmt(fat))}</td><td>${desvCell(exec,fat)}</td><td>${rn(fmt(mtq-fat))}</td></tr>`);
   return rows.join("");
 }
 function fatExecByMes(recs,key){const m={};recs.forEach(r=>{m[r.Mes||mesOf(r.Data)]=(m[r.Mes||mesOf(r.Data)]||0)+(r[key]||0);});return m;}
+function renderObs21(){
+  const det=document.getElementById("secObs21"),el=document.getElementById("obs21Body");
+  if(!det||!el)return;
+  if(state.rcMode!=="Remoção"||!OBS_21.length){det.style.display="none";return;}
+  det.style.display="";
+  el.innerHTML=OBS_21.map(p=>p&&p.lista?`<ul>${p.lista.map(li=>`<li>${esc(li)}</li>`).join("")}</ul>`:`<p>${esc(p)}</p>`).join("");
+}
 function renderFaturacao(){
   const det=document.getElementById("secFaturacao");if(!det)return;
   const id=state.rcMode==="Colocação"?"2.6":"2.1";
@@ -1624,6 +1658,7 @@ function renderFaturacao(){
   const temAutos=a&&a.AM&&a.AM.some(v=>v!=null);
   if(!temAutos&&!recs.length){det.style.display="none";return;}
   det.style.display="";
+  {const el=document.getElementById("fatExecLbl");if(el)el.textContent=state.rcMode==="Colocação"?"Colocados (EE)":"Removidos (EE)";}
   document.getElementById("fatBody").innerHTML=fatTableRows(a,fatExecByMes(recs,"Quant"),fmtN);
   alignRn(document.getElementById("fatTable"));
 }
@@ -1652,7 +1687,7 @@ function renderCmpProjeto(){
   }).join("");
   const dvT=sO-sP,pctT=sP>0?dvT/sP*100:null;
   const totalRow=`<tr class="total"><td>TOTAL</td><td class="num">${fmtN(sP)}</td><td class="num">${fmtN(sO)}</td><td class="num"><span style="color:${cor(dvT)}">${dvT>0?"+":""}${fmtN(dvT)}</span></td><td class="num">${pctT==null?"&mdash;":`<span style="color:${cor(pctT)}">${pctT>0?"+":""}${fmtN(pctT,1)}%</span>`}</td></tr>`;
-  const lbl=document.getElementById("cmpObraLbl");if(lbl)lbl.textContent=rem?"Removidos":"Colocados";
+  const lbl=document.getElementById("cmpObraLbl");if(lbl)lbl.textContent=rem?"Removidos (EE)":"Colocados (EE)";
   document.getElementById("cmpBody").innerHTML=rows+totalRow;
 wrapNums(document.getElementById("cmpTable"));}
 function renderPerfil(){
@@ -1727,6 +1762,7 @@ function renderPerfis(){
       ${meta}
       <table><thead>${head}</thead><tbody>${body}</tbody></table></div>`;
   }).join("");
+  document.querySelectorAll("#perfis table").forEach(t=>wrapNums(t));
 }
 function toggleHL(p){state.perfil=state.perfil===p?"Todos":p;if(state.perfil!=="Todos")["secRec","secPerf","cmpProjeto"].forEach(id=>{const s=document.getElementById(id);if(s)s.open=true;});render();}
 
@@ -1978,6 +2014,7 @@ function prodRenderRecTable(){
   document.getElementById("pRecBody").innerHTML=d.length
     ?d.map(r=>r.id===pstate.editId?pRowEdit(r):pRowView(r)).join("")
     :`<tr><td colspan="8" class="empty">Sem registos para os filtros aplicados.</td></tr>`;
+  wrapNums(document.getElementById("prodRecTable"));
 }
 function pStartEdit(id){pstate.editId=id;prodRenderRecTable();}
 function pCancelEdit(){pstate.editId=null;prodRenderRecTable();}
@@ -2012,7 +2049,7 @@ function prodRender(){
 }
 
 function render(){
-  buildPC();buildFilters();renderRecTable();renderPerfis();renderCmpProjeto();renderFaturacao();
+  buildPC();buildFilters();renderRecTable();renderPerfis();renderCmpProjeto();renderFaturacao();renderObs21();
   const fg=document.getElementById("fgRSub");if(fg)fg.style.display=state.rcMode==="Remoção"?"":"none";
   const fn=document.getElementById("fnote");if(fn)fn.textContent="";
 }
