@@ -147,6 +147,7 @@
   .pqtable th,.pqtable td{padding:7px 10px;text-align:center;font-size:12px;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
   .pqtable th{font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);font-weight:700}
   .pqtable tr.tot td{border-bottom:none;border-top:2px solid var(--accent);font-weight:800}
+  .amdate{display:block;font-size:9px;font-weight:400;color:var(--faint);margin-top:2px;white-space:nowrap}
   .kgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:16px}
   .kcard{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px}
   .kcap{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--accent);font-weight:700;margin-bottom:10px;display:flex;justify-content:space-between}
@@ -245,7 +246,7 @@
           <button class="iconbtn" data-th="dark" title="Escuro"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
           <button class="iconbtn" data-th="system" title="Sistema"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></button>
         </div>
-        <button class="iconbtn" id="verBtn" title="v26.08.10.3245"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></button>
+        <button class="iconbtn" id="verBtn" title="v26.08.10.3300"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></button>
       </div>
     </div>
     <div class="titlerow">
@@ -566,8 +567,8 @@
           <thead><tr>
             <th>Id</th><th>Descrição</th><th>Un</th>
             <th style="text-align:right">MQT</th>
-            <th style="text-align:right">AM 01</th><th style="text-align:right">AM 02</th><th style="text-align:right">AM 03</th><th style="text-align:right">AM 04</th>
-            <th style="text-align:right">AM 05</th><th style="text-align:right">AM 06</th><th style="text-align:right">AM 07</th><th style="text-align:right">AM 08</th>
+            <th style="text-align:right">AM 01<br><span class="amdate">30/12/2025</span></th><th style="text-align:right">AM 02<br><span class="amdate">30/01/2026</span></th><th style="text-align:right">AM 03<br><span class="amdate">27/02/2026</span></th><th style="text-align:right">AM 04<br><span class="amdate">30/03/2026</span></th>
+            <th style="text-align:right">AM 05<br><span class="amdate">29/04/2026</span></th><th style="text-align:right">AM 06<br><span class="amdate">29/05/2026</span></th><th style="text-align:right">AM 07<br><span class="amdate">30/06/2026</span></th><th style="text-align:right">AM 08<br><span class="amdate">27/07/2026</span></th>
             <th style="text-align:right">Total</th><th style="text-align:right">Saldo</th>
           </tr></thead>
           <tbody id="autosBody"></tbody>
@@ -843,11 +844,15 @@ const LOTE_20260812=[
   {Semana:33,Mes:"2026-08",Data:"2026-08-11",Tipo:"Remoção",SubTipo:"Inteiros",Quant:5,Fisc:5,Perfil:"P14"},
   {Semana:33,Mes:"2026-08",Data:"2026-08-11",Tipo:"Colocação",SubTipo:"-",Quant:2,Fisc:2,Perfil:"P7"}
 ];
+const LOTE_20260817=[
+  {Semana:34,Mes:"2026-08",Data:"2026-08-17",Tipo:"Colocação",SubTipo:"-",Quant:5,Fisc:5,Perfil:"P8"}
+];
 const IMPORTS=[
   {id:"base", recs:SEED_DATA},
   {id:"2026-07-31", recs:LOTE_20260731},
   {id:"2026-08-10", recs:LOTE_20260810},
-  {id:"2026-08-12", recs:LOTE_20260812}
+  {id:"2026-08-12", recs:LOTE_20260812},
+  {id:"2026-08-17", recs:LOTE_20260817}
 ];
 const keyOf=r=>r.Data+"|"+r.Tipo+"|"+r.SubTipo+"|"+r.Perfil+"|"+r.Quant;
 /* Correções a registos já existentes (aplicadas uma vez em browsers com dados guardados).
@@ -963,6 +968,9 @@ const ENROC_DATA={
 };
 let curEnroc="2.2";
 const PROJ_REMOCAO={"P1": 19, "P2": 8, "P3": 8, "P4": 5, "P5": 7, "P6": 6, "P7": 7, "P8": 5, "P9": 8, "P10": 37, "P11 N": 58, "P11 S": 50, "P12": 55, "P13": 52, "P14": 59};
+const COLNOV_RECORDS=[
+  {Data:"2026-08-14",Perfil:"P9",Quant:6,Fisc:6}
+];
 const PROJ_COL_NOV={"P10": 44, "P11 N": 60, "P11 S": 36, "P12": 72, "P13": 72, "P14": 76};
 const PROJ_COL_REC={"P1": 40, "P2": 22, "P3": 16, "P4": 10, "P5": 10, "P6": 9, "P7": 9, "P8": 8, "P9": 11, "P10": 26};
 const AUTOS_DATA=[{"Id": "2.1", "Descricao": "Remoção de Tetrápodes (Inteiros e Partidos | 30 tf)", "PopUP": "Remoção de tetrápodes e de tetrápodes partidos do manto do talude sul e cabeça", "Un": "un", "Quant": 384, "AM": [null, null, null, null, null, 9, 150, 185], "Total": 344, "Saldo": 40}, {"Id": "2.2", "Descricao": "Enrocamento (Coroamente do Manto | 12 a 15 tf)", "PopUP": "Remoção e posterior reposição de enrocamento de 12 a 15 tf do remate do coroamento do manto de tetrápodes", "Un": "m3", "Quant": 800, "AM": [null, null, null, null, null, 400, null, null], "Total": 400, "Saldo": 400}, {"Id": "2.3", "Descricao": "Enrocamento (Cabeça -> Talude Sul | 12 a 15 tf)", "PopUP": "Remoção de enrocamento de 12 a 15 tf  do manto para execução da transição da cabeça para o talude norte", "Un": "m3", "Quant": 700, "AM": [null, null, null, null, null, null, null, null], "Total": 0, "Saldo": 700}, {"Id": "2.4", "Descricao": "Remoção de Materiais de Qualquer Natureza", "PopUP": "Remoção de materiais de qualquer natureza (areia, enrocamento, bocados de terápodes) para reconstrução da banqueta de pé de talude", "Un": "m3", "Quant": 3000, "AM": [null, null, null, null, null, null, null, 2087.87], "Total": 2087.87, "Saldo": 912.1300000000001}, {"Id": "2.5", "Descricao": "Enrocamento (Banqueta | 12 a 15 tf)", "PopUP": "Reconstrução da banqueta de pé de talude em enrocamento de 12 a 15 tf", "Un": "m3", "Quant": 1900, "AM": [null, null, null, null, null, null, null, 422.43], "Total": 422.43, "Saldo": 1477.57}, {"Id": "2.6", "Descricao": "Colocação de Tetrápodes Recuperados (Cabeça e Talude Sul)", "PopUP": "Colocação de tetrápodes recuperados da cabeça e do talude sul na reconstituição do manto de protecção do talude sul ", "Un": "un", "Quant": 161, "AM": [null, null, null, null, null, null, 13, 148], "Total": 161, "Saldo": 0}, {"Id": "2.7", "Descricao": "Transporte e Depósito Tetrápodes Recuperados e não Utilizados (Cabeça e Sul)", "PopUP": "Transporte a depósito de tetrápodes recuperados da cabeça e do talude sul e não utilizados na reconstituição do manto de protecção do talude sul (depósito localizado num raio de 2,5Km de distância ao local da obra) ", "Un": "un", "Quant": 108, "AM": [null, null, null, null, null, null, null, null], "Total": 0, "Saldo": 108}, {"Id": "2.8", "Descricao": null, "PopUP": "Fornecimento e colocação de tetrápodes de 34,4 tf, em betão NP EN 206-1: C35/45, XA1 (Pt), Cl 1.0, Dmax20, S3, simples", "Un": null, "Quant": null, "AM": [null, null, null, null, null, null, null, null], "Total": null, "Saldo": null}, {"Id": "2.8.1", "Descricao": "Produção de Tetrápodes Novos", "PopUP": "Fabrico e colocação em depósito dos tetrápodes", "Un": "un", "Quant": 360, "AM": [14.4, null, null, 52.6, 73, 85, 68, 7], "Total": 300, "Saldo": 60}, {"Id": "2.8.2", "Descricao": "Transporte e Colocação de Tetrápodes Novos", "PopUP": "Transporte e colocação de tetrápodes", "Un": "un", "Quant": 360, "AM": [null, null, null, null, null, null, null, null], "Total": null, "Saldo": null}, {"Id": "2.9", "Descricao": "Enrocamento (Submanto | 1 a 4 tf)", "PopUP": "Fornecimento e colocação de enrocamento de 1 a 4 tf no submanto na transição entre o talude sul e a cabeça ", "Un": "m3", "Quant": 500, "AM": [null, null, null, null, null, null, null, 500], "Total": 500, "Saldo": 0}, {"Id": "2.10", "Descricao": "Enrocamento (Talude Norte -> Cabeça | 12 a 15 tf)", "PopUP": "Fornecimento e colocação de enrocamento de 12 a 15 tf no manto da transição entre o talude norte e a cabeça ", "Un": "m3", "Quant": 1200, "AM": [null, null, null, null, null, null, null, null], "Total": 0, "Saldo": 1200}, {"Id": "2.11", "Descricao": "Fornecimento, Transporte e Colocação de Betão", "PopUP": "Fornecimento, transporte e colocação de betão simples C30/37, XA1, Dmax=25mm, para rematar o capeamento da superestrutura junto dos blocos no coroamento", "Un": "m3", "Quant": 50, "AM": [null, null, null, null, null, null, null, null], "Total": 0, "Saldo": 50}];
@@ -1431,11 +1439,16 @@ function renderCmpProd(){
 }
 function renderCmp282(){
   const el=document.getElementById("cmp282Body");if(!el)return;
-  const proj=PROJ_COL_NOV,perfis=Object.keys(proj).sort(pcmp);
-  let sP=0;
-  const rows=perfis.map(p=>{const pr=proj[p]||0;sP+=pr;
-    return `<tr><td class="id" style="color:${PC[p]||'var(--accent)'}">${esc(p)}</td><td class="num">${pr}</td><td class="num">&mdash;</td><td class="num">&mdash;</td><td class="num">&mdash;</td></tr>`;}).join("");
-  el.innerHTML=rows+`<tr class="total"><td>TOTAL</td><td class="num">${sP}</td><td class="num">&mdash;</td><td class="num">&mdash;</td><td class="num">&mdash;</td></tr>`;
+  const proj=PROJ_COL_NOV;
+  const real={};COLNOV_RECORDS.forEach(r=>{real[r.Perfil]=(real[r.Perfil]||0)+(r.Quant||0);});
+  const perfis=[...new Set([...Object.keys(proj),...Object.keys(real)])].sort(pcmp);
+  const cor=v=>v<0?"#e76f51":v>0?"#4caf72":"inherit";
+  let sP=0,sC=0;
+  const rows=perfis.map(p=>{const pr=proj[p]||0,co=real[p]||0;sP+=pr;sC+=co;
+    const dv=co-pr,pct=pr>0?dv/pr*100:null;const temC=real[p]!=null;
+    return `<tr><td class="id" style="color:${PC[p]||'var(--accent)'}">${esc(p)}</td><td class="num">${pr||"&mdash;"}</td><td class="num">${co||"&mdash;"}</td><td class="num">${(pr||co)?`<span style="color:${cor(dv)}">${dv>0?"+":""}${dv}</span>`:"&mdash;"}</td><td class="num">${pct==null?"&mdash;":`<span style="color:${cor(pct)}">${pct>0?"+":""}${fmtN(pct,1)}%</span>`}</td></tr>`;}).join("");
+  const dvT=sC-sP,pctT=sP>0?dvT/sP*100:null;
+  el.innerHTML=rows+`<tr class="total"><td>TOTAL</td><td class="num">${sP}</td><td class="num">${sC||"&mdash;"}</td><td class="num"><span style="color:${cor(dvT)}">${dvT>0?"+":""}${dvT}</span></td><td class="num">${pctT==null?"&mdash;":`<span style="color:${cor(pctT)}">${pctT>0?"+":""}${fmtN(pctT,1)}%</span>`}</td></tr>`;
 }
 function renderCmpProjeto(){
   const rem=state.rcMode==="Remoção";
