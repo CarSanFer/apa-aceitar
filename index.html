@@ -250,7 +250,7 @@
           <button class="iconbtn" data-th="dark" title="Escuro"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
           <button class="iconbtn" data-th="system" title="Sistema"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></button>
         </div>
-        <button class="iconbtn" id="verBtn" title="v26.08.10.3515"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></button>
+        <button class="iconbtn" id="verBtn" title="v26.08.10.3530"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></button>
       </div>
     </div>
     <div class="titlerow">
@@ -1637,7 +1637,7 @@ function renderPerfis(){
       <table><thead>${head}</thead><tbody>${body}</tbody></table></div>`;
   }).join("");
 }
-function toggleHL(p){state.perfil=state.perfil===p?"Todos":p;if(state.perfil!=="Todos")["secRec"].forEach(id=>{const s=document.getElementById(id);if(s)s.open=true;});render();}
+function toggleHL(p){state.perfil=state.perfil===p?"Todos":p;if(state.perfil!=="Todos")["secRec","secPerf"].forEach(id=>{const s=document.getElementById(id);if(s)s.open=true;});render();}
 
 /* ================= BLOCO 2: PRODUÇÃO ================= */
 const SEED_PROD=[
@@ -1980,7 +1980,7 @@ function init(){
     document.getElementById("hdTitle").textContent=cfg.title;
     document.getElementById("hdSub").textContent=cfg.sub;
   });
-  const openRec=()=>{["secRec"].forEach(id=>{const s=document.getElementById(id);if(s)s.open=true;});};
+  const openRec=()=>{["secRec","secPerf"].forEach(id=>{const s=document.getElementById(id);if(s)s.open=true;});};
   document.getElementById("fMes").onchange=e=>{state.mes=e.target.value;openRec();render();};
   document.getElementById("fSemana").onchange=e=>{state.semana=e.target.value;openRec();render();};
   document.getElementById("fSub").onchange=e=>{state.sub=e.target.value;openRec();render();};
@@ -1988,7 +1988,7 @@ function init(){
   document.getElementById("fZona").onchange=e=>{state.zona=e.target.value;openRec();render();};
   document.getElementById("fDia").onchange=e=>{state.dia=e.target.value;openRec();render();};
   document.querySelectorAll("#recTable th[data-k]").forEach(th=>th.onclick=()=>{const k=th.dataset.k;if(state.sortK===k)state.sortDir*=-1;else{state.sortK=k;state.sortDir=1;}renderRecTable();});
-  document.getElementById("reset").onclick=()=>{state=Object.assign({},state,{mes:"Todos",semana:"Todas",dia:"",sub:"Todos",perfil:"Todos",zona:"Todas",highlight:null,sortK:null,editId:null});["secRec"].forEach(id=>{const s=document.getElementById(id);if(s)s.open=false;});render();};
+  document.getElementById("reset").onclick=()=>{state=Object.assign({},state,{mes:"Todos",semana:"Todas",dia:"",sub:"Todos",perfil:"Todos",zona:"Todas",highlight:null,sortK:null,editId:null});["secRec","secPerf"].forEach(id=>{const s=document.getElementById(id);if(s)s.open=false;});render();};
   document.getElementById("csv").onclick=()=>{
     const d=filtered(),head="Data,Semana,Mes,Sub Tipo,Perfil,Quant,Fisc";
     const body=d.map(r=>`${r.Data},${r.Semana},${r.Mes},${r.SubTipo},${r.Perfil},${r.Quant},${r.Fisc==null?"":r.Fisc}`).join("\n");
