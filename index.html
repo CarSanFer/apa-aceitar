@@ -154,6 +154,7 @@
   .pqtable th{font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);font-weight:700}
   .pqtable tr.tot td{border-bottom:none;border-top:2px solid var(--accent);font-weight:800}
   #fatTable th,#fatTable td{text-align:center;padding:7px 10px;font-variant-numeric:tabular-nums}
+  .rn{display:inline-block;text-align:right;font-variant-numeric:tabular-nums}
   #fatTable td .rn{display:inline-block;text-align:right}
   #enrocFatTable th,#enrocFatTable td{text-align:center;padding:7px 10px;font-variant-numeric:tabular-nums}
   #enrocFatTable tr.total td{border-top:2px solid var(--accent);font-weight:800}
@@ -265,7 +266,7 @@
           <button class="iconbtn" data-th="dark" title="Escuro"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
           <button class="iconbtn" data-th="system" title="Sistema"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></button>
         </div>
-        <button class="iconbtn" id="verBtn" title="v26.08.10.4045"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></button>
+        <button class="iconbtn" id="verBtn" title="v26.08.10.4230"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></button>
       </div>
     </div>
     <div class="titlerow">
@@ -978,14 +979,14 @@ const ENROC_RECORDS=[
   {cap:"2.2",Data:"2026-05-29",Perfil:"P11 a P9",Enroc:60,Fisc:120},
   {cap:"2.5",Data:"2026-07-27",Perfil:"Total",Enroc:422.43,Fisc:422.43},
   {cap:"2.9",Data:"2026-07-27",Perfil:"P10",Enroc:500,Fisc:390.4},
-  {cap:"2.4",Data:"2026-07-27",Perfil:"P3",Enroc:127.05,Fisc:127.05},
-  {cap:"2.4",Data:"2026-07-27",Perfil:"P4",Enroc:223.60,Fisc:226.00},
-  {cap:"2.4",Data:"2026-07-27",Perfil:"P5",Enroc:282.75,Fisc:280.00},
-  {cap:"2.4",Data:"2026-07-27",Perfil:"P6",Enroc:302.90,Fisc:301.00},
-  {cap:"2.4",Data:"2026-07-27",Perfil:"P7",Enroc:277.35,Fisc:268.00},
-  {cap:"2.4",Data:"2026-07-27",Perfil:"P8",Enroc:320.30,Fisc:321.00},
-  {cap:"2.4",Data:"2026-07-27",Perfil:"P9",Enroc:372.65,Fisc:373.00},
-  {cap:"2.4",Data:"2026-07-27",Perfil:"P10",Enroc:181.27,Fisc:183.00}
+  {cap:"2.4",Data:"2026-07-27",Perfil:"P2 / P3",Enroc:127.05,Fisc:127.05},
+  {cap:"2.4",Data:"2026-07-27",Perfil:"P3 / P4",Enroc:223.60,Fisc:226.00},
+  {cap:"2.4",Data:"2026-07-27",Perfil:"P4 / P5",Enroc:282.75,Fisc:280.00},
+  {cap:"2.4",Data:"2026-07-27",Perfil:"P5 / P6",Enroc:302.90,Fisc:301.00},
+  {cap:"2.4",Data:"2026-07-27",Perfil:"P6 / P7",Enroc:277.35,Fisc:268.00},
+  {cap:"2.4",Data:"2026-07-27",Perfil:"P7 / P8",Enroc:320.30,Fisc:321.00},
+  {cap:"2.4",Data:"2026-07-27",Perfil:"P8 / P9",Enroc:372.65,Fisc:373.00},
+  {cap:"2.4",Data:"2026-07-27",Perfil:"P9 / P10",Enroc:181.273,Fisc:183.00}
 ];
 const PERFIL_ZONA={
   "P1":"Talude Sul","P2":"Talude Sul","P3":"Talude Sul","P4":"Talude Sul","P5":"Talude Sul","P6":"Talude Sul","P7":"Talude Sul","P8":"Talude Sul",
@@ -1013,11 +1014,26 @@ const ENROC_OBS={
     "A quantidade indicada pelo Empreiteiro corresponde, por opção, a metade do trabalho executado.",
     "A opção tem a ver com o fato de, em sede de orçamentação, não terem reparado que existia \"remoção e reposição\" e preferirem, agora, faturar metade do que, posteriormente, não faturar a reposição."
   ],
+  "2.4":[
+    "Este trabalho está relacionado com o 2.1 e com a maior quantidade de tetrápodes removidos.",
+    "Medições efetuadas:",
+    {lista:[
+      "P10 / P11 S — 62,841 m³",
+      "P11 S / P12 — 134,835 m³",
+      "P12 / P13 — 147,68 m³",
+      "P13 / P14 — 274,699 m³",
+      "P14 / P11 N — 691,83 m³",
+      "P11 N / P10 B — 210,65 m³"
+    ]},
+    "Com a soma de todas as medições temos um total de 610,50 m³, que correspondem a 28 142,67 € (610,50 m³ × 46,10 €)."
+  ],
   "2.3":[
     "Este trabalho ainda não foi efetuado.",
     "Estão previstos 700 m³ no MTQ (617,20 no Projeto).",
-    "Entretanto, foram medidos 1\u00a0091,87 m³, ou seja, mais 391,87 m³ do que a quantidade do projeto.",
-    "Esta quantidade só agora pôde ser medida dado que só com a remoção do material foi possível aferir, por via de levantamento topo-hidrográfico e superfície do projeto, as quantidades.",
+    "Entretanto, foram medidos 1 091,87 m³, ou seja, mais 391,87 m³ do que a quantidade do projeto.",
+    "Motivos para a maior quantidade de enrocamento a remover:",
+    {lista:["Irregularidade da zona existente, sendo que só com o começo da remoção foi possível aferir, por via do levantamento topo-hidrográfico, a extensão total e configuração da área abrangida pelos trabalhos."]},
+    "Em termos de valor, a remoção adicional equivale a 15 996,13 € (391,87 m³ × 40,8215 €).",
     {vermelho:true,texto:"Pedro deve medir para confirmar a projeção da Hydrostone."}
   ]
 };
@@ -1148,7 +1164,11 @@ function renderEnrocObs(){
   const obs=ENROC_OBS[curEnroc];
   det.style.display="";
   if(!obs||!obs.length){el.innerHTML='<p style="color:var(--muted);font-style:italic">Sem observações registadas.</p>';return;}
-  el.innerHTML=obs.map(p=>(p&&p.vermelho)?`<p style="color:#e76f51">${esc(p.texto)}</p>`:`<p>${esc(p)}</p>`).join("");
+  el.innerHTML=obs.map(p=>{
+    if(p&&p.vermelho)return `<p style="color:#e76f51">${esc(p.texto)}</p>`;
+    if(p&&p.lista)return `<ul>${p.lista.map(li=>`<li>${esc(li)}</li>`).join("")}</ul>`;
+    return `<p>${esc(p)}</p>`;
+  }).join("");
 }
 function renderEnrocRec(){
   const el=document.getElementById("enrocRecBody");if(!el)return;
@@ -1604,7 +1624,8 @@ const OBS_21=[
   {lista:[
     "Condições do submanto;",
     "Maior percentagem de tetrápodes partidos do que o expectável."
-  ]}
+  ]},
+  "Em termos de valor, a remoção adicional equivale a 42\u00a0172,43\u00a0€ (193 unids \u00d7 218,51\u00a0€)."
 ];
 const AM_DATAS=["2025-12-30","2026-01-30","2026-02-27","2026-03-30","2026-04-29","2026-05-29","2026-06-30","2026-07-27","2026-08-18"];
 function alignRn(root){
@@ -1647,7 +1668,7 @@ function fatTableRows(a,execByMes,fmt,projeto){
   const fmtDataAM=iso=>{const p=iso.split("-");return p[2]+"/"+p[1]+"/"+p[0];};
   const rn=v=>`<span class="rn">${v}</span>`;
   const cor=v=>v<0?"#e76f51":v>0?"#4caf72":"inherit";
-  const desvCell=(e,f)=>{const d=f-e;return `<span class="rn" style="color:${cor(d)}">${d>0?"+":""}${fmt(d)}</span>`;};
+  const desvCell=(e,f)=>{let d=f-e;if(Math.abs(d)<0.005)d=0;return `<span class="rn" style="color:${cor(d)}">${d>0?"+":""}${fmt(d)}</span>`;};
   const amByMes={};AM_DATAS.forEach((data,i)=>{amByMes[mesOf(data)]={am:i+1,data};});
   const fatByMes={};(a&&a.AM?a.AM:[]).forEach((v,i)=>{if(v==null)return;fatByMes[mesOf(AM_DATAS[i])]=v;});
   const meses=[...new Set([...Object.keys(fatByMes),...Object.keys(execByMes)])].sort();
