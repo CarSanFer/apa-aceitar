@@ -266,7 +266,7 @@
           <button class="iconbtn" data-th="dark" title="Escuro"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
           <button class="iconbtn" data-th="system" title="Sistema"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></button>
         </div>
-        <button class="iconbtn" id="verBtn" title="v26.08.10.4330"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></button>
+        <button class="iconbtn" id="verBtn" title="v26.08.10.4445"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></button>
       </div>
     </div>
     <div class="titlerow">
@@ -441,8 +441,13 @@
   </details>
 
     <details class="sec" id="secObs21">
-      <summary>Observações</summary>
+      <summary>Ponto de Situação | 10/08/2026</summary>
       <div class="secbody"><div id="obs21Body" class="obsbody"></div></div>
+    </details>
+
+    <details class="sec" id="secTC21">
+      <summary>Trabalhos Complementares</summary>
+      <div class="secbody"><div id="tc21Body" class="obsbody"></div></div>
     </details>
 
   </div><!-- /temaRC -->
@@ -599,8 +604,13 @@
     </details>
 
     <details class="sec" id="secEnrocObs">
-      <summary>Observações</summary>
+      <summary>Ponto de Situação | 10/08/2026</summary>
       <div class="secbody"><div id="enrocObsBody" class="obsbody"></div></div>
+    </details>
+
+    <details class="sec" id="secEnrocTC">
+      <summary>Trabalhos Complementares</summary>
+      <div class="secbody"><div id="enrocTCBody" class="obsbody"></div></div>
     </details>
   </div><!-- /temaEnroc -->
 
@@ -1008,6 +1018,9 @@ function perfilNaZona(perfilOuTroco,zona){
   else lista=nums.map(n=>"P"+n);
   return lista.some(p=>zonaDoPerfil(p)===zona);
 }
+const ENROC_TC={
+  "2.2":["Não Aplicável"]
+};
 const ENROC_OBS={
   "2.2":[
     "A quantidade executada, medida pela Fiscalização, corresponde à quantidade medida pelo projetista e desconsidera o arredondamento efetuado para o MQT.",
@@ -1158,6 +1171,14 @@ function renderEnrocFat(){
   det.style.display="";
   document.getElementById("enrocFatBody").innerHTML=fatTableRows(a,fatExecByMes(recs,"Enroc"),fmtE,projeto);
   alignRn(document.getElementById("enrocFatTable"));
+}
+function renderEnrocTC(){
+  const det=document.getElementById("secEnrocTC"),el=document.getElementById("enrocTCBody");
+  if(!det||!el)return;
+  const tc=ENROC_TC[curEnroc];
+  det.style.display="";
+  if(!tc||!tc.length){el.innerHTML='<p style="color:var(--muted);font-style:italic">Sem informação registada.</p>';return;}
+  el.innerHTML=tc.map(p=>(p&&p.vermelho)?`<p style="color:#e76f51">${esc(p.texto)}</p>`:(p&&p.lista)?`<ul>${p.lista.map(li=>`<li>${esc(li)}</li>`).join("")}</ul>`:`<p>${esc(p)}</p>`).join("");
 }
 function renderEnrocObs(){
   const det=document.getElementById("secEnrocObs"),el=document.getElementById("enrocObsBody");
@@ -1626,7 +1647,12 @@ const OBS_21=[
     "Condições do submanto;",
     "Maior percentagem de tetrápodes partidos do que o expectável."
   ]},
-  "Em termos de valor, a remoção adicional equivale a 42\u00a0172,43\u00a0€ (193 unids \u00d7 218,51\u00a0€)."
+  "O valor estimado é de 42\u00a0172,43\u00a0€ (193 unids \u00d7 218,51\u00a0€)."
+];
+const TC_21=[
+  "O argumento para o trabalho a mais deve centrar-se na imprevisibilidade e não deve ser referido que o trabalho já está realizado.",
+  "Tendo em conta os trabalhos já efetuados e aqueles que faltam efetuar, estima-se que a remoção dos tetrápodes seja superior em 50% ao previsto (192 unidades).",
+  "Esta maior quantidade tem a ver com a imprevisibilidade existente, resultado das condições atuais verificadas, que são diferentes das do projeto."
 ];
 const AM_DATAS=["2025-12-30","2026-01-30","2026-02-27","2026-03-30","2026-04-29","2026-05-29","2026-06-30","2026-07-27","2026-08-18"];
 function alignRn(root){
@@ -1685,6 +1711,13 @@ function fatTableRows(a,execByMes,fmt,projeto){
   return rows.join("");
 }
 function fatExecByMes(recs,key){const m={};recs.forEach(r=>{m[r.Mes||mesOf(r.Data)]=(m[r.Mes||mesOf(r.Data)]||0)+(r[key]||0);});return m;}
+function renderTC21(){
+  const det=document.getElementById("secTC21"),el=document.getElementById("tc21Body");
+  if(!det||!el)return;
+  if(state.rcMode!=="Remoção"||!TC_21.length){det.style.display="none";return;}
+  det.style.display="";
+  el.innerHTML=TC_21.map(p=>p&&p.lista?`<ul>${p.lista.map(li=>`<li>${esc(li)}</li>`).join("")}</ul>`:`<p>${esc(p)}</p>`).join("");
+}
 function renderObs21(){
   const det=document.getElementById("secObs21"),el=document.getElementById("obs21Body");
   if(!det||!el)return;
@@ -2091,7 +2124,7 @@ function prodRender(){
 }
 
 function render(){
-  buildPC();buildFilters();renderRecTable();renderPerfis();renderCmpProjeto();renderFaturacao();renderObs21();
+  buildPC();buildFilters();renderRecTable();renderPerfis();renderCmpProjeto();renderFaturacao();renderObs21();renderTC21();
   const fg=document.getElementById("fgRSub");if(fg)fg.style.display=state.rcMode==="Remoção"?"":"none";
   const fn=document.getElementById("fnote");if(fn)fn.textContent="";
 }
@@ -2145,7 +2178,7 @@ function init(){
     if(t==="totais")renderTotais();
     if(t==="dash"){dashBuildFilters();renderDash();}
     if(t==="pesq"){pesqBuildFilters();renderPesq();}
-    if(cfg.enrocId){curEnroc=cfg.enrocId;enrocF={mes:"Todos",semana:"Todas",dia:"",perfil:"Todos",zona:"Todas"};enrocBuildFilters();renderEnrocRec();renderEnroc();renderEnrocObs();renderEnrocFat();}
+    if(cfg.enrocId){curEnroc=cfg.enrocId;enrocF={mes:"Todos",semana:"Todas",dia:"",perfil:"Todos",zona:"Todas"};enrocBuildFilters();renderEnrocRec();renderEnroc();renderEnrocObs();renderEnrocFat();renderEnrocTC();}
     document.getElementById("hdEyebrow").textContent=EB;
     document.getElementById("hdTitle").textContent=cfg.title;
     document.getElementById("hdSub").textContent=cfg.sub;
